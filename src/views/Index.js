@@ -1,5 +1,4 @@
-
-import { useState,useContext ,useEffect} from "react";
+import { useState, useContext, useEffect } from "react";
 import { GlobalContext } from "Globalstate.js";
 // node.js library that concatenates classes (strings)
 import classnames from "classnames";
@@ -41,18 +40,22 @@ import {
   getDocs,
   onSnapshot,
   where,
-  orderBy,doc,updateDoc,getDoc
+  orderBy,
+  doc,
+  updateDoc,
+  getDoc,
+  limit,
 } from "firebase/firestore";
 import { auth, db, storage } from "../firebase";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-
+import WithdrawalModal from "components/Withdrawal";
 
 const Index = (props) => {
   const navigate = useNavigate();
   const [activeNav, setActiveNav] = useState(1);
   const [chartExample1Data, setChartExample1Data] = useState("data1");
   const [{ userdetails, loggedin, tradingpair }, dispatch] =
-  useContext(GlobalContext);
+    useContext(GlobalContext);
   const [loading, setLoading] = useState(true);
 
   //////////////////////////////////////////////////////
@@ -71,7 +74,8 @@ const Index = (props) => {
           // Get user details from Firestore
           const userDoc = await getDoc(doc(db, "independentriders", user.uid));
           if (userDoc.exists()) {
-            setdetails(userDoc.data());
+            // userDoc.data().id = user.uid;
+            setdetails({...userDoc.data(),id: user.uid});
             console.log(userDoc.data());
             setLoading(false);
           } else {
@@ -85,7 +89,6 @@ const Index = (props) => {
           setLoading(false);
         }
       } else {
-      
         // If user is not logged in, redirect to login page
         // history.push("/login");
       }
@@ -117,6 +120,186 @@ const Index = (props) => {
   //////////////////////////////////////////////////////
   //////////////////////AUTHENTICATION///////////////////////////////
   //////////////////////////////////////////////////////
+
+  ////////////////////////////////////chart data/////////////////////////////////////
+  ////////////////////////////////////chart data/////////////////////////////////////
+  ////////////////////////////////////chart data/////////////////////////////////////
+  ////////////////////////////////////chart data/////////////////////////////////////
+  ////////////////////////////////////chart data/////////////////////////////////////
+  ////////////////////////////////////chart data/////////////////////////////////////
+  ////////////////////////////////////chart data/////////////////////////////////////
+
+  const [chartData, setChartData] = useState(null);
+  useEffect(() => {
+    const generateChartData = async (riderId) => {
+      const orderCollectionRef = collection(db, "order");
+
+      try {
+        const ordersSnapshot = await getDocs(
+          query(
+            orderCollectionRef,
+            where("riderid", "==", riderId),
+            orderBy("dateCreated", "asc")
+          )
+        );
+
+        const monthlyCounts = {
+          Jan: 0,
+          Feb: 0,
+          Mar: 0,
+          Apr: 0,
+          May: 0,
+          Jun: 0,
+          Jul: 0,
+          Aug: 0,
+          Sep: 0,
+          Oct: 0,
+          Nov: 0,
+          Dec: 0,
+        };
+
+        ordersSnapshot.forEach((doc) => {
+          const order = doc.data();
+          const date = new Date(order.dateCreated.toDate());
+          const month = date.toLocaleString("default", { month: "short" });
+          monthlyCounts[month] += 1;
+        });
+
+        const data = {
+          labels: [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ],
+          datasets: [
+            {
+              label: "Orders",
+              data: [
+                monthlyCounts.Jan,
+                monthlyCounts.Feb,
+                monthlyCounts.Mar,
+                monthlyCounts.Apr,
+                monthlyCounts.May,
+                monthlyCounts.Jun,
+                monthlyCounts.Jul,
+                monthlyCounts.Aug,
+                monthlyCounts.Sep,
+                monthlyCounts.Oct,
+                monthlyCounts.Nov,
+                monthlyCounts.Dec,
+              ],
+              maxBarThickness: 10,
+            },
+          ],
+        };
+
+        setChartData(data);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    };
+
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const riderId = user.uid; // Replace with actual current user's ID
+          generateChartData(riderId);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          setLoading(false);
+        }
+      } else {
+        // If user is not logged in, redirect to login page
+        // history.push("/login");
+      }
+    });
+  }, []);
+
+  ////////////////////////////////////chart data/////////////////////////////////////
+  ////////////////////////////////////chart data/////////////////////////////////////
+  ////////////////////////////////////chart data/////////////////////////////////////
+  ////////////////////////////////////chart data/////////////////////////////////////
+  ////////////////////////////////////chart data/////////////////////////////////////
+  ////////////////////////////////////chart data/////////////////////////////////////
+  ////////////////////////////////////chart data/////////////////////////////////////
+
+  //////////////////////////////////////table data///////////////////////////////////
+  //////////////////////////////////////table data///////////////////////////////////
+  //////////////////////////////////////table data///////////////////////////////////
+  //////////////////////////////////////table data///////////////////////////////////
+  //////////////////////////////////////table data///////////////////////////////////
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    const fetchRiderOrders = async (riderId) => {
+      // Replace with actual current user's ID
+      const orderCollectionRef = collection(db, "order");
+
+      try {
+        const ordersSnapshot = await getDocs(
+          query(
+            orderCollectionRef,
+            where("riderid", "==", riderId),
+            where("status", "==", "userapproved"),
+            orderBy("dateCreated", "desc"),
+            limit(20)
+          )
+        );
+
+        const fetchedOrders = ordersSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setOrders(fetchedOrders);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    };
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const riderId = user.uid; // Replace with actual current user's ID
+          fetchRiderOrders(riderId);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          setLoading(false);
+        }
+      } else {
+        // If user is not logged in, redirect to login page
+        // history.push("/login");
+      }
+    });
+  }, []);
+  //////////////////////////////////////table data///////////////////////////////////
+  //////////////////////////////////////table data///////////////////////////////////
+  //////////////////////////////////////table data///////////////////////////////////
+  //////////////////////////////////////table data///////////////////////////////////
+  //////////////////////////////////////table data///////////////////////////////////
+
+  //////////////////////////////withdrawal////////////////////////////////////
+  //////////////////////////////withdrawal////////////////////////////////////
+  //////////////////////////////withdrawal////////////////////////////////////
+  const [isOpen, setIsOpen] = useState(false);
+  const [riderData, setRiderData] = useState(null); 
+  
+  const toggleModal = () => {
+    setIsOpen(!isOpen);
+  };
+
+  //////////////////////////////withdrawal////////////////////////////////////
+  //////////////////////////////withdrawal////////////////////////////////////
+  //////////////////////////////withdrawal////////////////////////////////////
+
   if (window.Chart) {
     parseOptions(Chart, chartOptions());
   }
@@ -193,8 +376,19 @@ const Index = (props) => {
                     <h6 className="text-uppercase text-muted ls-1 mb-1">
                       Performance
                     </h6>
-                    <h2 className="mb-0">Account Bal :NGN {userdetails.RiderBal}</h2>
-                    
+                    <h2 className="mb-0">
+                      Account Bal :NGN {userdetails.RiderBal}
+                    </h2>
+                          {/* Button to open the withdrawal modal */}
+      <Button color="primary" onClick={toggleModal}>Place Withdrawal</Button>
+
+{/* Render the withdrawal modal */}
+<WithdrawalModal 
+  isOpen={isOpen} 
+  toggle={toggleModal} 
+  riderData={userdetails} 
+/>
+
                     <h2 className="mb-0">Total orders</h2>
                   </div>
                 </Row>
@@ -203,7 +397,8 @@ const Index = (props) => {
                 {/* Chart */}
                 <div className="chart">
                   <Bar
-                    data={chartExample2.data}
+                    data={chartData}
+                    // data={chartExample2.data}
                     options={chartExample2.options}
                   />
                 </div>
@@ -213,6 +408,43 @@ const Index = (props) => {
         </Row>
         <Row className="mt-5">
           <Col className="mb-5 mb-xl-0" xl="8">
+            <Card className="shadow">
+              <CardHeader className="border-0">
+                <Row className="align-items-center">
+                  <div className="col">
+                    <h3 className="mb-0">Completed Orders</h3>
+                  </div>
+                </Row>
+              </CardHeader>
+              <Table className="align-items-center table-flush" responsive>
+                <thead className="thead-light">
+                  <tr>
+                    <th scope="col">Order ID</th>
+                    <th scope="col">Delivery Price</th>
+                    <th scope="col">Distance</th>
+                    <th scope="col">Date Created</th>
+                    {/* Add more columns if needed */}
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.map((order) => (
+                    <tr key={order.id}>
+                      <th scope="row">{order.id}</th>
+                      <td>₦{order.deliveryprice.toFixed(1)}</td>
+                      <td>{order.distance.toFixed(1)} km</td>
+                      <td>
+                        {new Date(
+                          order.dateCreated.toDate()
+                        ).toLocaleDateString()}
+                      </td>
+                      {/* Convert Firebase Timestamp to Date and format it */}
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Card>
+          </Col>
+          {/* <Col className="mb-5 mb-xl-0" xl="8">
             <Card className="shadow">
               <CardHeader className="border-0">
                 <Row className="align-items-center">
@@ -287,8 +519,9 @@ const Index = (props) => {
                 </tbody>
               </Table>
             </Card>
-          </Col>
-          <Col xl="4">
+          </Col> */}
+
+          {/* <Col xl="4">
             <Card className="shadow">
               <CardHeader className="border-0">
                 <Row className="align-items-center">
@@ -395,7 +628,7 @@ const Index = (props) => {
                 </tbody>
               </Table>
             </Card>
-          </Col>
+          </Col> */}
         </Row>
       </Container>
     </>
