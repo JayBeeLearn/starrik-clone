@@ -15,6 +15,7 @@ import {
   Button,
 } from "reactstrap";
 import Header from "components/Headers/Header.js";
+import MapWithDirections from "components/MapwithDirection";
 import OrderDetailsModal from "components/OrderDetails";
 import MapWrapper from "components/MapWrapper"; // Import your MapWrapper component
 import {
@@ -27,7 +28,7 @@ import {
 } from "firebase/firestore";
 import { auth, db, storage } from "../../firebase";
 import OrderConfirmationModal from "components/OrderConfirmationModal";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { GoogleAuthProvider, getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import axios from "axios";
 
 const Tables = () => {
@@ -132,47 +133,112 @@ const Tables = () => {
   //   };
   // }, []);
 
+  // useEffect(() => {
+  //   // Get user's current location
+  //   navigator.geolocation.getCurrentPosition(async (position) => {
+  //     const { latitude, longitude } = position.coords;
+  // console.log("Latitude:", latitude);
+  // console.log("Longitude:", longitude);
+  //     // Get city and state information using Geoapify
+  //     try {
+  //       const response = await axios.get(
+  //         `https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&apiKey=ae8e508bc0654ed688b43818597f7640`
+  //       );
+  //       const city = response.data.features[0]?.properties?.city;
+  //       const state = response.data.features[0]?.properties?.state;
+  //       const state1 = response.data.features[0]?.properties?.state.split(" ")[0]; // Get only the city name
+  //       console.log("City:", city);
+  //       console.log("State:", state);
+  //       console.log("State1:", state1);
+
+  //       // Fetch orders based on city and state
+  //       const unsubscribe = onSnapshot(
+  //         query(
+  //           collection(db, "order"),
+  //           where("PickupState", "in", [state1, state]), // Filter based on Geoapify data
+  //           // where("PickupState", "in", ["Enugu", state]), // Filter based on Geoapify data
+  //           where("status", "==", "pending"),
+  //           orderBy("dateCreated", "desc")
+  //         ),
+  //         (snapshot) => {
+  //           const fetchedOrders = snapshot.docs.map((doc) => ({
+  //             id: doc.id,
+  //             ...doc.data(),
+  //           }));
+  //           setOrders(fetchedOrders);
+  //         },
+  //         (error) => {
+  //           console.error("Error fetching orders:", error);
+  //         }
+  //       );
+
+  //       return () => {
+  //         unsubscribe();
+  //       };
+  //     } catch (error) {
+  //       console.error("Error fetching location data:", error);
+  //     }
+  //   });
+  // }, []);
+
+
+
+  // WITH Google
   useEffect(() => {
     // Get user's current location
     navigator.geolocation.getCurrentPosition(async (position) => {
       const { latitude, longitude } = position.coords;
-  console.log("Latitude:", latitude);
-  console.log("Longitude:", longitude);
-      // Get city and state information using Geoapify
+      console.log("Latitude:", latitude);
+      console.log("Longitude:", longitude);
+
+      // Reverse geocode using Google Maps Geocoding API
       try {
         const response = await axios.get(
-          `https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&apiKey=ae8e508bc0654ed688b43818597f7640`
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyDe7MVXvMqxrmO2Lf3nvvPPrXTUpcqVkXg&libraries=places`
         );
-        const city = response.data.features[0]?.properties?.city;
-        const state = response.data.features[0]?.properties?.state;
-        const state1 = response.data.features[0]?.properties?.state.split(" ")[0]; // Get only the city name
-        console.log("City:", city);
-        console.log("State:", state);
-        console.log("State1:", state1);
-
-        // Fetch orders based on city and state
-        const unsubscribe = onSnapshot(
-          query(
-            collection(db, "order"),
-            where("PickupState", "in", [state1, state]), // Filter based on Geoapify data
-            where("status", "==", "pending"),
-            orderBy("dateCreated", "desc")
-          ),
-          (snapshot) => {
-            const fetchedOrders = snapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
-            setOrders(fetchedOrders);
-          },
-          (error) => {
-            console.error("Error fetching orders:", error);
+        const results = response.data.results;
+        if (results.length > 0) {
+          const addressComponents = results[0].address_components;
+          let city, state;
+          for (let component of addressComponents) {
+            if (component.types.includes("locality")) {
+              city = component.long_name;
+            }
+            if (component.types.includes("administrative_area_level_1")) {
+              state = component.long_name;
+            }
           }
-        );
+          console.log("City:", city);
+          console.log("State:", state);
 
-        return () => {
-          unsubscribe();
-        };
+          // Fetch orders based on city and state
+          const unsubscribe = onSnapshot(
+            query(
+              collection(db, "order"),
+              // where("PickupState", "==", state),
+              where("PickupState", "in", [state, `${state} State`]), // Filter based on Geoapify data
+              // where("PickupState", "in", ["Enugu", state]),
+              where("status", "==", "pending"),
+              orderBy("dateCreated", "desc")
+            ),
+            (snapshot) => {
+              const fetchedOrders = snapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+              }));
+              setOrders(fetchedOrders);
+            },
+            (error) => {
+              console.error("Error fetching orders:", error);
+            }
+          );
+
+          return () => {
+            unsubscribe();
+          };
+        } else {
+          console.error("No results found for reverse geocoding.");
+        }
       } catch (error) {
         console.error("Error fetching location data:", error);
       }
@@ -184,6 +250,39 @@ const Tables = () => {
     setPickupCoordinates(order.pickupCoordinates);
     setDeliveryCoordinates(order.deliveryCoordinates);
     toggleModal();
+  };
+
+  const handleorderTrackingpickup = (order) => {
+    setSelectedOrder(order);
+    watchCurrentLocationAndSetCoordinates(order.pickupCoordinates, setPickupCoordinates);
+    setDeliveryCoordinates(order.pickupCoordinates);
+    toggleModal();
+  };
+  
+  const handleorderTrackingdestination= (order) => {
+    setSelectedOrder(order);
+    watchCurrentLocationAndSetCoordinates(order.pickupCoordinates, setPickupCoordinates);
+    setDeliveryCoordinates(order.deliveryCoordinates);
+    toggleModal();
+  };
+  
+  const watchCurrentLocationAndSetCoordinates = (initialCoordinates, setCoordinates) => {
+    const locationListener = navigator.geolocation.watchPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        console.log("Current location:", latitude, longitude);
+        // Update the pickupCoordinates with the current location
+        setPickupCoordinates({lat: latitude,lng: longitude });
+      },
+      (error) => {
+        console.error("Error getting user's location:", error);
+      }
+    );
+  
+    return () => {
+      // Clean up the location listener when component unmounts or when coordinates are set
+      navigator.geolocation.clearWatch(locationListener);
+    };
   };
 
   const toggleModal = () => {
@@ -240,7 +339,54 @@ const Tables = () => {
     }
     toggleConfirmationModal();
   };
+
+
+  ////////////////////WATCH RIDER LOCATION///////////////////
+  useEffect(() => {
+    const locationListener = navigator.geolocation.watchPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        console.log("Current location:", latitude, longitude);
   
+        // Update Firestore field with the new location data
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+          if (user) {
+            const userOrder = onSnapshot(
+              query(
+                collection(db, "order"),
+                where("riderid", "==", user.uid),
+                where("status", "in", ["confirmed", "delivered"])
+              ),
+              (snapshot) => {
+                snapshot.docs.forEach(async (singleorder) => {
+                  const orderId = singleorder.id;
+                  // Update the riderLocation field of each order document
+
+                  const orderRef = doc(db, "order", orderId);
+                  await updateDoc(orderRef, {
+                    riderLocation: { latitude, longitude }
+                  }); 
+                });
+              },
+              (error) => {
+                console.error("Error fetching orders:", error);
+              }
+            );
+          } else {
+            // Handle if user is not authenticated
+          }
+        });
+      },
+      (error) => {
+        console.error("Error getting user's location:", error);
+      }
+    );
+  
+    return () => {
+      // Clean up the location listener when the component unmounts
+      navigator.geolocation.clearWatch(locationListener);
+    };
+  }, []);
 
   return (
     <>
@@ -251,9 +397,13 @@ const Tables = () => {
           className="modal-map-wrapper"
           style={{ height: "50vh", width: "100%" }}
         >
-          <MapWrapper
+          {/* <MapWrapper
             pickupAddress={pickupCoordinates}
             deliveryAddress={deliveryCoordinates}
+          /> */}
+                    <MapWithDirections
+            originCoordinates={pickupCoordinates}
+            destinationCoordinates={deliveryCoordinates}
           />
         </div>
       )}
@@ -297,6 +447,22 @@ const Tables = () => {
                               onClick={() => handleViewOrder(order)}
                             >
                               View Order Details
+                            </DropdownItem>
+                            <DropdownItem
+                              onClick={() => handleConfirmationOrder(order)}
+                            >
+                              Accept
+                            </DropdownItem>
+                            <DropdownItem
+                              onClick={() => handleorderTrackingpickup(order)}
+                            >
+                            Track pickup
+                            </DropdownItem>
+
+                            <DropdownItem
+                              onClick={() => handleorderTrackingdestination(order)}
+                            >
+                            Track Destination
                             </DropdownItem>
                             <DropdownItem
                               onClick={() => handleConfirmationOrder(order)}

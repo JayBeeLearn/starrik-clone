@@ -12,6 +12,7 @@ import {
   DropdownItem,
   Button,
 } from "reactstrap";
+import MapWithDirections from "components/MapwithDirection";
 import Swal from "sweetalert2";
 import Header from "components/Headers/Header.js";
 import OrderDetailsModal from "components/OrderDetails";
@@ -31,6 +32,7 @@ import { auth, db, storage } from "../../firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import OrderConfirmationModal from "components/OrderConfirmationModal";
 import { useNavigate } from "react-router-dom";
+import TrackRider from "components/TrackRider";
 
 const UserTrackorders = () => {
   const navigate = useNavigate();
@@ -73,10 +75,32 @@ const UserTrackorders = () => {
   }, []);
 
   const handleViewOrder = (order) => {
+    console.log(order);
     setSelectedOrder(order);
     setPickupCoordinates(order.pickupCoordinates);
     setDeliveryCoordinates(order.deliveryCoordinates);
     toggleModal();
+  };
+
+  const handleTractorder = (order) => {
+    console.log(order);
+    setSelectedOrder(order);
+
+    if (order.riderLocation==null){
+      Swal.fire({
+        icon: "warning",
+        title: "Oops...",
+        text: "Order has not been picked!",
+      });
+    }else{
+    //set riderlocation if it exits
+    console.log(order.riderLocation)
+    console.log(order.deliveryCoordinates)
+
+    setPickupCoordinates({lng: order.riderLocation.longitude, lat: order.riderLocation.latitude});
+    setDeliveryCoordinates(order.deliveryCoordinates);
+    toggleModal();
+    }
   };
 
   const toggleModal = () => {
@@ -199,6 +223,24 @@ const UserTrackorders = () => {
     }
   };
 
+  ////////////////////WATCH USER LOCATION///////////////////
+  // useEffect(() => {
+  //   const locationListener = navigator.geolocation.watchPosition(
+  //     (position) => {
+  //       const { latitude, longitude } = position.coords;
+  //       console.log("Current location:", longitude, "Current location:", latitude);
+  //       // Update Firestore field with the new location data
+  //     },
+  //     (error) => {
+  //       console.error("Error getting user's location:", error);
+  //     }
+  //   );
+  //   return () => {
+  //     // Clean up the location listener when the component unmounts
+  //     navigator.geolocation.clearWatch(locationListener);
+  //   };
+  // }, []);
+
   return (
     <>
       <Header />
@@ -208,9 +250,14 @@ const UserTrackorders = () => {
           className="modal-map-wrapper"
           style={{ height: "50vh", width: "100%" }}
         >
-          <MapWrapper
+          {/* <MapWrapper
             pickupAddress={pickupCoordinates}
             deliveryAddress={deliveryCoordinates}
+          /> */}
+
+          <TrackRider
+            originCoordinates={pickupCoordinates}
+            destinationCoordinates={deliveryCoordinates}
           />
         </div>
       )}
@@ -252,10 +299,15 @@ const UserTrackorders = () => {
                             <i className="fas fa-ellipsis-v" />
                           </DropdownToggle>
                           <DropdownMenu className="dropdown-menu-arrow" right>
-                            <DropdownItem
+                            {/* <DropdownItem
                               onClick={() => handleViewOrder(order)}
                             >
                               View Order Details
+                            </DropdownItem> */}
+                            <DropdownItem
+                              onClick={() => handleTractorder(order)}
+                            >
+                              Track Rider
                             </DropdownItem>
                             <DropdownItem
                               onClick={() => handleConfirmationOrder(order)}

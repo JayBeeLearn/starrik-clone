@@ -35,17 +35,94 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { PaystackButton } from "react-paystack";
 import { usePaystackPayment } from "react-paystack";
 
+//////////////////////////GOOGLE MAPS DEPENDENCIES////////////////////////
+import { GoogleMap, Marker, DirectionsRenderer } from "@react-google-maps/api";
+import MapWithDirections from "components/MapwithDirection";
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-places-autocomplete";
+
 const Maps = () => {
   const navigate = useNavigate();
-  const [pickupAddress, setPickupAddress] = useState(""); // State to hold the pickup address
-  const [deliveryAddress, setDeliveryAddress] = useState(""); // State to hold the delivery address
-  const [pickupCoordinates, setPickupCoordinates] = useState(null); // State to hold the pickup coordinates
-  const [deliveryCoordinates, setDeliveryCoordinates] = useState(null); // State to hold the delivery coordinates
-  const [deliveryDetails, setDeliveryDetails] = useState(""); // State to hold the delivery details
+  // const [pickupAddress, setPickupAddress] = useState(""); // State to hold the pickup address
+  // const [deliveryAddress, setDeliveryAddress] = useState(""); // State to hold the delivery address
+  // const [pickupCoordinates, setPickupCoordinates] = useState(null); // State to hold the pickup coordinates
+  // const [deliveryCoordinates, setDeliveryCoordinates] = useState(null); // State to hold the delivery coordinates
+  const [originAddress, setOriginAddress] = useState("");
+  const [destinationAddress, setDestinationAddress] = useState("");
+  const [originCoordinates, setOriginCoordinates] = useState({
+    lat: null,
+    lng: null,
+  });
+  const [destinationCoordinates, setDestinationCoordinates] = useState({
+    lat: null,
+    lng: null,
+  });
   const [DeliveryState, setDeliveryState] = useState(""); // State to hold the delivery details
   const [PickupState, setPickupState] = useState(""); // State to hold the delivery details
+  const handleOriginSelect = async (value) => {
+    console.log(value);
+    const results = await geocodeByAddress(value);
+    console.log(results);
+    const [{ formatted_address, address_components, geometry: { location } }] = results;
+    console.log(formatted_address); // Full address
+    console.log(location.lat()); // Latitude
+    console.log(location.lng()); // Longitude
+  
+    // Extract state from address components
+    const state = address_components.find(component =>
+      component.types.includes('administrative_area_level_1')
+    ).long_name;
+    console.log("Pickup STATE",state); // State
+    setPickupState(state);
+  
+    setOriginAddress(formatted_address);
+    setOriginCoordinates({ lat: location.lat(), lng: location.lng() });
+  };
+  
+  const handleDestinationSelect = async (value) => {
+    setDestinationAddress(value);
+    const results = await geocodeByAddress(value);
+    console.log(results);
+    const [{ formatted_address, address_components, geometry: { location } }] = results;
+    console.log(formatted_address); // Full address
+    console.log(location.lat()); // Latitude
+    console.log(location.lng()); // Longitude
+  
+    // Extract state from address components
+    const state = address_components.find(component =>
+      component.types.includes('administrative_area_level_1')
+    ).long_name;
+    console.log(state); // State
+    setDeliveryState(state);
+  
+    setDestinationAddress(formatted_address);
+    setDestinationCoordinates({ lat: location.lat(), lng: location.lng() });
+  };
+  
+  // const handleOriginSelect = async (value) => {
+  //   console.log(value);
+  //   const results = await geocodeByAddress(value);
+  //   console.log(results);
+  //   const latLng = await getLatLng(results[0]);
+  //   setOriginAddress(value);
+  //   setOriginCoordinates(latLng);
+  //   console.log(latLng);
+  // };
+
+  // const handleDestinationSelect = async (value) => {
+  //   setOriginAddress(value);
+  //   const results = await geocodeByAddress(value);
+  //   console.log(results);
+  //   const latLng = await getLatLng(results[0]);
+  //   setDestinationAddress(value);
+  //   setDestinationCoordinates(latLng);
+  // };
+
+  const [deliveryDetails, setDeliveryDetails] = useState(""); // State to hold the delivery details
   const [receiverDetails, setReceiverDetails] = useState("");
-  const [{ userdetails, loggedin, tradingpair }, dispatch] =
+  const [{ userdetails, loggedin, tradingpair, distance }, dispatch] =
     useContext(GlobalContext);
   const [loading, setLoading] = useState(true);
   const [amonutForPaystack, setamonutForPaystack] = useState(1000);
@@ -58,7 +135,7 @@ const Maps = () => {
   const toggleAlert = () => setAlertVisible(!alertVisible);
 
   /////////////////////For MODAL//////////////////
-  const [distance, setdistance] = useState(0);
+  // const [distance, setdistance] = useState(0);
   const [priceToPay, setpriceToPay] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const toggleModal = () => {
@@ -96,7 +173,7 @@ const Maps = () => {
       } else {
         // If user is not logged in, redirect to login page
         // history.push("/login");
-          navigate("/auth/login");
+        navigate("/auth/login");
       }
     });
 
@@ -178,13 +255,13 @@ const Maps = () => {
   ////////////////////////////////LISTEN TO USER ORDER DETAILS///////////////////////////////
   ////////////////////////////////LISTEN TO USER ORDER DETAILS///////////////////////////////
 
-  const handlePickupAddressChange = (e) => {
-    setPickupAddress(e.target.value);
-  };
+  // const handlePickupAddressChange = (e) => {
+  //   setPickupAddress(e.target.value);
+  // };
 
-  const handleDeliveryAddressChange = (e) => {
-    setDeliveryAddress(e.target.value);
-  };
+  // const handleDeliveryAddressChange = (e) => {
+  //   setDeliveryAddress(e.target.value);
+  // };
 
   const handleDeliveryDetailsChange = (e) => {
     setDeliveryDetails(e.target.value);
@@ -194,109 +271,120 @@ const Maps = () => {
     setReceiverDetails(e.target.value);
   };
 
-  const fetchCoordinates = (type, address, setter) => {
-    fetch(
-      `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(
-        address
-      )}&apiKey=ae8e508bc0654ed688b43818597f7640`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-
-        if (data.features.length > 0) {
-          const properties = data.features[0].properties;
-
-          // Extract city, county, and address_line1
-          const state = properties.state || "";
-          const city = properties.city || "";
-          const county = properties.county || "";
-          const address_line1 = properties.street || "";
-
-          // const [DeliveryState, setDeliveryState] = useState(""); // State to hold the delivery details
-          // const [PickupState, setPickupState] = useState(""); // State to hold the delivery details
-          // type="delivery"
-          // type="pickup"
-
-          if (type == "delivery") {
-            setDeliveryState(state);
-          } else if (type == "pickup") {
-            setPickupState(state);
-          }
-          console.log("State:", state);
-          console.log("City:", city);
-          console.log("County:", county);
-          console.log("Address Line 1:", address_line1);
-
-          setter([properties.lat, properties.lon]);
-        } else {
-          console.error("No features found in the response.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching coordinates:", error);
-      });
+  const confirmOrder = () => {
+    // Scroll the user to the top of the page
+    window.scrollTo({ top: 0, behavior: "smooth" }); // Smooth scroll to top
   };
+  
 
-  function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371e3; // Earth radius in meters
-    const φ1 = (lat1 * Math.PI) / 180; // Latitude of pickup in radians
-    const φ2 = (lat2 * Math.PI) / 180; // Latitude of delivery in radians
-    const Δφ = ((lat2 - lat1) * Math.PI) / 180; // Change in latitude in radians
-    const Δλ = ((lon2 - lon1) * Math.PI) / 180; // Change in longitude in radians
+  //   fetchCoordinates("pickup", pickupAddress, setPickupCoordinates);
+  //   fetchCoordinates("delivery", deliveryAddress, setDeliveryCoordinates);
+  // };
 
-    // Haversine formula
-    const a =
-      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  // const confirmOrder = () => {
+  //   // Check if pickup and delivery addresses are not empty
+  //   if (!pickupAddress || !deliveryAddress) {
+  //     setAlertMessage("Fill In Required Fields");
+  //     setAlertType("danger");
+  //     toggleAlert();
+  //     return;
+  //   }
 
-    // Distance in meters
-    const distance = R * c;
+  //   fetchCoordinates("pickup", pickupAddress, setPickupCoordinates);
+  //   fetchCoordinates("delivery", deliveryAddress, setDeliveryCoordinates);
+  // };
 
-    // Distance in kilometers (optional)
-    const distanceInKm = distance / 1000;
+  // const fetchCoordinates = (type, address, setter) => {
+  //   fetch(
+  //     `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(
+  //       address
+  //     )}&apiKey=ae8e508bc0654ed688b43818597f7640`
+  //   )
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log(data);
 
-    return distanceInKm; // Return distance in kilometers
-  }
+  //       if (data.features.length > 0) {
+  //         const properties = data.features[0].properties;
+
+  //         // Extract city, county, and address_line1
+  //         const state = properties.state || "";
+  //         const city = properties.city || "";
+  //         const county = properties.county || "";
+  //         const address_line1 = properties.street || "";
+
+  //         // const [DeliveryState, setDeliveryState] = useState(""); // State to hold the delivery details
+  //         // const [PickupState, setPickupState] = useState(""); // State to hold the delivery details
+  //         // type="delivery"
+  //         // type="pickup"
+
+  //         if (type == "delivery") {
+  //           setDeliveryState(state);
+  //         } else if (type == "pickup") {
+  //           setPickupState(state);
+  //         }
+  //         console.log("State:", state);
+  //         console.log("City:", city);
+  //         console.log("County:", county);
+  //         console.log("Address Line 1:", address_line1);
+
+  //         setter([properties.lat, properties.lon]);
+  //       } else {
+  //         console.error("No features found in the response.");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching coordinates:", error);
+  //     });
+  // };
+
+  // function calculateDistance(lat1, lon1, lat2, lon2) {
+  //   const R = 6371e3; // Earth radius in meters
+  //   const φ1 = (lat1 * Math.PI) / 180; // Latitude of pickup in radians
+  //   const φ2 = (lat2 * Math.PI) / 180; // Latitude of delivery in radians
+  //   const Δφ = ((lat2 - lat1) * Math.PI) / 180; // Change in latitude in radians
+  //   const Δλ = ((lon2 - lon1) * Math.PI) / 180; // Change in longitude in radians
+
+  //   // Haversine formula
+  //   const a =
+  //     Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+  //     Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+  //   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  //   // Distance in meters
+  //   const distance = R * c;
+
+  //   // Distance in kilometers (optional)
+  //   const distanceInKm = distance / 1000;
+
+  //   return distanceInKm; // Return distance in kilometers
+  // }
 
   //////////////////////////modal for order details////////////////////////
 
   const ConfirmdetailsOfOrder = () => {
     if (
-      !pickupAddress ||
-      !deliveryAddress ||
+      !originAddress ||
+      !destinationAddress ||
       !deliveryDetails ||
       !receiverDetails
     ) {
       toggleAlert();
       return;
     }
-    const distance = calculateDistance(
-      pickupCoordinates[0], // Latitude of pickup
-      pickupCoordinates[1], // Longitude of pickup
-      deliveryCoordinates[0], // Latitude of delivery
-      deliveryCoordinates[1] // Longitude of delivery
-    );
-    setdistance(distance);
+    // const distance = calculateDistance(
+    //   pickupCoordinates[0], // Latitude of pickup
+    //   pickupCoordinates[1], // Longitude of pickup
+    //   deliveryCoordinates[0], // Latitude of delivery
+    //   deliveryCoordinates[1] // Longitude of delivery
+    // );
+    // setdistance(distance);
     console.log("Distance between pickup and delivery:", distance, "km");
     // Open modal to confirm order
     toggleModal();
   };
-  //////////////////////////modal for order details////////////////////////
-  const confirmOrder = () => {
-    // Check if pickup and delivery addresses are not empty
-    if (!pickupAddress || !deliveryAddress) {
-      setAlertMessage("Fill In Required Fields");
-      setAlertType("danger");
-      toggleAlert();
-      return;
-    }
 
-    fetchCoordinates("pickup", pickupAddress, setPickupCoordinates);
-    fetchCoordinates("delivery", deliveryAddress, setDeliveryCoordinates);
-  };
-  // Other state variables and functions
+  //////////////////////////modal for order details////////////////////////
 
   const checkUserOrders = async () => {
     try {
@@ -314,13 +402,6 @@ const Maps = () => {
       return [];
     }
   };
-  /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
-  /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
-  /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
-  /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
-  /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
-  /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
-  /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
   /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
   /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
   /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
@@ -386,13 +467,6 @@ const Maps = () => {
   };
   /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
   /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
-  /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
-  /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
-  /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
-  /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
-  /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
-  /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
-  /////////////////////////////////////////////////////PAYSTACK PAYMENT/////////////////////////////////
 
   const cancelorders = async () => {
     togglePaymentModal(false);
@@ -440,8 +514,8 @@ const Maps = () => {
     { state: "Taraba", city: "Jalingo", charge: 290 },
     { state: "Yobe", city: "Damaturu", charge: 320 },
     { state: "Zamfara", city: "Gusau", charge: 310 },
-    { state: "FCT", city: "Abuja", charge: 460 }
-];
+    { state: "FCT", city: "Abuja", charge: 460 },
+  ];
   const placeOrder = async () => {
     const userOrders = await checkUserOrders();
 
@@ -457,8 +531,8 @@ const Maps = () => {
 
     // Check if required fields are empty
     if (
-      !pickupAddress ||
-      !deliveryAddress ||
+      !originAddress ||
+      !destinationAddress ||
       !deliveryDetails ||
       !receiverDetails
     ) {
@@ -467,46 +541,61 @@ const Maps = () => {
       toggleAlert();
       return;
     }
-    const distance = calculateDistance(
-      pickupCoordinates[0], // Latitude of pickup
-      pickupCoordinates[1], // Longitude of pickup
-      deliveryCoordinates[0], // Latitude of delivery
-      deliveryCoordinates[1] // Longitude of delivery
-    );
+    // const distance = calculateDistance(
+    //   pickupCoordinates[0], // Latitude of pickup
+    //   pickupCoordinates[1], // Longitude of pickup
+    //   deliveryCoordinates[0], // Latitude of delivery
+    //   deliveryCoordinates[1] // Longitude of delivery
+    // );
     console.log("Distance between pickup and delivery:", distance, "km");
 
     // Confirm order again to make sure coordinates are updated
-    confirmOrder();
+    // confirmOrder();
 
-  const statevvale_ = PickupState.split(" ")[0]; // Get only the city name
-  const foundState = statesAndCharges.find(state => state.state.toLowerCase() === statevvale_.toLowerCase());
+    const statevvale_ = PickupState; // Get only the city name
+    const foundState = statesAndCharges.find(
+      (state) => state.state.toLowerCase() === statevvale_.toLowerCase()
+    );
 
     toggleModal();
     togglePaymentModal(true);
-    setamonutForPaystack(distance *  foundState.charge);
+    setamonutForPaystack(distance * foundState.charge);
     setOrderDetails({
-      // riderid
-      // DeliveryStatus
-      // paymentstatus
-      // chargeamount
-      // dateCreated
-      // currentPackageLocation
-      deliveryprice:distance *  foundState.charge, 
+      deliveryprice: distance * foundState.charge,
       DeliveryState: DeliveryState,
       PickupState: PickupState,
       userid: auth.currentUser.uid,
-      pickupAddress: pickupAddress,
-      deliveryAddress: deliveryAddress,
+      pickupAddress: originAddress,
+      deliveryAddress: destinationAddress,
       distance: distance,
-      pickupCoordinates: pickupCoordinates,
-      deliveryCoordinates: deliveryCoordinates,
+      pickupCoordinates: originCoordinates,
+      deliveryCoordinates: destinationCoordinates,
       deliveryDetails: deliveryDetails,
       receiverDetails: receiverDetails,
       dateCreated: serverTimestamp(),
       status: "pending", // Set initial status
-      userPhone:userdetails.phoneNumber
+      userPhone: userdetails.phoneNumber,
+      riderLocation:null
     });
   };
+
+    ////////////////////WATCH USER LOCATION///////////////////
+    // useEffect(() => {
+    //   const locationListener = navigator.geolocation.watchPosition(
+    //     (position) => {
+    //       const { latitude, longitude } = position.coords;
+    //       console.log("Current location:", longitude, "Current location:", latitude);
+    //       // Update Firestore field with the new location data
+    //     },
+    //     (error) => {
+    //       console.error("Error getting user's location:", error);
+    //     }
+    //   );
+    //   return () => {
+    //     // Clean up the location listener when the component unmounts
+    //     navigator.geolocation.clearWatch(locationListener);
+    //   };
+    // }, []);
 
   return (
     <div>
@@ -516,24 +605,15 @@ const Maps = () => {
           className="shadow border-0"
           style={{ height: "50vh", width: "100%" }}
         >
-          <MapWrapper
+          <MapWithDirections
+            originCoordinates={originCoordinates}
+            destinationCoordinates={destinationCoordinates}
+          />
+          {/* <MapWrapper
             pickupAddress={pickupCoordinates}
             deliveryAddress={deliveryCoordinates}
-          />
+          /> */}
         </div>
-        {/* <Row>
-          <Col className="mb-5 mb-xl-0" xl="12" style={{ height: "80vh", width: "100%" }}>
-            <Card
-              className="shadow border-0"
-              style={{ height: "80vh", width: "100%" }}
-            >
-              <MapWrapper
-                pickupAddress={pickupCoordinates}
-                deliveryAddress={deliveryCoordinates}
-              />
-            </Card>
-          </Col>
-        </Row> */}
         <Row className="mt-5">
           <Col className="mb-5 mb-xl-0" xl="12">
             <Card className="bg-secondary shadow border-0">
@@ -547,7 +627,7 @@ const Maps = () => {
                   <div className="pl-lg-4">
                     <Row>
                       <Col md="6">
-                        <FormGroup>
+                        {/* <FormGroup>
                           <label
                             className="form-control-label"
                             htmlFor="input-address"
@@ -562,10 +642,68 @@ const Maps = () => {
                             value={pickupAddress}
                             onChange={handlePickupAddressChange}
                           />
+                        </FormGroup> */}
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-address"
+                          >
+                            Pick up Address
+                          </label>
+                          <PlacesAutocomplete
+                            value={originAddress}
+                            onChange={setOriginAddress}
+                            onSelect={handleOriginSelect}
+                          >
+                            {({
+                              getInputProps,
+                              suggestions,
+                              getSuggestionItemProps,
+                              loading,
+                            }) => (
+                              <div>
+                                <Input
+                                  {...getInputProps({
+                                    id: "input-address",
+                                    placeholder: "Enter Pick up Address",
+                                    type: "text",
+                                    className: "form-control-alternative",
+                                  })}
+                                />
+                                <div className="autocomplete-dropdown-container">
+                                  {loading && <div>Loading...</div>}
+                                  {suggestions.map((suggestion) => {
+                                    const className = suggestion.active
+                                      ? "suggestion-item--active"
+                                      : "suggestion-item";
+                                    const style = suggestion.active
+                                      ? {
+                                          backgroundColor: "#fafafa",
+                                          cursor: "pointer",
+                                        }
+                                      : {
+                                          backgroundColor: "#ffffff",
+                                          cursor: "pointer",
+                                        };
+                                    return (
+                                      <div
+                                        {...getSuggestionItemProps(suggestion, {
+                                          className,
+                                          style,
+                                        })}
+                                      >
+                                        <span>{suggestion.description}</span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
+                          </PlacesAutocomplete>
                         </FormGroup>
                       </Col>
                       <Col md="6">
-                        <FormGroup>
+                        {/* <FormGroup>
                           <label
                             className="form-control-label"
                             htmlFor="input-address"
@@ -575,11 +713,69 @@ const Maps = () => {
                           <Input
                             className="form-control-alternative"
                             id="input-address"
-                            placeholder="Enter Delivery Address"
+                            placeholder="Enter Delivery Address" 
                             type="text"
                             value={deliveryAddress}
                             onChange={handleDeliveryAddressChange}
                           />
+                        </FormGroup> */}
+                         <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-address"
+                          >
+                            Delivery Address
+                          </label>
+                          <PlacesAutocomplete
+                            value={destinationAddress}
+                            onChange={setDestinationAddress}
+                            onSelect={handleDestinationSelect}
+                          >
+                            {({
+                              getInputProps,
+                              suggestions,
+                              getSuggestionItemProps,
+                              loading,
+                            }) => (
+                              <div>
+                                <Input
+                                  {...getInputProps({
+                                    id: "input-address",
+                                    placeholder: "Enter Destination Address",
+                                    type: "text",
+                                    className: "form-control-alternative",
+                                  })}
+                                />
+                                <div className="autocomplete-dropdown-container">
+                                  {loading && <div>Loading...</div>}
+                                  {suggestions.map((suggestion) => {
+                                    const className = suggestion.active
+                                      ? "suggestion-item--active"
+                                      : "suggestion-item";
+                                    const style = suggestion.active
+                                      ? {
+                                          backgroundColor: "#fafafa",
+                                          cursor: "pointer",
+                                        }
+                                      : {
+                                          backgroundColor: "#ffffff",
+                                          cursor: "pointer",
+                                        };
+                                    return (
+                                      <div
+                                        {...getSuggestionItemProps(suggestion, {
+                                          className,
+                                          style,
+                                        })}
+                                      >
+                                        <span>{suggestion.description}</span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
+                          </PlacesAutocomplete>
                         </FormGroup>
                       </Col>
                     </Row>
@@ -593,6 +789,8 @@ const Maps = () => {
                         Confirm location
                       </Button>
                     </div>
+
+
                   </div>
                   <hr className="my-4" />
                   {/* Description */}
@@ -668,17 +866,24 @@ const Maps = () => {
       <Modal isOpen={modalOpen} toggle={toggleModal}>
         <ModalHeader toggle={toggleModal}>Confirm Order Details</ModalHeader>
         <ModalBody>
-          <p>Pickup Address: {pickupAddress}</p>
-          <p>Delivery Address: {deliveryAddress}</p>
+          <p>Pickup Address: {originAddress}</p>
+          <p>Delivery Address: {destinationAddress}</p>
           <p>Delivery Details: {deliveryDetails}</p>
           <p>Receiver Details: {receiverDetails}</p>
           <p>Distance: {distance} km</p>
-    {
-      PickupState !==""&&(
-        <p>Price: ₦ {(distance * statesAndCharges.find(state => state.state.toLowerCase() ===  PickupState.split(" ")[0].toLowerCase()).charge).toLocaleString()}</p>
-      )
-    }
- 
+          {PickupState !== "" && (
+            <p>
+              Price: ₦{" "}
+              {(
+                distance *
+                statesAndCharges.find(
+                  (state) =>
+                    state.state.toLowerCase() ===
+                    PickupState.toLowerCase()
+                ).charge
+              ).toLocaleString()}
+            </p>
+          )}
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={placeOrder}>
@@ -707,7 +912,15 @@ const Maps = () => {
           {orderDetails && orderDetails.distance && (
             <p>
               Price: ₦{" "}
-              {(orderDetails && orderDetails.distance *  statesAndCharges.find(state => state.state.toLowerCase() ===  PickupState.split(" ")[0].toLowerCase()).charge).toLocaleString()}
+              {(
+                orderDetails &&
+                orderDetails.distance *
+                  statesAndCharges.find(
+                    (state) =>
+                      state.state.toLowerCase() ===
+                      PickupState.toLowerCase()
+                  ).charge
+              ).toLocaleString()}
             </p>
           )}
           {/* Add more order details as needed */}

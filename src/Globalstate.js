@@ -10,7 +10,8 @@ const initialState = {
   productinfo: {},
   singleuser: "",
   selectedinvestment: "",
-  cointoinvestwith: ""
+  cointoinvestwith: "",
+  distance: 0
 };
 
 const reducer = (state, action) => {
@@ -19,6 +20,13 @@ const reducer = (state, action) => {
       return {
         ...state,
         productdetails: action.snippet
+      };
+    }
+
+    case "setdistance": {
+      return {
+        ...state,
+        distance: action.snippet
       };
     }
 

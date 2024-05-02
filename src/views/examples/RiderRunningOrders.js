@@ -15,6 +15,7 @@ import {
 import Swal from "sweetalert2";
 import Header from "components/Headers/Header.js";
 import OrderDetailsModal from "components/OrderDetails";
+import MapWithDirections from "components/MapwithDirection";
 import MapWrapper from "components/MapWrapper"; // Import your MapWrapper component
 import {
   collection,
@@ -29,6 +30,7 @@ import {
 import { auth, db, storage } from "../../firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import OrderConfirmationModal from "components/OrderConfirmationModal";
+import RiderMapTracking from "components/RiderMapTracking";
 
 const RiderRunningOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -70,10 +72,58 @@ const RiderRunningOrders = () => {
 
   const handleViewOrder = (order) => {
     setSelectedOrder(order);
-    setPickupCoordinates(order.pickupCoordinates);
+    setPickupCoordinates();
+    setDeliveryCoordinates(order.pickupCoordinates);
+    toggleModal();
+  };
+
+  // const handleorderTrackingpickup = (order) => {
+  //   setSelectedOrder(order);
+  //   setPickupCoordinates();
+  //   setDeliveryCoordinates(order.pickupCoordinates);
+  //   toggleModal();
+  // };
+
+  // const handleorderTrackingdestination = (order) => {
+  //   setSelectedOrder(order);
+  //   setPickupCoordinates(order.pickupCoordinates);
+  //   setDeliveryCoordinates(order.deliveryCoordinates);
+  //   toggleModal();
+  // };
+
+  const handleorderTrackingpickup = (order) => {
+    setSelectedOrder(order);
+    watchCurrentLocationAndSetCoordinates(order.pickupCoordinates, setPickupCoordinates);
+    setDeliveryCoordinates(order.pickupCoordinates);
+    toggleModal();
+  };
+  
+  const handleorderTrackingdestination= (order) => {
+    setSelectedOrder(order);
+    watchCurrentLocationAndSetCoordinates(order.pickupCoordinates, setPickupCoordinates);
     setDeliveryCoordinates(order.deliveryCoordinates);
     toggleModal();
   };
+  
+  const watchCurrentLocationAndSetCoordinates = (initialCoordinates, setCoordinates) => {
+    const locationListener = navigator.geolocation.watchPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        console.log("Current location:", latitude, longitude);
+        // Update the pickupCoordinates with the current location
+        setPickupCoordinates({lat: latitude,lng: longitude });
+      },
+      (error) => {
+        console.error("Error getting user's location:", error);
+      }
+    );
+  
+    return () => {
+      // Clean up the location listener when component unmounts or when coordinates are set
+      navigator.geolocation.clearWatch(locationListener);
+    };
+  };
+  
 
   const toggleModal = () => {
     setModalOpen(!modalOpen);
@@ -133,6 +183,55 @@ const RiderRunningOrders = () => {
     }
   };
 
+
+  ////////////////////WATCH RIDER LOCATION///////////////////
+  useEffect(() => {
+    const locationListener = navigator.geolocation.watchPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        console.log("Current location:", latitude, longitude);
+  
+        // Update Firestore field with the new location data
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+          console.log("user id:", user.uid)
+          if (user) {
+            const userOrder = onSnapshot(
+              query(
+                collection(db, "order"),
+                where("riderid", "==", user.uid),
+                where("status", "in", ["confirmed", "delivered"])
+              ),
+              (snapshot) => {
+                snapshot.docs.forEach(async (singleorder) => {
+                  const orderId = singleorder.id;
+                  // Update the riderLocation field of each order document
+
+                  const orderRef = doc(db, "order", orderId);
+                  await updateDoc(orderRef, {
+                    riderLocation: { latitude, longitude }
+                  }); 
+                });
+              },
+              (error) => {
+                console.error("Error fetching orders:", error);
+              }
+            );
+          } else {
+            // Handle if user is not authenticated
+          }
+        });
+      },
+      (error) => {
+        console.error("Error getting user's location:", error);
+      }
+    );
+  
+    return () => {
+      // Clean up the location listener when the component unmounts
+      navigator.geolocation.clearWatch(locationListener);
+    };
+  }, []);
+
   return (
     <>
       <Header />
@@ -142,9 +241,13 @@ const RiderRunningOrders = () => {
           className="modal-map-wrapper"
           style={{ height: "50vh", width: "100%" }}
         >
-          <MapWrapper
+          {/* <MapWrapper
             pickupAddress={pickupCoordinates}
             deliveryAddress={deliveryCoordinates}
+          /> */}
+          <RiderMapTracking
+            originCoordinates={pickupCoordinates}
+            destinationCoordinates={deliveryCoordinates}
           />
         </div>
       )}
@@ -186,10 +289,21 @@ const RiderRunningOrders = () => {
                             <i className="fas fa-ellipsis-v" />
                           </DropdownToggle>
                           <DropdownMenu className="dropdown-menu-arrow" right>
-                            <DropdownItem
+                            {/* <DropdownItem
                               onClick={() => handleViewOrder(order)}
                             >
                               View Order Details
+                            </DropdownItem> */}
+                            <DropdownItem
+                              onClick={() => handleorderTrackingpickup(order)}
+                            >
+                            Track pickup
+                            </DropdownItem>
+
+                            <DropdownItem
+                              onClick={() => handleorderTrackingdestination(order)}
+                            >
+                            Track Destination
                             </DropdownItem>
                             <DropdownItem
                               onClick={() => handleConfirmationOrder(order)}

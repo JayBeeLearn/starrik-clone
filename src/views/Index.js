@@ -64,8 +64,13 @@ const Index = (props) => {
   /////////////////////////////////////////////////////
   //////////////////////////////////////////////////////
   /////////////////////////////////////////////////////
+  // useEffect(() => {
+  //   // Run window.location.reload() once when the component mounts
+  //   window.location.reload();
+  // }, []); 
 
   useEffect(() => {
+
     // console.log("fetching UserId: ", auth.currentUser.uid)
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
