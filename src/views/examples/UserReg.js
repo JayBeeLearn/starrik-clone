@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, doc, setDoc } from "firebase/firestore";
+import { serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../../firebase";
 import { useNavigate } from "react-router-dom";
 import {
@@ -81,6 +82,7 @@ const UserReg = () => {
         gender,
         email,
         phoneNumber,
+        dateCreated: serverTimestamp(),
       };
 
       await setDoc(doc(collection(db, "users"), user.uid), userData);

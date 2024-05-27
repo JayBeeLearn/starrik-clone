@@ -3,6 +3,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { db, auth, storage } from "../../firebase";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { serverTimestamp } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import {
   Row,
@@ -147,6 +148,7 @@ const RiderReg = () => {
         passportImage,
         idImage,
         RiderBal: 0,
+        dateCreated: serverTimestamp(),
       };
 
       await setDoc(
