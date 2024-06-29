@@ -19,6 +19,7 @@ import { GlobalContext } from "Globalstate.js";
 import { useNavigate } from "react-router-dom";
 import { auth, db, storage } from "../../firebase";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import Swal from "sweetalert2";
 import {
   getFirestore,
   doc,
@@ -34,6 +35,7 @@ import {
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { PaystackButton } from "react-paystack";
 import { usePaystackPayment } from "react-paystack";
+import axios from "axios";
 
 //////////////////////////GOOGLE MAPS DEPENDENCIES////////////////////////
 import { GoogleMap, Marker, DirectionsRenderer } from "@react-google-maps/api";
@@ -65,42 +67,54 @@ const Maps = () => {
     console.log(value);
     const results = await geocodeByAddress(value);
     console.log(results);
-    const [{ formatted_address, address_components, geometry: { location } }] = results;
+    const [
+      {
+        formatted_address,
+        address_components,
+        geometry: { location },
+      },
+    ] = results;
     console.log(formatted_address); // Full address
     console.log(location.lat()); // Latitude
     console.log(location.lng()); // Longitude
-  
+
     // Extract state from address components
-    const state = address_components.find(component =>
-      component.types.includes('administrative_area_level_1')
+    const state = address_components.find((component) =>
+      component.types.includes("administrative_area_level_1")
     ).long_name;
-    console.log("Pickup STATE",state); // State
+    console.log("Pickup STATE", state); // State
     setPickupState(state);
-  
+
     setOriginAddress(formatted_address);
     setOriginCoordinates({ lat: location.lat(), lng: location.lng() });
   };
-  
+
   const handleDestinationSelect = async (value) => {
     setDestinationAddress(value);
     const results = await geocodeByAddress(value);
     console.log(results);
-    const [{ formatted_address, address_components, geometry: { location } }] = results;
+    const [
+      {
+        formatted_address,
+        address_components,
+        geometry: { location },
+      },
+    ] = results;
     console.log(formatted_address); // Full address
     console.log(location.lat()); // Latitude
     console.log(location.lng()); // Longitude
-  
+
     // Extract state from address components
-    const state = address_components.find(component =>
-      component.types.includes('administrative_area_level_1')
+    const state = address_components.find((component) =>
+      component.types.includes("administrative_area_level_1")
     ).long_name;
     console.log(state); // State
     setDeliveryState(state);
-  
+
     setDestinationAddress(formatted_address);
     setDestinationCoordinates({ lat: location.lat(), lng: location.lng() });
   };
-  
+
   // const handleOriginSelect = async (value) => {
   //   console.log(value);
   //   const results = await geocodeByAddress(value);
@@ -275,7 +289,6 @@ const Maps = () => {
     // Scroll the user to the top of the page
     window.scrollTo({ top: 0, behavior: "smooth" }); // Smooth scroll to top
   };
-  
 
   //   fetchCoordinates("pickup", pickupAddress, setPickupCoordinates);
   //   fetchCoordinates("delivery", deliveryAddress, setDeliveryCoordinates);
@@ -432,6 +445,146 @@ const Maps = () => {
     }
   };
 
+  async function sendEmail(user, pass, htmlToSend, email, subject) {
+    // https://renderallmybackend.onrender.com/
+    const url = "https://starrik-mini-backend.onrender.com/send-mail"; // Replace with your actual server URL
+    try {
+      const response = await axios.post(url, {
+        htmlToSend: htmlToSend,
+        user: user,
+        pass: pass,
+        email: email, //email
+        subject: subject,
+        CompanyName: "Starrik",
+      });
+      console.log(response.data.message); // Log the success message
+      // Swal.fire("Processing!", "The Withdrawal is Being Processed.", "success");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const SendMailtoClientRenderSMTP = async () => {
+    console.log("order paid for:", orderDetails);
+    const htmlTemplate = `
+   <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            max-width: 150px;
+        }
+
+        .hero {
+            text-align: left;
+            padding: 20px;
+            background-color: #E45EC5;
+            color: white;
+            border-radius: 8px;
+        }
+
+        .hero h2 {
+            margin: 0;
+        }
+
+        .order-details {
+            margin-top: 20px;
+        }
+
+        .order-details h4 {
+            margin-bottom: 10px;
+            color: #E45EC5;
+        }
+
+        .order-details p {
+            margin: 5px 0;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #888888;
+        }
+    </style>
+</head>
+
+<body>
+    <center style="width: 100%; background-color: #f1f1f1;">
+        <div class="email-container">
+            <table role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0" align="center">
+                <tbody>
+                    <tr>
+                        <td class="logo" valign="top">
+                            <img src="https://starrik-945ee.web.app/img/argon-react.png" alt="Company Logo">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="hero bg_white" style="padding: 2em 0 2em 0;" valign="middle">
+                            <table role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                    <tr>
+                                        <td style="padding: 0 2.5em; text-align: left;">
+                                            <div class="text">
+                                                <h2>Starrik Successful Order Placement</h2>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="order-details">
+                <h4>Order Details:</h4>
+                <p><strong>Amount:</strong> ₦${orderDetails.deliveryprice}</p>
+                  <p><strong>Pick up Address:</strong> ${orderDetails.pickupAddress}</p>
+                    <p><strong>Delivery Address:</strong> ${orderDetails.deliveryAddress}</p>
+                <!-- Add more order details here as needed -->
+            </div>
+            <div class="footer">
+                <p>For inquiries/complaints, contact the Admin via any of the communication channels.</p>
+            </div>
+        </div>
+    </center>
+</body>
+
+</html>
+
+      `;
+    const user = "info@starrik.com";
+    const pass = "nothing";
+    const emails = userdetails.email;
+    console.log(emails);
+    const subject = "Successful Order";
+    sendEmail(user, pass, htmlTemplate, emails, subject);
+    //// window.location.replace("/dashboard");
+  };
+
   const handlePaystackSuccessAction = async (reference) => {
     console.log(reference);
     console.log("order paid for:", orderDetails);
@@ -448,6 +601,17 @@ const Maps = () => {
       setAlertType("success");
       toggleAlert();
       console.log("Order placed successfully!");
+      ////////////////////////////////////////
+      ///////////////////////////////////////
+      //////////////////////////////////////
+      /////////////////////////////////////
+      ///////////////SEND EMAIL HERE///////
+      await SendMailtoClientRenderSMTP();
+      // https://starrik-mini-backend.onrender.com
+      ////////////////////////////////////////
+      ///////////////////////////////////////
+      //////////////////////////////////////
+      /////////////////////////////////////
     } catch (error) {
       console.error("Error placing order:", error);
     }
@@ -575,27 +739,27 @@ const Maps = () => {
       dateCreated: serverTimestamp(),
       status: "pending", // Set initial status
       userPhone: userdetails.phoneNumber,
-      riderLocation:null
+      riderLocation: null,
     });
   };
 
-    ////////////////////WATCH USER LOCATION///////////////////
-    // useEffect(() => {
-    //   const locationListener = navigator.geolocation.watchPosition(
-    //     (position) => {
-    //       const { latitude, longitude } = position.coords;
-    //       console.log("Current location:", longitude, "Current location:", latitude);
-    //       // Update Firestore field with the new location data
-    //     },
-    //     (error) => {
-    //       console.error("Error getting user's location:", error);
-    //     }
-    //   );
-    //   return () => {
-    //     // Clean up the location listener when the component unmounts
-    //     navigator.geolocation.clearWatch(locationListener);
-    //   };
-    // }, []);
+  ////////////////////WATCH USER LOCATION///////////////////
+  // useEffect(() => {
+  //   const locationListener = navigator.geolocation.watchPosition(
+  //     (position) => {
+  //       const { latitude, longitude } = position.coords;
+  //       console.log("Current location:", longitude, "Current location:", latitude);
+  //       // Update Firestore field with the new location data
+  //     },
+  //     (error) => {
+  //       console.error("Error getting user's location:", error);
+  //     }
+  //   );
+  //   return () => {
+  //     // Clean up the location listener when the component unmounts
+  //     navigator.geolocation.clearWatch(locationListener);
+  //   };
+  // }, []);
 
   return (
     <div>
@@ -719,7 +883,7 @@ const Maps = () => {
                             onChange={handleDeliveryAddressChange}
                           />
                         </FormGroup> */}
-                         <FormGroup>
+                        <FormGroup>
                           <label
                             className="form-control-label"
                             htmlFor="input-address"
@@ -789,8 +953,6 @@ const Maps = () => {
                         Confirm location
                       </Button>
                     </div>
-
-
                   </div>
                   <hr className="my-4" />
                   {/* Description */}
@@ -878,8 +1040,7 @@ const Maps = () => {
                 distance *
                 statesAndCharges.find(
                   (state) =>
-                    state.state.toLowerCase() ===
-                    PickupState.toLowerCase()
+                    state.state.toLowerCase() === PickupState.toLowerCase()
                 ).charge
               ).toLocaleString()}
             </p>
@@ -917,8 +1078,7 @@ const Maps = () => {
                 orderDetails.distance *
                   statesAndCharges.find(
                     (state) =>
-                      state.state.toLowerCase() ===
-                      PickupState.toLowerCase()
+                      state.state.toLowerCase() === PickupState.toLowerCase()
                   ).charge
               ).toLocaleString()}
             </p>

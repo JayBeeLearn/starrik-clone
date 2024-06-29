@@ -30,6 +30,7 @@ import { auth, db, storage } from "../../firebase";
 import OrderConfirmationModal from "components/OrderConfirmationModal";
 import { GoogleAuthProvider, getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const Tables = () => {
   const [orders, setOrders] = useState([]);
@@ -216,8 +217,8 @@ const Tables = () => {
             query(
               collection(db, "order"),
               // where("PickupState", "==", state),
-              where("PickupState", "in", [state, `${state} State`]), // Filter based on Geoapify data
-              // where("PickupState", "in", ["Enugu", state]),
+            where("PickupState", "in", [state, `${state} State`]), // Filter based on Geoapify data
+             //  where("PickupState", "in", ["Akwa Ibom", state]),
               where("status", "==", "pending"),
               orderBy("dateCreated", "desc")
             ),
@@ -333,6 +334,12 @@ const Tables = () => {
           riderphone:userdetails.phoneNumber
         });
         console.log("Order updated successfully!");
+        Swal.fire({
+          icon: "success",
+          title: "Order confirmed!",
+          text: "Order updated successfully!",
+        });
+        navigate("/admin/runningorder");
       }
     } catch (error) {
       console.error("Error confirming order:", error);
@@ -412,7 +419,7 @@ const Tables = () => {
           <div className="col">
             <Card className="bg-default shadow">
               <CardHeader className="bg-transparent border-0">
-                <h3 className="text-white mb-0">Active orders Order</h3>
+                <h3 className="text-white mb-0">Active orders</h3>
               </CardHeader>
               <Table
                 className="align-items-center table-dark table-flush"
@@ -420,7 +427,7 @@ const Tables = () => {
               >
                 <thead className="thead-dark">
                   <tr>
-                    <th scope="col">Delivery Price</th>
+                    <th scope="col">Delivery Fee</th>
                     <th scope="col">Distance</th>
                     <th scope="col">Action</th>
                   </tr>

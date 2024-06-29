@@ -12,6 +12,7 @@ import Login from "views/examples/Login.js";
 import Tables from "views/examples/RiderOrders";
 import UserTrackorders from "views/examples/UserTrackorders";
 import RiderRunningOrders from "views/examples/RiderRunningOrders";
+import PasswordReset from "views/examples/Forgetpassword";
 import Icons from "views/examples/Icons.js";
 
 var routes = [
@@ -72,6 +73,13 @@ var routes = [
     name: "Login",
     icon: "ni ni-key-25 text-info",
     component: <Login />,
+    layout: "/auth",
+  },
+  {
+    path: "/forgetpassword",
+    name: "Forgetpassword",
+    icon: "ni ni-key-25 text-info",
+    component: <PasswordReset />,
     layout: "/auth",
   },
   {

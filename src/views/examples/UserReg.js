@@ -32,6 +32,12 @@ const UserReg = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [passwordVisible, setPasswordVisible] = useState(false); // State to toggle password visibility
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
   const handleSignUp = async (e) => {
     e.preventDefault();
 
@@ -165,7 +171,33 @@ const UserReg = () => {
                   />
                 </InputGroup>
               </FormGroup>
+
               <FormGroup>
+                <InputGroup className="input-group-alternative">
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>
+                      <i className="ni ni-lock-circle-open" />
+                    </InputGroupText>
+                  </InputGroupAddon>
+                  <Input
+                    placeholder="Password"
+                    type={passwordVisible ? "text" : "password"} // Toggle input type
+                    autoComplete="new-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <InputGroupAddon addonType="append">
+                    <InputGroupText>
+                      <i
+                        className={passwordVisible ? "fa-solid fa-eye-slash" : "fa-solid fa-eye"}
+                        onClick={togglePasswordVisibility}
+                        style={{ cursor: "pointer" }}
+                      />
+                    </InputGroupText>
+                  </InputGroupAddon>
+                </InputGroup>
+              </FormGroup>
+              {/* <FormGroup>
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
                     <InputGroupText>
@@ -179,7 +211,10 @@ const UserReg = () => {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </InputGroup>
-              </FormGroup>
+              </FormGroup> */}
+
+
+
               <FormGroup>
                 <InputGroup className="input-group-alternative mb-3">
                   <InputGroupAddon addonType="prepend">

@@ -4,6 +4,9 @@ import { useState } from "react";
 import { NavLink as NavLinkRRD, Link } from "react-router-dom";
 // nodejs library to set properties for components
 import { PropTypes } from "prop-types";
+import { useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase"; // Ensure the path is correct
 
 // reactstrap components
 import {
@@ -39,6 +42,7 @@ import {
 var ps;
 
 const UserSidebar = (props) => {
+  const navigate = useNavigate();
   const [collapseOpen, setCollapseOpen] = useState();
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
@@ -84,6 +88,16 @@ const UserSidebar = (props) => {
       target: "_blank",
     };
   }
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      // Redirect to the login page
+      navigate("/auth/login");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
 
   return (
     <Navbar
@@ -133,7 +147,7 @@ const UserSidebar = (props) => {
                 <span className="avatar avatar-sm rounded-circle">
                   <img
                     alt="..."
-                    src={require("../../assets/img/theme/team-1-800x800.jpg")}
+                    src="https://img.icons8.com/?size=80&id=0lg0kb05hrOz&format=png"
                   />
                 </span>
               </Media>
@@ -142,24 +156,15 @@ const UserSidebar = (props) => {
               <DropdownItem className="noti-title" header tag="div">
                 <h6 className="text-overflow m-0">Welcome!</h6>
               </DropdownItem>
-              <DropdownItem to="/admin/user-profile" tag={Link}>
+              <DropdownItem
+               onClick={(e)=>{navigate("/user/user-profile")}}
+              //  to="/admin/user-profile" tag={Link}
+              >
                 <i className="ni ni-single-02" />
                 <span>My profile</span>
               </DropdownItem>
-              {/* <DropdownItem to="/admin/user-profile" tag={Link}>
-                <i className="ni ni-settings-gear-65" />
-                <span>Settings</span>
-              </DropdownItem>
-              <DropdownItem to="/admin/user-profile" tag={Link}>
-                <i className="ni ni-calendar-grid-58" />
-                <span>Activity</span>
-              </DropdownItem>
-              <DropdownItem to="/admin/user-profile" tag={Link}>
-                <i className="ni ni-support-16" />
-                <span>Support</span>
-              </DropdownItem> */}
               <DropdownItem divider />
-              <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
+              <DropdownItem  onClick={(e) =>handleLogout()}>
                 <i className="ni ni-user-run" />
                 <span>Logout</span>
               </DropdownItem>

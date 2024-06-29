@@ -172,6 +172,11 @@ const RiderRunningOrders = () => {
           dateConfirmed: new Date(),
         });
         console.log("Order updated successfully!");
+        Swal.fire({
+          icon: "success",
+          title: "Order confirmed!",
+          text: "Order updated successfully!",
+        });
       } catch (error) {
         console.error("Error updating order:", error);
         Swal.fire({
@@ -264,7 +269,7 @@ const RiderRunningOrders = () => {
               >
                 <thead className="thead-dark">
                   <tr>
-                    <th scope="col">Delivery Price</th>
+                    <th scope="col">Delivery Fee</th>
                     <th scope="col">Distance</th>
                     <th scope="col">Status</th>
                     <th scope="col">Action</th>

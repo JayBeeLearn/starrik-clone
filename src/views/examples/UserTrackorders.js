@@ -274,7 +274,7 @@ const UserTrackorders = () => {
               >
                 <thead className="thead-dark">
                   <tr>
-                    <th scope="col">Delivery Price</th>
+                    <th scope="col">Delivery Fee</th>
                     <th scope="col">Distance</th>
                     <th scope="col">Status</th>
                     <th scope="col">Action</th>

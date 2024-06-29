@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { GlobalContext } from "Globalstate.js";
+import { useNavigate } from "react-router-dom";
 // node.js library that concatenates classes (strings)
 import classnames from "classnames";
 // javascipt plugin for creating charts
@@ -22,7 +23,7 @@ import {
   Col,
 } from "reactstrap";
 
-import { useNavigate } from "react-router-dom";
+
 
 // core components
 import {
@@ -96,6 +97,7 @@ const Index = (props) => {
       } else {
         // If user is not logged in, redirect to login page
         // history.push("/login");
+        navigate("/auth/login");
       }
     });
 
@@ -425,7 +427,7 @@ const Index = (props) => {
                 <thead className="thead-light">
                   <tr>
                     <th scope="col">Order ID</th>
-                    <th scope="col">Delivery Price</th>
+                    <th scope="col">Delivery Fee</th>
                     <th scope="col">Distance</th>
                     <th scope="col">Date Created</th>
                     {/* Add more columns if needed */}

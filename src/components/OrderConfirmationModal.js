@@ -8,7 +8,7 @@ const OrderConfirmationModal = ({ isOpen, toggle, order, confirmOrder }) => {
       <ModalBody>
         {/* Display order details here */}
         <p>Order ID: {order.id}</p>
-        <p>Delivery Price: ₦{order.deliveryprice.toFixed(1)}</p>
+        <p>Delivery Fee: ₦{order.deliveryprice.toFixed(1)}</p>
         <p>Distance: {order.distance.toFixed(1)} km</p>
         {/* Add more details as needed */}
       </ModalBody>

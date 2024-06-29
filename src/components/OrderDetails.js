@@ -20,8 +20,16 @@ const OrderDetailsModal = ({ order, toggleModal }) => {
         <p>Receiver Details: {order.receiverDetails}</p>
         <p>Delivery Details: {order.deliveryDetails}</p>
         <p>Status: {order.status} For Pickup</p>
-        <p>User phoneNumber: {order.userPhone}</p>
-        <p>Rider phoneNumber: {order.riderphone}</p>
+        {/* <p>User phoneNumber: {order.userPhone}</p>
+        <p>Rider phoneNumber: {order.riderphone}</p> */}
+         <p>
+          User Phone Number:{" "}
+          <a href={`tel:${order.userPhone}`}>Call {order.userPhone}</a>
+        </p>
+        <p>
+          Rider Phone Number:{" "}
+          <a href={`tel:${order.riderphone}`}>Call {order.riderphone}</a>
+        </p>
         {/* Add more details here */}
       </ModalBody>
       <ModalFooter>
