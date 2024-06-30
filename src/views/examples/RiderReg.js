@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { collection, doc, setDoc, query, where, getDocs } from "firebase/firestore";
 import { db, auth, storage } from "../../firebase";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -154,6 +154,10 @@ const RiderReg = () => {
 // so this will generate the userID assyncn
       const uniqueId = await generateUserId();
 
+      // Handling email verification for riders
+
+      await sendEmailVerification(user);
+
       // Store user registration data in Firestore
       const userData = {
         uniqueId,
@@ -181,6 +185,13 @@ const RiderReg = () => {
       };
 
       await setDoc(doc(collection(db, "independentriders"), user.uid), userData);
+
+      // added message
+      Swal.fire({
+            icon: "success",
+            title: "Registration Successful",
+            text: "A verification email has been sent. Please check your inbox.",
+          });
       navigate("/admin/index");
     } catch (error) {
       console.log(error.message);
