@@ -26,8 +26,8 @@ const UserHeader = () => {
             <Col lg="7" md="10">
               <h1 className="display-2 text-white">Hello {userdetails.fullName}  {userdetails.firstName}</h1>
               <p className="text-white mt-0 mb-5">
-  This is your profile page where you can manage your account details. Update your username, email, and address to keep your information current and accurate.
-</p>
+                This is your profile page where you can manage your account details. Update your username, email, and address to keep your information current and accurate.
+              </p>
 
               {/* <Button
                 color="info"

@@ -61,12 +61,13 @@
     "react-paystack": "^5.0.0",
     "react-places-autocomplete": "^7.3.0",
     "react-router-dom": "6.21.1",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "reactstrap": "8.10.0",
     "sass": "1.69.5",
     "sweetalert2": "^11.10.6"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "gulp": "4.0.2",
     "gulp-append-prepend": "1.0.9"
   },
