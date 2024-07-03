@@ -103,9 +103,10 @@ const Sidebar = (props) => {
       className="navbar-vertical fixed-left navbar-light bg-white"
       expand="md"
       id="sidenav-main"
-    >
+    > 
       <Container fluid>
         {/* Toggler */}
+       
         <button
           className="navbar-toggler"
           type="button"
@@ -151,6 +152,7 @@ const Sidebar = (props) => {
                 </span>
               </Media>
             </DropdownToggle>
+
             <DropdownMenu className="dropdown-menu-arrow" right>
               <DropdownItem className="noti-title" header tag="div">
                 <h6 className="text-overflow m-0">Welcome!</h6>
@@ -169,6 +171,7 @@ const Sidebar = (props) => {
                 <span>Logout</span>
               </DropdownItem>
             </DropdownMenu>
+
           </UncontrolledDropdown>
         </Nav>
         {/* Collapse */}
@@ -176,6 +179,8 @@ const Sidebar = (props) => {
           {/* Collapse header */}
           <div className="navbar-collapse-header d-md-none">
             <Row>
+
+      
               {logo ? (
                 <Col className="collapse-brand" xs="6">
                   {logo.innerLink ? (

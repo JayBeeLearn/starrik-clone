@@ -1,6 +1,9 @@
 
 import { Link } from "react-router-dom";
+import { GlobalContext } from "Globalstate.js";
+
 // reactstrap components
+
 import {
   DropdownMenu,
   DropdownItem,
@@ -17,9 +20,17 @@ import {
   Container,
   Media,
 } from "reactstrap";
+import { useContext } from "react";
+
 
 const AdminNavbar = (props) => {
+
+  const [{userdetails}] = useContext(GlobalContext);
+
+
   return (
+    
+    
     <>
       <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
         <Container fluid>
@@ -28,6 +39,9 @@ const AdminNavbar = (props) => {
             to="/"
           >
             {props.brandText}
+
+            {/* Bring in userId here!!! */}
+            {/* #########################################################        ####################           ################################                ########################################################### */}
           </Link>
           <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
             <FormGroup className="mb-0">
@@ -37,7 +51,9 @@ const AdminNavbar = (props) => {
                     <i className="fas fa-search" />
                   </InputGroupText>
                 </InputGroupAddon>
+
                 <Input placeholder="Search" type="text" />
+
               </InputGroup>
             </FormGroup>
           </Form>
@@ -46,16 +62,26 @@ const AdminNavbar = (props) => {
               
               <DropdownToggle className="pr-0" nav>
                 <Media className="align-items-center">
+                  
                   {/* <span className="avatar avatar-sm rounded-circle">
                     <img
                       alt="..."
                       src={require("../../assets/img/theme/team-4-800x800.jpg")}
                     />
                   </span> */}
+
                   <Media className="ml-2 d-none d-lg-block">
-                    <span className="mb-0 text-sm font-weight-bold">
-                      Jessica Jones
+                    
+                    <span className="mb-0 text-sm font-weight-bold uppercase ">
+
+
+                      {userdetails.firstName}   {userdetails.surname} 
+
                     </span>
+                    
+
+                    {/* add profile picture below */}
+
                   </Media>
                 </Media>
               </DropdownToggle>

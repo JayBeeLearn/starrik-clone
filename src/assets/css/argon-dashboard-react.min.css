@@ -367,6 +367,7 @@ h6,
   font-weight: 600;
   line-height: 1.5;
 }
+
 .display-3 {
   font-size: 2.1875rem;
   font-weight: 600;
@@ -17305,6 +17306,10 @@ p {
   display: block;
   font-weight: 300;
 }
+/* .display-2 span {
+  display: block;
+  font-weight: 300;
+} */
 article h4:not(:first-child),
 article h5:not(:first-child) {
   margin-top: 3rem;

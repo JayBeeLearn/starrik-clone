@@ -11,7 +11,8 @@ const initialState = {
   singleuser: "",
   selectedinvestment: "",
   cointoinvestwith: "",
-  distance: 0
+  distance: 0,
+  uniqueId: "m"
 };
 
 const reducer = (state, action) => {
@@ -73,14 +74,22 @@ const reducer = (state, action) => {
       return {
         ...state,
         loggedin: action.snippet
-      }
+      };
     }
+
+    case "uniqueId": {
+      return {
+        ...state,
+        uniqueId: action.payload
+      };
+    }
+
     default:
       return state;
   }
 };
 
-export const GlobalState = props => {
+export const GlobalProvider = props => {
   const globalState = useReducer(reducer, initialState);
   return (
     <GlobalContext.Provider value={globalState}>

@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, doc, setDoc } from "firebase/firestore";
+import { collection, doc, setDoc, getDocs, where, query } from "firebase/firestore";
 import { serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../../firebase";
 import { useNavigate } from "react-router-dom";
+import { GlobalContext } from "Globalstate.js";
+import {v4 as uuid} from 'uuid';
+
+// import { collection, doc, setDoc, query, where, getDocs } from "firebase/firestore";
+
+
 import {
   Row,
   Col,
@@ -21,6 +27,9 @@ import {
 
 const UserReg = () => {
   const navigate = useNavigate();
+
+
+  const [{ uniqueId }, dispatch] = useContext(GlobalContext);
   // State variables for personal information
   const [firstName, setFirstName] = useState("");
   const [surname, setSurname] = useState("");
@@ -72,17 +81,51 @@ const UserReg = () => {
       return;
     }
 
+    // implement UID generator for user also
+
+    const generateUserId = async (dispatch) => {
+      let uniqueId;
+      const dbRef = collection(db, "independentriders");
+      try {
+        do {
+          let unique_id = uuid();
+          uniqueId =  `strk-U${unique_id.slice(0, 5)}`;
+  
+          const querySnapshot = await getDocs(query(dbRef, where("uniqueId", "==", uniqueId)));
+          if (querySnapshot.empty) {
+            console.log(uniqueId)
+            break;
+          }
+  
+        } while (true);
+  
+        ;
+        console.log(uniqueId)
+        alert("uID 1:" + uniqueId )
+      } catch (error) {
+        console.error("Error generating unique ID:", error);
+      }
+  
+      return uniqueId;
+    };
+  
+
     setLoading(true);
     try {
-      // Create user account with email and password
+      // Create user account with email and password.
       const { user } = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
 
+      const uniqueId = await generateUserId();
+      console.log("uID2:" + uniqueId)
+      dispatch({ type: 'uniqueId', payload: uniqueId })
+
       // Store user registration data in Firestore
       const userData = {
+        uniqueId,
         firstName,
         surname,
         gender,

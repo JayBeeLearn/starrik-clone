@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { collection, doc, setDoc, query, where, getDocs } from "firebase/firestore";
 import { db, auth, storage } from "../../firebase";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+// import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { serverTimestamp } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import {
@@ -20,10 +20,14 @@ import {
   InputGroupText,
   Progress,
 } from "reactstrap";
+import { GlobalContext } from "Globalstate.js";
+import {v4 as uuid} from "uuid"
+
 import Swal from "sweetalert2";
 
-const RiderReg = () => {
+const RiderReg = (props) => {
   const navigate = useNavigate();
+  const [{ uniqueId }, dispatch] = useContext(GlobalContext);
   const [currentStep, setCurrentStep] = useState(1);
 
   // State variables for personal information
@@ -31,7 +35,7 @@ const RiderReg = () => {
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); // New state for confirm password
+  const [confirmPassword, setConfirmPassword] = useState(""); // New state for confirm password 
   const [phoneNumber, setPhoneNumber] = useState("");
   const [homeAddress, setHomeAddress] = useState("");
 
@@ -81,23 +85,37 @@ const RiderReg = () => {
     setCurrentStep(currentStep - 1);
   };
 
-// implementing userID generator
 
-  const generateUserId = async () => {
+  // implementing userID generator
+
+
+
+  const generateUserId = async (dispatch) => {
     let uniqueId;
     const dbRef = collection(db, "independentriders");
-    
-    do {
-      const randomNum = Math.floor(100000 + Math.random() * 900000);
-      uniqueId = `strk${randomNum}`;
-      
-      const querySnapshot = await getDocs(query(dbRef, where("uniqueId", "==", uniqueId)));
-      if (querySnapshot.empty) {
-        break; 
-      }
-     
-    } while (true);
-    
+    try {
+      do {
+        let unique_id = uuid();
+
+        uniqueId =  `strk-R${unique_id.slice(0, 5)}`;
+
+        
+
+        const querySnapshot = await getDocs(query(dbRef, where("uniqueId", "==", uniqueId)));
+        if (querySnapshot.empty) {
+          console.log(uniqueId)
+          break;
+        }
+
+      } while (true);
+
+      ;
+      console.log(uniqueId)
+      alert("uID 1:" + uniqueId )
+    } catch (error) {
+      console.error("Error generating unique ID:", error);
+    }
+
     return uniqueId;
   };
 
@@ -109,7 +127,7 @@ const RiderReg = () => {
       { field: dateOfBirth, label: "Date of Birth" },
       { field: email, label: "Email" },
       { field: password, label: "Password" },
-      { field: confirmPassword, label: "Confirm Password" }, 
+      { field: confirmPassword, label: "Confirm Password" },
       // Added confirm password to required fields and removed Gender
 
       { field: phoneNumber, label: "Phone Number" },
@@ -151,8 +169,11 @@ const RiderReg = () => {
       // Create user account with email and password
       const { user } = await createUserWithEmailAndPassword(auth, email, password);
 
-// so this will generate the userID assyncn
+      // so this will generate the userID asynchronously
+
       const uniqueId = await generateUserId();
+      console.log("uID2:" + uniqueId)
+      dispatch({ type: 'uniqueId', payload: uniqueId })
 
       // Handling email verification for riders
 
@@ -188,10 +209,10 @@ const RiderReg = () => {
 
       // added message
       Swal.fire({
-            icon: "success",
-            title: "Registration Successful",
-            text: "A verification email has been sent. Please check your inbox.",
-          });
+        icon: "success",
+        title: "Registration Successful",
+        text: "A verification email has been sent. Please check your inbox.",
+      });
       navigate("/admin/index");
     } catch (error) {
       console.log(error.message);

@@ -4,11 +4,16 @@
 
 
 .display-1,
-.display-2,
 .display-3,
 .display-4 {
 	span {
 		display: block;
 		font-weight: $font-weight-light;
+	}
+}
+
+.display-2{
+	span { 
+		color: rgb(214, 235, 240);
 	}
 }

@@ -10,12 +10,12 @@ import UserLayout from "layouts/User.js";
 import AdminLayout from "layouts/Admin.js";
 import AuthLayout from "layouts/Auth.js";
 import Homerouting from "layouts/Homerouting";
-import { GlobalState } from "Globalstate";
+import { GlobalProvider } from "Globalstate";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
-  <GlobalState>
+  <GlobalProvider>
   <BrowserRouter>
     <Routes>
     <Route path="/" element={<Homerouting />} />
@@ -25,5 +25,5 @@ root.render(
       <Route path="*" element={<Navigate to="/auth/login" replace />} />
     </Routes>
   </BrowserRouter>
-  </GlobalState>
+  </GlobalProvider>
 );

@@ -430,6 +430,7 @@ h6,
   font-size: 2.75rem;
   font-weight: 600;
   line-height: 1.5;
+  
 }
 
 .display-3 {
@@ -7053,7 +7054,10 @@ button.bg-darker:focus {
 
 .d-flex {
   display: flex !important;
+  position: relative;
+  
 }
+
 
 .d-inline-flex {
   display: inline-flex !important;
