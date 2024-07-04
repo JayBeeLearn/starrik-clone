@@ -55,6 +55,30 @@
 		.faq-answer {
 			padding: 10px;
 		}
+
+		.owl-carousel .owl-stage {
+			display: flex;
+			animation: scroll 30s linear infinite;
+		}
+
+		@keyframes scroll {
+			0% {
+				transform: translateX(0);
+			}
+
+			100% {
+				transform: translateX(-100%);
+			}
+		}
+
+		.owl-carousel .owl-stage:hover {
+			animation-play-state: paused;
+		}
+
+		.owl-carousel .owl-item {
+			flex: none;
+			margin-right: 20px;
+		}
 	</style>
 
 </head>
@@ -229,39 +253,28 @@
 
 	<section class="works-section gap no-top">
 
-		<div class="owl-carousel owl-theme">
-			<div class="item border border-black h-24 w-24">
-				<h4>1</h4>
-			</div>
-			<div class="item">
-				<h4>2</h4>
-			</div>
-			<div class="item">
-				<h4>3</h4>
-			</div>
-			<div class="item">
-				<h4>4</h4>
-			</div>
-			<div class="item">
-				<h4>5</h4>
-			</div>
-			<div class="item">
-				<h4>6</h4>
-			</div>
-			<div class="item">
-				<h4>7</h4>
-			</div>
-			<div class="item">
-				<h4>8</h4>
-			</div>
-			<div class="item">
-				<h4>9</h4>
-			</div>
-			<div class="item">
-				<h4>10</h4>
+		<!--######################################  -->
+		<!-- Advert Carousel goes here -->
+		<div class="owl-wrapper py-16  " style="margin-bottom: 50px; padding-inline:20px;border-bottom: 3px solid #dddddd; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); padding-bottom: 20px;" >
+			<div class="owl-carousel owl-theme mx-[20px] my-[50px]">
+				<div class="item  h-fit pr-36 ">
+					<img src="./img/Starrik-D4-SL01.jpeg"
+						alt="two Starrik dispatch riders holding delivery boxes on a motorcycle" style="height: 300px;">
+				</div>
+				<div class="item h-fit">
+					<img src="./img/Starrik-D4-SL02.jpeg" alt="starikk advert with fast and reliable service theme"
+						style="height: 300px;">
+				</div>
+				<div class="item h-fit">
+					<img src="./img/Starrik-D4-SL03.jpeg" alt="starikk advert with fast and reliable service theme"
+						style="height: 300px;">
+				</div>
+				<div class="item h-fit">
+					<img src="./img/Starrik-D4-SL04.jpeg" alt="starikk advert with fast and reliable service theme"
+						style="height: 300px;">
+				</div>
 			</div>
 		</div>
-
 		<div class="container">
 			<div class="heading" data-aos="fade-up" data-aos-delay="200" data-aos-duration="300">
 				<h2>How the Starrik Platform Works</h2>
@@ -754,35 +767,26 @@
 
 		$(document).ready(function () {
 			$(".owl-carousel").owlCarousel({
-				items: 3, // Number of items to show
-				loop: true, // Infinite loop
-				margin: 10, // Margin between items
-				nav: false, // Hide navigation arrows
-				dots: false, // Hide pagination dots
-				autoplay: true, // Enable autoplay
-				autoplayTimeout: 1000, // Set autoplay timeout to 0 for continuous movement
-				autoplaySpeed: 4000, // Set the speed of the autoplay (in milliseconds)
-				autoplayHoverPause: true, // Disable pause on hover
+
+				loop: true,
+				margin: 20,
+				nav: false,
+				dots: false,
+				//   autoplay: false, // Disable autoplay since we use CSS animation
+				responsive: {
+					0: {
+						items: 1 // 1 item for small screens
+					},
+					600: {
+						items: 1.5 // 3 items for medium screens
+					},
+					1000: {
+						items: 3 // 5 items for large screens
+					}
+				}
 			});
 		});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		/*********** Owl Carousel ends here **************/
-
-
 		let faqQuesAns = [
 			{
 				"quest": "What is Starrik and what makes it different from traditional delivery?",
@@ -820,12 +824,8 @@
 				"ans": "Join our network of reliable and trustworthy riders! Sign up now to enjoy flexible work, competitive pay, and be part of revolutionizing courier service with Starrik!",
 			},
 		];
-
-
 		let faqSection = "";
-
 		faqQuesAns.map((item, index) => {
-
 			faqSection += ` 
 			<div class="faq-item" id="${index}" >
 								<div class="faq-question">
