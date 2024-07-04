@@ -33,18 +33,24 @@ const UserReg = () => {
   // State variables for personal information
   const [firstName, setFirstName] = useState("");
   const [surname, setSurname] = useState("");
-  const [gender, setGender] = useState("");
+  // const [gender, setGender] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");  
+
   const [phoneNumber, setPhoneNumber] = useState("");
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [passwordVisible, setPasswordVisible] = useState(false); // State to toggle password visibility
+  const [passwordConfirmVisible, setPasswordConfirmVisible] = useState(false);
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
+  };
+  const togglePasswordConfirmVisibility = () => {
+    setPasswordConfirmVisible(!passwordConfirmVisible);
   };
 
   const handleSignUp = async (e) => {
@@ -53,10 +59,12 @@ const UserReg = () => {
     const requiredFields = [
       { field: firstName, label: "First Name" },
       { field: surname, label: "Surname" },
-      { field: gender, label: "Gender" },
+      // { field: gender, label: "Gender" },
       { field: email, label: "Email" },
       { field: password, label: "Password" },
+      { field: confirmPassword, label: "Confirm Password" },
       { field: phoneNumber, label: "Phone Number" },
+      
     ];
 
     const emptyFields = requiredFields.filter(({ field }) => !field);
@@ -66,6 +74,10 @@ const UserReg = () => {
         .map(({ label }) => label)
         .join(", ");
       setError(`Please fill out all required fields: ${emptyFieldsLabels}`);
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
       return;
     }
     // if (!email.includes("@")) {
@@ -128,7 +140,7 @@ const UserReg = () => {
         uniqueId,
         firstName,
         surname,
-        gender,
+        // gender,
         email,
         phoneNumber,
         dateCreated: serverTimestamp(),
@@ -184,21 +196,23 @@ const UserReg = () => {
                   />
                 </InputGroup>
               </FormGroup>
-              <FormGroup>
+              
+              {/* <FormGroup>
                 <InputGroup className="input-group-alternative mb-3">
                   <InputGroupAddon addonType="prepend">
                     <InputGroupText>
                       <i className="ni ni-female" />
                     </InputGroupText>
                   </InputGroupAddon>
-                  <Input
+                 
+                 <Input
                     placeholder="Gender"
                     type="text"
                     value={gender}
                     onChange={(e) => setGender(e.target.value)}
                   />
                 </InputGroup>
-              </FormGroup>
+              </FormGroup> */}
               <FormGroup>
                 <InputGroup className="input-group-alternative mb-3">
                   <InputGroupAddon addonType="prepend">
@@ -222,6 +236,7 @@ const UserReg = () => {
                       <i className="ni ni-lock-circle-open" />
                     </InputGroupText>
                   </InputGroupAddon>
+
                   <Input
                     placeholder="Password"
                     type={passwordVisible ? "text" : "password"} // Toggle input type
@@ -229,6 +244,7 @@ const UserReg = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
+
                   <InputGroupAddon addonType="append">
                     <InputGroupText>
                       <i
@@ -238,8 +254,37 @@ const UserReg = () => {
                       />
                     </InputGroupText>
                   </InputGroupAddon>
+
                 </InputGroup>
               </FormGroup>
+
+{/* addwed confirm password here  */}
+<FormGroup>
+                  <InputGroup className="input-group-alternative mb-3">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-lock-circle-open" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      placeholder="Confirm Password"
+                      type={passwordConfirmVisible ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                    <InputGroupAddon addonType="append">
+                      <Button
+                        onClick={togglePasswordConfirmVisibility}
+                        type="button"
+                        className="btn-sm"
+                      >
+                        {<i className={passwordConfirmVisible ? "fa fa-eye-slash" : "fa fa-eye"} />}
+                      </Button>
+                    </InputGroupAddon>
+                  </InputGroup>
+                </FormGroup>
+            
+            
               {/* <FormGroup>
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
