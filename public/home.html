@@ -28,6 +28,35 @@
 	<script src="https://kit.fontawesome.com/27a041baf1.js" crossorigin="anonymous"></script>
 	<script src="//code.jivosite.com/widget/07dKQd6nUs" async></script>
 
+
+
+	<style>
+		.faq-item {
+			width: 100%;
+			border: 1px solid #705e5e;
+			border-radius: 2px;
+		}
+
+		@media (min-width: 768px) {
+			.faq-item {
+				width: 700px;
+			}
+		}
+
+
+		.faq-question {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 10px;
+
+		}
+
+		.faq-answer {
+			padding: 10px;
+		}
+	</style>
+
 </head>
 
 <body class="menu-layer">
@@ -581,6 +610,7 @@
 					</div>
 				</div>
 				<div class="col-lg-4 col-md-6 col-sm-12">
+
 					<div class="menu contacts">
 						<h4>Contacts</h4>
 						<div class="footer-location">
@@ -599,15 +629,46 @@
 						<li><a href="https://youtube.com/@Starriktech?si=OGMNMVi4VvnmM3x3"><i
 									class="fa-brands fa-youtube"></i></a></li>
 					</ul>
+
+
+
 				</div>
-			</div>
-			<div class="footer-two gap no-bottom">
-				<p>Copyright © 2024. Starrik. All rights reserved.</p>
-				<div class="privacy">
-					<a href="#">Privacy Policy</a>
-					<a href="#">Terms & Services</a>
+				<!--############### FAQ ##############-->
+
+				<!--******************  *******************-->
+				<!--******************  *******************-->
+				<!-- styling of FAQ is inline and internal -->
+				<!--          JS code is below			   -->
+				<!--  									   -->
+				<!--******************  *******************-->
+				<!--******************  *******************-->
+
+
+
+				<div class="menu" style="color: #CFcfcf;">
+					<h4 class="">FAQ</h4>
+					<div class=" faq-list" id="faqList">
+
+
+					</div>
 				</div>
+				<!-------------------- end of FaQS  --------------------->
 			</div>
+		</div>
+
+
+
+
+
+
+		<!-- #endregion -->
+		<div class="footer-two gap no-bottom">
+			<p>Copyright © 2024. Starrik. All rights reserved.</p>
+			<div class="privacy">
+				<a href="#">Privacy Policy</a>
+				<a href="#">Terms & Services</a>
+			</div>
+		</div>
 		</div>
 	</footer>
 	<!-- bootstrap -->
@@ -643,5 +704,92 @@
 	<!-- bslthemes.com buttons assets begin -->
 	<link rel="stylesheet" href="https://bslthemes.com/bslthms-advanced-btns/style.css">
 	<script src="https://bslthemes.com/bslthms-advanced-btns/script.js"></script>
+
+
+
+
+
 	<!-- bslthemes.com buttons assets end -->
+	<script>
+
+		let faqQuesAns = [
+			{
+				"quest": "What is Starrik and what makes it different from traditional delivery?",
+
+				"ans": "Starrik is more than delivery—it's an AI-powered courier platform that connects dispatch rides with the users. We optimize routes, cut wait times, and ensure swift, secure deliveries."
+			},
+			{
+				"quest": "How does Starrik ensure package safety?",
+
+				"ans": "Safety is our priority. AI vets dispatch riders, and real-time tracking provides peace of mind. Your deliveries are in safe hands with Starrik.",
+			},
+			{
+				"quest": "How do I start using Starrik?",
+
+				"ans": " Sign up via the web App at Starrik.com, and enjoy efficient, reliable deliveries. Whether you send frequently or occasionally, Starrik simplifies your experience.",
+			},
+			{
+				"quest": "Why should I choose Starrik?",
+
+				"ans": "Experience the future of courier services with Starrik. Optimize your deliveries, ensure security, and enjoy hassle-free delivery. Join us today!",
+			},
+			{
+				"quest": "How can I become a Starrik rider?",
+
+				"ans": "To become a Starrik rider, you need to complete our application process, which includes submitting required documents, passing our background check, and getting onboard. Once successful, you start taking orders.",
+			},
+			{
+				"quest": "What should I do if I encounter an issue using Starrik?",
+
+				"ans": " If you encounter an issue, contact our excellent support team at support@starrik.om immediately for assistance. We are available 24/7 to help resolve any problems for you.",
+			},
+			{
+				"quest": " What are the benefits of becoming a Starrik rider?",
+
+				"ans": "Join our network of reliable and trustworthy riders! Sign up now to enjoy flexible work, competitive pay, and be part of revolutionizing courier service with Starrik!",
+			},
+		];
+
+
+		let faqSection = "";
+
+		faqQuesAns.map((item, index) => {
+
+			faqSection += ` 
+			<div class="faq-item" id="${index}" >
+								<div class="faq-question">
+									<p class="faqAnswer" style="filter: invert(1);">${item.quest}</p>
+                  					<span style="filter: invert(1); ">➕</span>	
+								</div>
+								<div class="faq-answer" style="display:none">
+									<p class="ans" style="color: #cfcfcf" >${item.ans}</p>
+								</div>
+							</div>`;
+		})
+		document.getElementById("faqList").innerHTML = faqSection;
+
+		var faqQuest = document.getElementsByClassName("faq-question");
+
+		for (let i = 0; i < faqQuesAns.length; i++) {
+			faqQuest[i].addEventListener("click", function () {
+				let answer = this.nextElementSibling;
+				let icon = this.querySelector('span');
+				if (answer.style.display === "block") {
+					answer.style.display = "none";
+					icon.textContent = "➕";
+				} else {
+					answer.style.display = "block";
+					icon.textContent = "➖";
+				}
+			})
+		}
+
+
+	</script>
+
+
+
+
 </body>
+
+</html>

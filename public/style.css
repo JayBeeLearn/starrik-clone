@@ -849,6 +849,12 @@ ul.footer-menu li a i{
     display: block;
     padding-top: 20px;
 }
+div.faq-question>span {
+    color: #f3e1e1;
+}
+.faq-toggle {
+    color: #c7c7c7;
+}
 ul.social-media li {
     margin-right: 20px;
 }
