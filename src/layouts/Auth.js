@@ -48,7 +48,7 @@ const Auth = (props) => {
                 <Col lg="5" md="6">
                   <h1 className="text-white">Welcome!</h1>
                   <p className="text-white">
-                   Sign up a a User, Independent Rider or Rider Company to join
+                   Sign up a User, Independent Rider or Rider Company to join
                   </p>
                 </Col>
               </Row>
