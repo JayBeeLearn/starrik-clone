@@ -12,7 +12,7 @@ const initialState = {
   selectedinvestment: "",
   cointoinvestwith: "",
   distance: 0,
-  uniqueId: "m"
+  uniqueId: "",
 };
 
 const reducer = (state, action) => {
@@ -20,7 +20,7 @@ const reducer = (state, action) => {
     case "setproductdetails": {
       return {
         ...state,
-        productdetails: action.snippet
+        productdetails: action.snippet,
       };
     }
 
@@ -77,7 +77,7 @@ const reducer = (state, action) => {
       };
     }
 
-    case "uniqueId": {
+    case "setuniqueId": {
       return {
         ...state,
         uniqueId: action.payload
@@ -91,6 +91,10 @@ const reducer = (state, action) => {
 
 export const GlobalProvider = props => {
   const globalState = useReducer(reducer, initialState);
+// begining of test code
+  
+
+//  end of test code
   return (
     <GlobalContext.Provider value={globalState}>
       {props.children}

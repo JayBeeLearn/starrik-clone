@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, doc, setDoc, getDocs, where, query } from "firebase/firestore";
 import { serverTimestamp } from "firebase/firestore";
-import { db, auth } from "../../firebase";
+import { db, auth, firestore } from "../../firebase";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "Globalstate.js";
 import {v4 as uuid} from 'uuid';
@@ -95,7 +95,7 @@ const UserReg = () => {
 
     // implement UID generator for user also
 
-    const generateUserId = async (dispatch) => {
+    const generateUserId = async ()=> {
       let uniqueId;
       const dbRef = collection(db, "independentriders");
       try {
@@ -133,7 +133,7 @@ const UserReg = () => {
 
       const uniqueId = await generateUserId();
       console.log("uID2:" + uniqueId)
-      dispatch({ type: 'uniqueId', payload: uniqueId })
+      dispatch({ type: 'setuniqueId', payload: uniqueId });
 
       // Store user registration data in Firestore
       const userData = {

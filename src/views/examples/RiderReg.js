@@ -167,17 +167,17 @@ const RiderReg = (props) => {
     setLoading(true);
     try {
       // Create user account with email and password
+      // Handling email verification for riders
       const { user } = await createUserWithEmailAndPassword(auth, email, password);
 
+      await sendEmailVerification(user);
       // so this will generate the userID asynchronously
 
       const uniqueId = await generateUserId();
       console.log("uID2:" + uniqueId)
       dispatch({ type: 'uniqueId', payload: uniqueId })
 
-      // Handling email verification for riders
 
-      await sendEmailVerification(user);
 
       // Store user registration data in Firestore
       const userData = {
