@@ -189,7 +189,7 @@ const UserReg = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
-                    placeholder="Surname"
+                    placeholder="Last Name"
                     type="text"
                     value={surname}
                     onChange={(e) => setSurname(e.target.value)}

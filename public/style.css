@@ -175,6 +175,11 @@ figure {
   background: transparent;
   transition: 0.4s all;
 }
+
+/* .navbar-links li.active > a:after:hover:focus {
+    background: #F29F05;
+  } */
+
 .navbar-links li.active > a:after {
   background: #F29F05;
 }

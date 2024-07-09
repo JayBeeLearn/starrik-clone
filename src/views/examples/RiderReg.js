@@ -25,13 +25,14 @@ import {v4 as uuid} from "uuid"
 
 import Swal from "sweetalert2";
 
-const RiderReg = (props) => {
+const RiderReg = () => {
   const navigate = useNavigate();
-  const [{ uniqueId }, dispatch] = useContext(GlobalContext);
+  // const [{ uniqueId }, dispatch] = useContext(GlobalContext);
   const [currentStep, setCurrentStep] = useState(1);
 
   // State variables for personal information
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [surName, setSurName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -123,7 +124,8 @@ const RiderReg = (props) => {
 
     e.preventDefault();
     const requiredFields = [
-      { field: fullName, label: "Full Name" },
+      { field: firstName, label: "First Name" },
+      { field: surName, label: "Last Name" },
       { field: dateOfBirth, label: "Date of Birth" },
       { field: email, label: "Email" },
       { field: password, label: "Password" },
@@ -175,14 +177,16 @@ const RiderReg = (props) => {
 
       const uniqueId = await generateUserId();
       console.log("uID2:" + uniqueId)
-      dispatch({ type: 'uniqueId', payload: uniqueId })
+
+      // dispatch({ type: 'uniqueId', payload: uniqueId })
 
 
 
       // Store user registration data in Firestore
       const userData = {
         uniqueId,
-        fullName,
+        firstName,
+        surName,
         dateOfBirth,
         email,
         phoneNumber,
@@ -269,10 +273,26 @@ const RiderReg = (props) => {
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input
-                      placeholder="Full Name"
+                      placeholder="first Name"
                       type="text"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                    />
+                  </InputGroup>
+                </FormGroup>
+
+                <FormGroup>
+                  <InputGroup className="input-group-alternative mb-3">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-hat-3" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      placeholder="Last name"
+                      type="text"
+                      value={surName}
+                      onChange={(e) => setSurName(e.target.value)}
                     />
                   </InputGroup>
                 </FormGroup>

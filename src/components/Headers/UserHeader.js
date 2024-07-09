@@ -2,6 +2,7 @@
 import { Button, Container, Row, Col } from "reactstrap";
 import { useState, useContext, useEffect } from "react";
 import { GlobalContext } from "Globalstate.js";
+import { CollectionReference } from "firebase/firestore";
 
 
 
@@ -9,7 +10,7 @@ import { GlobalContext } from "Globalstate.js";
 
 const UserHeader = () => {
 
-  const [{ userdetails, loggedin, tradingpair, uniqueId }] =
+  const [{ userdetails, loggedin, tradingpair}] =
     useContext(GlobalContext);
 
   // $$$$$$$$%%%%%%%%%%%%%%$$$$$$$$$$$$$$$$$$$$$%%%%%%%%%
@@ -45,12 +46,10 @@ const UserHeader = () => {
 
             <Col lg="7" md="10" className=" ">
 
-              <div className="flex flex-row  h-fit  ">
-                <h1 className="display-2 text-white leading-[0] ">Hello   {userdetails.firstName + "  "} 
-                <span className=" text-black text-sm  pl-10   " >User Id: {uniqueId}</span>
-
-                </h1>
+              <div style={{ border:'1px solid black'}}  className="  ">
                 
+                <h1 className=" text-white leading-[0] ">Hello   {userdetails.firstName}</h1>
+                <h1 style={{color:'whitesmoke'}} className="text-sm  pl-10   " >User Id: {userdetails.uniqueId}</h1>
                 
               </div>
 
