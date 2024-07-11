@@ -31,10 +31,11 @@ const Login = () => {
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
-  
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+
       setLoading(true);
       console.log(email, password);
       // Sign in user with email and password
@@ -43,50 +44,67 @@ const Login = () => {
         email,
         password
       );
+
       const user = userCredential.user;
-      console.log(userCredential.user)
+      console.log("userCredential.user check")
 
-      // Check if the user exists in the 'user' collection
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      if (userDoc.exists()) {
-        console.log("User exists in the 'user' collection");
-        // Redirect user to the home page for users
-        // history.push('/');
-        navigate("/user/maps");
-        return;
-      }
+      if (user.emailVerified) {
+        // Proceed to the dashboard
 
-      console.log(userDoc)
+        // Check if the user exists in the 'user' collection
+        const userDoc = await getDoc(doc(db, "users", user.uid)); 
+        if (userDoc.exists()) {
+          console.log("User exists in the 'user' collection");
+          // Redirect user to the home page for users
+          // history.push('/');
+          navigate("/user/maps");
+          return;
+        }
+
+        console.log(userDoc)
 
 
-      // Check if the user exists in the 'company' collection
-      const companyDoc = await getDoc(doc(db, "independentriders", user.uid));
-      if (companyDoc.exists()) {
-        console.log("User exists in the 'company' collection");
-        // Redirect user to the home page for companies
-        // history.push('/company-home');
-        navigate("/admin/index");
-        return;
-      }
+        // Check if the user exists in the 'company' collection
+        const companyDoc = await getDoc(doc(db, "independentriders", user.uid));
+        if (companyDoc.exists()) {
+          console.log("User exists in the 'company' collection");
+          // Redirect user to the home page for companies
+          // history.push('/company-home');
+          navigate("/admin/index");
+          return;
+        }
 
-      // Check if the user exists in the 'rider' collection
-      const riderDoc = await getDoc(doc(db, "companies", user.uid));
-      if (riderDoc.exists()) {
-        console.log("User exists in the 'rider' collection");
-        // Redirect user to the home page for riders
-        // history.push('/rider-home');
-        navigate("/admin/index");
-        return;
+        // Check if the user exists in the 'rider' collection
+        const riderDoc = await getDoc(doc(db, "companies", user.uid));
+        if (riderDoc.exists()) {
+          console.log("User exists in the 'rider' collection");
+          // Redirect user to the home page for riders
+          // history.push('/rider-home');
+          navigate("/admin/index");
+          return;
+        } else {
+
+          console.log('login troubleshoot 1')
+          // If user does not exist in any collection, log an error
+          setError("User not found")
+        }
       } else {
+        navigate("/auth/login")
 
-        console.log('login troubleshoot 1')
-        // If user does not exist in any collection, log an error
-      setError("User not found")
+        setError("Email is not verified. Please verify your email first.");
+        Swal.fire({
+          icon: "warning",
+          title: "Email Not Verified",
+          text: "Please verify your email before logging in.",
+        });
       }
+
+
+
     } catch (error) {
       console.log(error.message)
       setError(error.message);
-      if (error.message==="Firebase: Error (auth/invalid-email)."){
+      if (error.message === "Firebase: Error (auth/invalid-email).") {
         Swal.fire({
           icon: "error",
           title: "Oops...",
@@ -95,7 +113,7 @@ const Login = () => {
         setError("Invalid Email Address");
       }
 
-      if (error.message==="Firebase: Error (auth/invalid-login-credentials)."){
+      if (error.message === "Firebase: Error (auth/invalid-login-credentials).") {
         Swal.fire({
           icon: "error",
           title: "Oops...",
@@ -104,7 +122,7 @@ const Login = () => {
         setError("Incorrect login credentials`(email or password is incorrect)");
       }
 
-      if (error.message==="Firebase: Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later. (auth/too-many-requests)."){
+      if (error.message === "Firebase: Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later. (auth/too-many-requests).") {
         Swal.fire({
           icon: "error",
           title: "Oops...",
