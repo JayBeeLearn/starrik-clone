@@ -113,6 +113,15 @@ const Login = () => {
         setError("Invalid Email Address");
       }
 
+      if (error.message === "Firebase: Error (auth/invalid-credential).") {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Invalid Email Address or Password",
+        });
+        setError("Invalid Email Address or Password");
+      }
+
       if (error.message === "Firebase: Error (auth/invalid-login-credentials).") {
         Swal.fire({
           icon: "error",

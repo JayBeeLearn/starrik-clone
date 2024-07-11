@@ -221,8 +221,9 @@ const RiderReg = () => {
       });
 
       navigate("/auth/login");
+
     } catch (error) {
-      console.log(error.message);
+   
       setError(error.message);
 
       if (error.message === "Firebase: Error (auth/email-already-in-use).") {

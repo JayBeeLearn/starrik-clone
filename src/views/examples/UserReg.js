@@ -6,6 +6,8 @@ import { db, auth, firestore } from "../../firebase";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "Globalstate.js";
 import {v4 as uuid} from 'uuid';
+import Swal from "sweetalert2";
+
 
 // import { collection, doc, setDoc, query, where, getDocs } from "firebase/firestore";
 
@@ -101,7 +103,7 @@ const UserReg = () => {
       try {
         do {
           let unique_id = uuid();
-          uniqueId =  `strk-U${unique_id.slice(0, 5)}`;
+          uniqueId =  `STU${unique_id.slice(0, 5)}`;
   
           const querySnapshot = await getDocs(query(dbRef, where("uniqueId", "==", uniqueId)));
           if (querySnapshot.empty) {
@@ -150,8 +152,39 @@ const UserReg = () => {
       console.log("User registration data stored successfully!");
       navigate("/user/maps");
     } catch (error) {
+
       console.error("Error signing up:", error);
       setError(error.message);
+
+      if (error.message === "Firebase: Error (auth/email-already-in-use).") {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Email already in use!",
+        });
+        setError("Email already in use!");
+      }
+
+      if (error.message === "Firebase: Error (auth/invalid-email).") {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Invalid Email Address",
+        });
+        setError("Invalid Email Address");
+      }
+
+      if (error.message === "Firebase: Error (auth/invalid-credential).") {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Invalid Email Address or Password",
+        });
+        setError("Invalid Email Address ");
+      }
+
+
+
     } finally {
       setLoading(false);
     }
