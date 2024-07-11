@@ -966,7 +966,7 @@ const Maps = () => {
                         className="form-control-alternative"
                         placeholder="A few words about you ..."
                         rows="4"
-                        defaultValue="Describe the deiivery details and additional information"
+                        defaultValue="Describe the delivery details and additional information"
                         type="textarea"
                         value={deliveryDetails}
                         onChange={handleDeliveryDetailsChange}
@@ -979,12 +979,12 @@ const Maps = () => {
                   </h6> */}
                   <div className="pl-lg-4">
                     <FormGroup>
-                      <label>Reciver details</label>
+                      <label>Receiver details</label>
                       <Input
                         className="form-control-alternative"
                         placeholder="A few words about you ..."
                         rows="4"
-                        defaultValue="Describe the deiivery details and additional information"
+                        defaultValue="Describe the delivery details and additional information"
                         type="textarea"
                         value={receiverDetails}
                         onChange={handleReceiverDetailsChange}

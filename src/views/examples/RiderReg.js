@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, signOut } from "firebase/auth";
 import { collection, doc, setDoc, query, where, getDocs } from "firebase/firestore";
 import { db, auth, storage } from "../../firebase";
 // import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -98,7 +98,7 @@ const RiderReg = () => {
       do {
         let unique_id = uuid();
 
-        uniqueId =  `strk-R${unique_id.slice(0, 5)}`;
+        uniqueId =  `STR${unique_id.slice(0, 5)}`;
 
         
 
@@ -148,6 +148,7 @@ const RiderReg = () => {
       { field: bankName, label: "Bank Name" },
       { field: accountType, label: "Account Type" },
     ];
+
     const emptyFields = requiredFields.filter(({ field }) => !field);
     if (emptyFields.length > 0) {
       const emptyFieldsLabels = emptyFields.map(({ label }) => label).join(", ");
@@ -173,7 +174,8 @@ const RiderReg = () => {
       const { user } = await createUserWithEmailAndPassword(auth, email, password);
 
       await sendEmailVerification(user);
-      // so this will generate the userID asynchronously
+
+      // $$$$$ Sign out the user immediately after sending the verification email
 
       const uniqueId = await generateUserId();
       console.log("uID2:" + uniqueId)
@@ -217,7 +219,8 @@ const RiderReg = () => {
         title: "Registration Successful",
         text: "A verification email has been sent. Please check your inbox.",
       });
-      navigate("/admin/index");
+
+      navigate("/auth/login");
     } catch (error) {
       console.log(error.message);
       setError(error.message);

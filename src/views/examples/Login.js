@@ -44,6 +44,7 @@ const Login = () => {
         password
       );
       const user = userCredential.user;
+      console.log(userCredential.user)
 
       // Check if the user exists in the 'user' collection
       const userDoc = await getDoc(doc(db, "users", user.uid));
@@ -54,6 +55,9 @@ const Login = () => {
         navigate("/user/maps");
         return;
       }
+
+      console.log(userDoc)
+
 
       // Check if the user exists in the 'company' collection
       const companyDoc = await getDoc(doc(db, "independentriders", user.uid));
@@ -73,10 +77,12 @@ const Login = () => {
         // history.push('/rider-home');
         navigate("/admin/index");
         return;
-      }
+      } else {
 
-      // If user does not exist in any collection, log an error
-      setError("User not found");
+        console.log('login troubleshoot 1')
+        // If user does not exist in any collection, log an error
+      setError("User not found")
+      }
     } catch (error) {
       console.log(error.message)
       setError(error.message);
@@ -107,6 +113,8 @@ const Login = () => {
         setError("Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.");
       }
     } finally {
+      console.log('login troubleshoot 2')
+
       setLoading(false);
     }
   };

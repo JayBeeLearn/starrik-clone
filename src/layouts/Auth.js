@@ -48,8 +48,11 @@ const Auth = (props) => {
                 <Col lg="5" md="6">
                   <h1 className="text-white">Welcome!</h1>
                   <p className="text-white">
-                   Sign up a User, Independent Rider or Rider Company to join
+                   Sign up as a User or Independent Rider
                   </p>
+                  {/* <p className="text-white">
+                   Sign up as a User or Independent Rider or Rider Company to join
+                  </p> */}
                 </Col>
               </Row>
             </div>
