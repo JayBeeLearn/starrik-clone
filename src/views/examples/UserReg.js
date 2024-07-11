@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { collection, doc, setDoc, getDocs, where, query } from "firebase/firestore";
 import { serverTimestamp } from "firebase/firestore";
 import { db, auth, firestore } from "../../firebase";
@@ -132,6 +132,7 @@ const UserReg = () => {
         email,
         password
       );
+      await sendEmailVerification(user);
 
       const uniqueId = await generateUserId();
       console.log("uID2:" + uniqueId)
@@ -150,7 +151,14 @@ const UserReg = () => {
 
       await setDoc(doc(collection(db, "users"), user.uid), userData);
       console.log("User registration data stored successfully!");
-      navigate("/user/maps");
+
+      Swal.fire({
+        icon: "success",
+        title: "Registration Successful",
+        text: "A verification email has been sent. Please check your inbox.",
+      });
+
+      navigate("/auth/login");
     } catch (error) {
 
       console.error("Error signing up:", error);

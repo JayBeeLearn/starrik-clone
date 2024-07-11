@@ -27,6 +27,7 @@ import Swal from "sweetalert2";
 
 const RiderReg = () => {
   const navigate = useNavigate();
+  
   // const [{ uniqueId }, dispatch] = useContext(GlobalContext);
   const [currentStep, setCurrentStep] = useState(1);
 
