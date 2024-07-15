@@ -52,12 +52,17 @@ import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import WithdrawalModal from "components/Withdrawal";
 
 const Index = (props) => {
+
+
+  console.log('CKPT 1')
   const navigate = useNavigate();
   const [activeNav, setActiveNav] = useState(1);
   const [chartExample1Data, setChartExample1Data] = useState("data1");
   const [{ userdetails, loggedin, tradingpair }, dispatch] =
     useContext(GlobalContext);
   const [loading, setLoading] = useState(true);
+
+  console.log('CKPT 2')
 
   //////////////////////////////////////////////////////
   //////////////////////AUTHENTICATION///////////////////////////////
@@ -71,37 +76,51 @@ const Index = (props) => {
   // }, []); 
 
   useEffect(() => {
-
+    console.log('CKPT 3')
     // console.log("fetching UserId: ", auth.currentUser.uid)
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+
+        console.log('CKPT 4')
         try {
+          console.log('CKPT 5')
           setLoading(true);
+          console.log('CKPT 6')
           // Get user details from Firestore
           const userDoc = await getDoc(doc(db, "independentriders", user.uid));
+          console.log('CKPT 7')
           if (userDoc.exists()) {
+            console.log('CKPT 8')
             // userDoc.data().id = user.uid;
             setdetails({...userDoc.data(),id: user.uid});
+
+            console.log('CKPT 9')
             console.log(userDoc.data());
             setLoading(false);
           } else {
             console.log("User data not found in Firestore.");
             setLoading(false);
+            console.log('CKPT 10')
             navigate("/auth/login");
           }
           // setModalOpen(true);
         } catch (error) {
           console.error("Error fetching user data:", error);
+
+          console.log('CKPT 11')
           setLoading(false);
         }
       } else {
         // If user is not logged in, redirect to login page
         // history.push("/login");
         navigate("/auth/login");
+        console.log('CKPT 12')
       }
     });
-
+    console.log('CKPT 13')
     return () => unsubscribe();
+    console.log('CKPT 13a')
+
   }, []);
 
   const setdetails = (data) => {
@@ -114,6 +133,7 @@ const Index = (props) => {
 
   const handleLogout = async () => {
     try {
+      console.log('CKPT 14')
       await signOut(auth);
       // history.push("/login");
     } catch (error) {
@@ -137,10 +157,13 @@ const Index = (props) => {
   ////////////////////////////////////chart data/////////////////////////////////////
 
   const [chartData, setChartData] = useState(null);
+  console.log('CKPT 15')
   useEffect(() => {
+    console.log('15a')
     const generateChartData = async (riderId) => {
       const orderCollectionRef = collection(db, "order");
-
+      
+      console.log('CKPT 16')
       try {
         const ordersSnapshot = await getDocs(
           query(
@@ -149,6 +172,8 @@ const Index = (props) => {
             orderBy("dateCreated", "asc")
           )
         );
+
+        console.log('CKPT 17')
 
         const monthlyCounts = {
           Jan: 0,
@@ -164,13 +189,15 @@ const Index = (props) => {
           Nov: 0,
           Dec: 0,
         };
-
+        console.log('CKPT 18')
         ordersSnapshot.forEach((doc) => {
           const order = doc.data();
           const date = new Date(order.dateCreated.toDate());
           const month = date.toLocaleString("default", { month: "short" });
           monthlyCounts[month] += 1;
         });
+
+        console.log('CKPT 19')
 
         const data = {
           labels: [
@@ -208,8 +235,9 @@ const Index = (props) => {
             },
           ],
         };
-
+        console.log('CKPT 20')
         setChartData(data);
+        console.log('CKPT 21')
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
@@ -245,6 +273,7 @@ const Index = (props) => {
   //////////////////////////////////////table data///////////////////////////////////
   //////////////////////////////////////table data///////////////////////////////////
   const [orders, setOrders] = useState([]);
+  console.log('CHPT A')
 
   useEffect(() => {
     const fetchRiderOrders = async (riderId) => {
@@ -298,22 +327,30 @@ const Index = (props) => {
   //////////////////////////////withdrawal////////////////////////////////////
   const [isOpen, setIsOpen] = useState(false);
   const [riderData, setRiderData] = useState(null); 
-  
+  console.log('CHPT b')
+
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
+  console.log('CHPT c')
 
   //////////////////////////////withdrawal////////////////////////////////////
   //////////////////////////////withdrawal////////////////////////////////////
   //////////////////////////////withdrawal////////////////////////////////////
 
   if (window.Chart) {
+    console.log('CHPT D')
+
     parseOptions(Chart, chartOptions());
   }
 
   const toggleNavs = (e, index) => {
+    console.log('CHPT E')
+
     e.preventDefault();
     setActiveNav(index);
+    console.log('CHPT F')
+
     setChartExample1Data("data" + index);
   };
   return (
@@ -403,11 +440,14 @@ const Index = (props) => {
               <CardBody>
                 {/* Chart */}
                 <div className="chart">
+                  {chartData &&
+
                   <Bar
                     data={chartData}
                     // data={chartExample2.data}
                     options={chartExample2.options}
-                  />
+                  />}
+
                 </div>
               </CardBody>
             </Card>

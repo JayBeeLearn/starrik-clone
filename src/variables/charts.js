@@ -1,4 +1,6 @@
 
+// import Chart from " "
+
 const Chart = require("chart.js");
 //
 // Chart extension for making the bars rounded

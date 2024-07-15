@@ -175,7 +175,7 @@ figure {
   background: transparent;
   transition: 0.4s all;
 }
-.navbar-links li.active > a:after {
+.navbar-links li > a:focus:after {
   background: #e45ec5;
 }
 .navbar-links li a {

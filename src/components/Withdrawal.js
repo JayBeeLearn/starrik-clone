@@ -20,16 +20,23 @@ const WithdrawalModal = ({ isOpen, toggle, riderData }) => {
   const handleWithdrawal = async () => {
     const currentBalance = riderData.RiderBal;
 
+console.log('Chkpt 1')
+
+
     if (parseFloat(withdrawalAmount) > currentBalance) {
       setError("Withdrawal amount cannot exceed current balance.");
+      console.log('Chkpt 2')
+
       return;
     }
-
+    console.log('Chkpt 3')
     // Create withdrawal document
     console.log(riderData);
     console.log(riderData.id);
-    console.log(riderData.fullName);
+    // console.log(riderData.fullName);
+
     try {
+      console.log('Chkpt 4')
       const withdrawalDocRef = await addDoc(collection(db, "withdrawals"), {
         riderId: riderData.id,
         withdrawalAmount: parseFloat(withdrawalAmount),
@@ -39,19 +46,21 @@ const WithdrawalModal = ({ isOpen, toggle, riderData }) => {
         accountType: riderData.accountType,
         accountNumber: riderData.accountNumber,
         accountName: riderData.accountName,
-        fullName: riderData.fullName,
+        firstName: riderData.firstName,
         RiderBal: riderData.RiderBal,
       });
-
+      console.log('Chkpt 5')
       // Deduct withdrawal amount from RiderBal
       const updatedBalance = currentBalance - parseFloat(withdrawalAmount);
       const riderDocRef = doc(db, "independentriders", riderData.id);
       await updateDoc(riderDocRef, { RiderBal: updatedBalance });
-
+      console.log('Chkpt 6')
       setSuccess("Withdrawal request placed successfully.");
+      console.log('Chkpt 7')
       setWithdrawalAmount("");
       setError("");
       window.location.reload();
+      console.log('Chkpt 8')
     } catch (err) {
       setError("Error placing withdrawal request.");
       console.error("Error placing withdrawal request:", err);
