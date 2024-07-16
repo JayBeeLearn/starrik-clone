@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { createUserWithEmailAndPassword, sendEmailVerification, signOut } from "firebase/auth";
 import { collection, doc, setDoc, query, where, getDocs } from "firebase/firestore";
 import { db, auth, storage } from "../../firebase";
-// import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { serverTimestamp } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import {
@@ -21,13 +21,13 @@ import {
   Progress,
 } from "reactstrap";
 import { GlobalContext } from "Globalstate.js";
-import {v4 as uuid} from "uuid"
+import { v4 as uuid } from "uuid"
 
 import Swal from "sweetalert2";
 
 const RiderReg = () => {
   const navigate = useNavigate();
-  
+
   // const [{ uniqueId }, dispatch] = useContext(GlobalContext);
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -65,6 +65,14 @@ const RiderReg = () => {
   const [loading, setLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [passwordConfirmVisible, setPasswordConfirmVisible] = useState(false);
+
+  // State variables for images
+  const [businessRegistrationImage, setBusinessRegistrationImage] =
+    useState("");
+  const [bikeRegistrationImage, setBikeRegistrationImage] = useState("");
+  const [passportImage, setPassportImage] = useState("");
+  const [idImage, setIdImage] = useState("");
+  const [fileLoading, setFileLoading] = useState(false);
   // State to toggle password visibility for pass
 
   const togglePasswordVisibility = () => {
@@ -76,7 +84,36 @@ const RiderReg = () => {
   };
 
   const handleFileUpload = async (e, filetype) => {
-    // Function for file upload as before
+    setFileLoading(true);
+    const selectedFile = e.target.files[0];
+    // Check file size
+    if (selectedFile.size > 2 * 1024 * 1024) {
+      alert("File size exceeds 4MB limit.");
+      setFileLoading(false);
+      return;
+    }
+    // Upload the file to Firebase Storage
+    const storageRef = ref(storage, `files/${selectedFile.name}`);
+    await uploadBytes(storageRef, selectedFile);
+    // Get the download URL of the uploaded file
+    const downloadURL = await getDownloadURL(storageRef);
+    switch (filetype) {
+      case 1:
+        setBusinessRegistrationImage(downloadURL);
+        break;
+      case 2:
+        setBikeRegistrationImage(downloadURL);
+        break;
+      case 3:
+        setPassportImage(downloadURL);
+        break;
+      case 4:
+        setIdImage(downloadURL);
+        break;
+      default:
+        console.log("Unknown file type:", downloadURL);
+    }
+    setFileLoading(false);
   };
 
   const handleNext = () => {
@@ -99,9 +136,9 @@ const RiderReg = () => {
       do {
         let unique_id = uuid();
 
-        uniqueId =  `STR${unique_id.slice(0, 5)}`;
+        uniqueId = `STR${unique_id.slice(0, 5)}`;
 
-        
+
 
         const querySnapshot = await getDocs(query(dbRef, where("uniqueId", "==", uniqueId)));
         if (querySnapshot.empty) {
@@ -113,7 +150,7 @@ const RiderReg = () => {
 
       ;
       console.log(uniqueId)
-      alert("uID 1:" + uniqueId )
+      alert("uID 1:" + uniqueId)
     } catch (error) {
       console.error("Error generating unique ID:", error);
     }
@@ -148,6 +185,13 @@ const RiderReg = () => {
       { field: accountNumber, label: "Account Number" },
       { field: bankName, label: "Bank Name" },
       { field: accountType, label: "Account Type" },
+      {
+        field: businessRegistrationImage,
+        label: "Business Registration Image",
+      },
+      { field: bikeRegistrationImage, label: "Bike Registration" },
+      { field: passportImage, label: "Passport Image" },
+      // { field: idImage, label: "ID Image" },
     ];
 
     const emptyFields = requiredFields.filter(({ field }) => !field);
@@ -209,6 +253,10 @@ const RiderReg = () => {
         bankName,
         accountType,
         RiderBal: 0,
+        businessRegistrationImage,
+        bikeRegistrationImage,
+        passportImage,
+        idImage,
         dateCreated: serverTimestamp(),
       };
 
@@ -224,7 +272,7 @@ const RiderReg = () => {
       navigate("/auth/login");
 
     } catch (error) {
-   
+
       setError(error.message);
 
       if (error.message === "Firebase: Error (auth/email-already-in-use).") {
@@ -503,6 +551,105 @@ const RiderReg = () => {
                     />
                   </InputGroup>
                 </FormGroup>
+
+               
+
+
+                <FormGroup>
+                 <label htmlFor="fileUpload" className="form-label">
+                   passport Image
+                 </label>
+                 <InputGroup className="input-group-alternative mb-3">
+                   {/* <InputGroupAddon addonType="prepend">
+                     <InputGroupText>
+                       <i className="ni ni-file" />
+                     </InputGroupText>
+                   </InputGroupAddon> */}
+                   <Input
+                     id="fileUpload"
+                     placeholder="Company Account Type"
+                     type="file"
+                     onChange={(e) => handleFileUpload(e, 3)}
+                   />
+                 </InputGroup>
+                 {fileLoading && <p><b>Uploading...please wait</b></p>}
+               </FormGroup>
+
+               <FormGroup>
+                 <label htmlFor="fileUpload" className="form-label">
+                   Bike registration Image
+                 </label>
+                 <InputGroup className="input-group-alternative mb-3">
+                  
+                   <Input
+                     id="fileUpload"
+                     type="file"
+                     onChange={(e) => handleFileUpload(e, 2)}
+                   />
+                 </InputGroup>
+                 {fileLoading && <p><b>Uploading...please wait</b></p>}
+               </FormGroup>
+
+               <FormGroup>
+                 <label htmlFor="fileUpload" className="form-label">
+                   CAC Registration image
+                 </label>
+                 <InputGroup className="input-group-alternative mb-3">
+                   
+                   <Input
+                     id="fileUpload"
+                     type="file"
+                     onChange={(e) => handleFileUpload(e, 1)}
+                   />
+                 </InputGroup>
+                 {fileLoading && <p><b>Uploading...please wait</b></p>}
+               </FormGroup>
+
+
+
+
+                {/* <FormGroup>
+                  <label htmlFor="fileUpload" className="form-label">
+                    passport Image
+                  </label>
+                  <InputGroup className="input-group-alternative mb-3">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-file" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      id="fileUpload"
+                      placeholder="Company Account Type"
+                      type="file"
+                      onChange={(e) => handleFileUpload(e, 3)}
+                    />
+                  </InputGroup>
+                  {fileLoading && <p>Uploading...</p>}
+                </FormGroup>
+
+                <FormGroup>
+                  <label htmlFor="fileUpload" className="form-label">
+                    id Image
+                  </label>
+                  <InputGroup className="input-group-alternative mb-3">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-file" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      id="fileUpload"
+                      placeholder="Company Account Type"
+                      type="file"
+                      onChange={(e) => handleFileUpload(e, 4)}
+                    />
+                  </InputGroup>
+                  {fileLoading && <p>Uploading...</p>}
+                </FormGroup> */}
+
+
+
               </>
             )}
 

@@ -42,7 +42,7 @@ const Tables = () => {
 
 
   //////////////////////////////////////////////////////
-  //////////////////////AUTHENTICATION///////////////////////////////
+  //////////////////////AUTHENTICATION//////////////////////////////
   //////////////////////////////////////////////////////
   /////////////////////////////////////////////////////
   //////////////////////////////////////////////////////
@@ -309,6 +309,10 @@ const Tables = () => {
     console.log(order.id);
     const auth = getAuth();
     const currentUser = auth.currentUser;
+
+
+    // just added this to close modal upon clicking "Confirm" on OrderConfirmationModal component
+    toggleConfirmationModal()
   
     try {
       const ordersRef = collection(db, "order");
@@ -450,11 +454,13 @@ const Tables = () => {
                             <i className="fas fa-ellipsis-v" />
                           </DropdownToggle>
                           <DropdownMenu className="dropdown-menu-arrow" right>
+                            
                             <DropdownItem
                               onClick={() => handleViewOrder(order)}
                             >
                               View Order Details
                             </DropdownItem>
+
                             <DropdownItem
                               onClick={() => handleConfirmationOrder(order)}
                             >

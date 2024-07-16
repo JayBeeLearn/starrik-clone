@@ -50,7 +50,7 @@ const Header = () => {
     <>
       <div className="header bg-gradient-info pb-6 pt-5 pt-md-8">
         <Container fluid>
-          <div className="header-body">
+          <div className="header-body"> 
             <Alert
               color="info"
               isOpen={isOpen}
