@@ -100,6 +100,7 @@ const Register = () => {
               {/* <small>Select Any Of The Options</small> */}
             </div>
             <div className="btn-wrapper text-center">
+
               {/* <a className="btn btn-neutral btn-icon" href="ridereg2">
                 <span
                   className="btn-inner--icon"
@@ -112,18 +113,26 @@ const Register = () => {
                   Sign up as Company Rider
                 </span>
               </a> */}
-              <a className="btn btn-neutral btn-icon" href="ridereg">
+
+              <a className="btn btn-neutral btn-icon mb-2" href="ridereg">
                 <span className="btn-inner--icon" role="img" aria-label="Rider">
                   🚴‍♂️
                 </span>
-                <span className="btn-inner--text">Sign up as Rider</span>
+                <span className="btn-inner--text ">Sign up as Rider</span>
               </a>
 
-              <a className="btn btn-neutral btn-icon" href="usereg">
+              <a className="btn btn-neutral btn-icon mb-2" href="usereg">
                 <span className="btn-inner--icon" role="img" aria-label="User">
                   👤
                 </span>
                 <span className="btn-inner--text">Sign up as User</span>
+              </a>
+
+              <a className="btn btn-neutral btn-icon mb-2" href="companyreg">
+                <span className="btn-inner--icon" role="img" aria-label="User">
+                  🏠
+                </span>
+                <span className="btn-inner--text">Sign up as Company</span>
               </a>
             </div>
           </CardHeader>

@@ -150,7 +150,6 @@ const RiderReg = () => {
 
       ;
       console.log(uniqueId)
-      alert("uID 1:" + uniqueId)
     } catch (error) {
       console.error("Error generating unique ID:", error);
     }
@@ -261,6 +260,8 @@ const RiderReg = () => {
       };
 
       await setDoc(doc(collection(db, "independentriders"), user.uid), userData);
+
+      
 
       // added message
       Swal.fire({

@@ -14,6 +14,8 @@ import UserTrackorders from "views/examples/UserTrackorders";
 import RiderRunningOrders from "views/examples/RiderRunningOrders";
 import PasswordReset from "views/examples/Forgetpassword";
 import Icons from "views/examples/Icons.js";
+import CompReg from "views/examples/CompReg"
+import { icon } from "leaflet";
 
 var routes = [
   {
@@ -108,6 +110,13 @@ var routes = [
     name: "UserReg",
     icon: "ni ni-circle-08 text-pink",
     component: <UserReg />,
+    layout: "/auth",
+  },
+  {
+    path: "companyreg",
+    name: "CompReg",
+    icon: "ni ni-circle-08 text-pink",
+    component: <CompReg />,
     layout: "/auth",
   },
 ];
