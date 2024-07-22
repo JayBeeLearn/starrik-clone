@@ -22,7 +22,7 @@ import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import Swal from "sweetalert2";
 import {
   getFirestore,
-  doc,
+  doc, 
   getDoc,
   collection,
   addDoc,
@@ -1046,6 +1046,7 @@ const Maps = () => {
             </p>
           )}
         </ModalBody>
+
         <ModalFooter>
           <Button color="primary" onClick={placeOrder}>
             Confirm Order
@@ -1059,6 +1060,8 @@ const Maps = () => {
       {/* Your existing JSX code */}
       {/* Your existing modals */}
       {/* Payment modal */}
+
+
       <Modal isOpen={paymentModalOpen} toggle={() => togglePaymentModal(false)}>
         <ModalHeader toggle={() => togglePaymentModal(false)}>
           Payment
@@ -1082,9 +1085,12 @@ const Maps = () => {
                   ).charge
               ).toLocaleString()}
             </p>
-          )}
+          )}    
+          
           {/* Add more order details as needed */}
         </ModalBody>
+
+
         <ModalFooter>
           <PaystackButton {...componentProps} />
           <Button color="secondary" onClick={cancelorders}>
@@ -1092,6 +1098,9 @@ const Maps = () => {
           </Button>
         </ModalFooter>
       </Modal>
+
+
+
     </div>
   );
 };

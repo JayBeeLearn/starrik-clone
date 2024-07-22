@@ -1,12 +1,12 @@
-
 /*eslint-disable*/
 import { useState } from "react";
 import { NavLink as NavLinkRRD, Link } from "react-router-dom";
-// nodejs library to set properties for components
-import { PropTypes } from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase"; // Ensure the path is correct
+// nodejs library to set properties for components
+import { PropTypes } from "prop-types";
+
 
 // reactstrap components
 import {
@@ -41,7 +41,7 @@ import {
 
 var ps;
 
-const UserSidebar = (props) => {
+const CompSidebar = (props) => {
   const navigate = useNavigate();
   const [collapseOpen, setCollapseOpen] = useState();
   // verifies if routeName is the one active (in browser input)
@@ -56,8 +56,7 @@ const UserSidebar = (props) => {
   const closeCollapse = () => {
     setCollapseOpen(false);
   };
-  
-  // creates the links that appear in the left menu / UserSidebar
+  // creates the links that appear in the left menu / Sidebar
   const createLinks = (routes) => {
     return routes.map((prop, key) => {
       return (
@@ -76,7 +75,6 @@ const UserSidebar = (props) => {
   };
 
   const { bgColor, routes, logo } = props;
-  //console.log(routes)
   let navbarBrandProps;
   if (logo && logo.innerLink) {
     navbarBrandProps = {
@@ -108,6 +106,7 @@ const UserSidebar = (props) => {
     > 
       <Container fluid>
         {/* Toggler */}
+       
         <button
           className="navbar-toggler"
           type="button"
@@ -126,6 +125,8 @@ const UserSidebar = (props) => {
           </NavbarBrand>
         ) : null}
         {/* User */}
+
+        
         <Nav className="align-items-center d-md-none">
           <UncontrolledDropdown nav>
             <DropdownToggle nav className="nav-link-icon">
@@ -146,37 +147,49 @@ const UserSidebar = (props) => {
             <DropdownToggle nav>
               <Media className="align-items-center">
                 <span className="avatar avatar-sm rounded-circle">
+
+                  {/* profile picture */}
                   <img
                     alt="..."
-                    src="https://img.icons8.com/?size=80&id=0lg0kb05hrOz&format=png"
+                        src="https://img.icons8.com/?size=80&id=0lg0kb05hrOz&format=png"
                   />
                 </span>
               </Media>
             </DropdownToggle>
+
             <DropdownMenu className="dropdown-menu-arrow" right>
               <DropdownItem className="noti-title" header tag="div">
                 <h6 className="text-overflow m-0">Welcome!</h6>
               </DropdownItem>
+              
               <DropdownItem
-               onClick={(e)=>{navigate("/user/user-profile")}}
-              //  to="/admin/user-profile" tag={Link}
+                // to=""
+                onClick={(e)=>{navigate("/company/companydash")}}
+              //  tag={Link}
               >
                 <i className="ni ni-single-02" />
                 <span>My profile</span>
               </DropdownItem>
+
               <DropdownItem divider />
+
               <DropdownItem  onClick={(e) =>handleLogout()}>
                 <i className="ni ni-user-run" />
                 <span>Logout</span>
               </DropdownItem>
             </DropdownMenu>
+
           </UncontrolledDropdown>
         </Nav>
+
+
         {/* Collapse */}
         <Collapse navbar isOpen={collapseOpen}>
           {/* Collapse header */}
           <div className="navbar-collapse-header d-md-none">
             <Row>
+
+      
               {logo ? (
                 <Col className="collapse-brand" xs="6">
                   {logo.innerLink ? (
@@ -190,6 +203,7 @@ const UserSidebar = (props) => {
                   )}
                 </Col>
               ) : null}
+
               <Col className="collapse-close" xs="6">
                 <button
                   className="navbar-toggler"
@@ -220,53 +234,20 @@ const UserSidebar = (props) => {
           </Form>
           {/* Navigation */}
           <Nav navbar>
-            {createLinks(routes.filter((route) => route.layout === "/user"))}
+            {createLinks(routes.filter((route) => route.layout === "/company"))}
           </Nav>
-          {/* <Nav navbar>{createLinks(routes)}</Nav> */}
-          {/* Divider */}
-          <hr className="my-3" />
-          {/* Heading */}
-          {/* <h6 className="navbar-heading text-muted">Documentation</h6> */}
-          {/* Navigation */}
-          {/* <Nav className="mb-md-3" navbar>
-            <NavItem>
-              <NavLink href="https://demos.creative-tim.com/argon-dashboard-react/#/documentation/overview?ref=adr-admin-UserSidebar">
-                <i className="ni ni-spaceship" />
-                Getting started
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="https://demos.creative-tim.com/argon-dashboard-react/#/documentation/colors?ref=adr-admin-UserSidebar">
-                <i className="ni ni-palette" />
-                Foundation
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="https://demos.creative-tim.com/argon-dashboard-react/#/documentation/alerts?ref=adr-admin-UserSidebar">
-                <i className="ni ni-ui-04" />
-                Components
-              </NavLink>
-            </NavItem>
-          </Nav> */}
-          {/* <Nav className="mb-md-3" navbar>
-            <NavItem className="active-pro active">
-              <NavLink href="https://www.creative-tim.com/product/argon-dashboard-pro-react?ref=adr-admin-UserSidebar">
-                <i className="ni ni-spaceship" />
-                Upgrade to PRO
-              </NavLink>
-            </NavItem>
-          </Nav> */}
+         
         </Collapse>
       </Container>
     </Navbar>
   );
 };
 
-UserSidebar.defaultProps = {
+CompSidebar.defaultProps = {
   routes: [{}],
 };
 
-UserSidebar.propTypes = {
+CompSidebar.propTypes = {
   // links that will be displayed inside the component
   routes: PropTypes.arrayOf(PropTypes.object),
   logo: PropTypes.shape({
@@ -283,4 +264,4 @@ UserSidebar.propTypes = {
   }),
 };
 
-export default UserSidebar;
+export default CompSidebar;

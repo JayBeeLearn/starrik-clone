@@ -89,15 +89,27 @@ const reducer = (state, action) => {
   }
 };
 
-export const GlobalProvider = props => {
-  const globalState = useReducer(reducer, initialState);
-// begining of test code
-  
 
-//  end of test code
+
+export const GlobalProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
   return (
-    <GlobalContext.Provider value={globalState}>
-      {props.children}
+    <GlobalContext.Provider value={{ state, dispatch }}>
+      {children}
     </GlobalContext.Provider>
   );
 };
+
+// export const GlobalProvider = props => {
+//   const globalState = useReducer(reducer, initialState);
+// // begining of test code
+  
+
+// //  end of test code
+//   return (
+//     <GlobalContext.Provider value={globalState}>
+//       {props.children}
+//     </GlobalContext.Provider>
+//   );
+// };

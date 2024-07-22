@@ -104,7 +104,7 @@ const RiderRunningOrders = () => {
     setDeliveryCoordinates(order.deliveryCoordinates);
     toggleModal();
   };
-  
+   
   const watchCurrentLocationAndSetCoordinates = (initialCoordinates, setCoordinates) => {
     const locationListener = navigator.geolocation.watchPosition(
       (position) => {
@@ -256,6 +256,7 @@ const RiderRunningOrders = () => {
           />
         </div>
       )}
+      
       <Container className="mt--7" fluid>
         <Row className="mt-5">
           <div className="col">

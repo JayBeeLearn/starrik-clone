@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Button,
   Card,
@@ -18,14 +18,18 @@ import { useNavigate } from "react-router-dom";
 import { auth, db } from "../../firebase";
 import { getDoc, doc } from "firebase/firestore";
 import Swal from "sweetalert2";
+import { GlobalContext } from "Globalstate.js";
 
 const Login = () => {
+  const { state, dispatch } = useContext(GlobalContext);
   const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false); // State to toggle password visibility
+
 
 
   const togglePasswordVisibility = () => {
@@ -46,18 +50,20 @@ const Login = () => {
       );
 
       const user = userCredential.user;
-      console.log("userCredential.user check")
+      // userdetails(user);
+      console.log("Check User", user)
 
       if (user.emailVerified) {
         // Proceed to the dashboard
 
         // Check if the user exists in the 'user' collection
-        const userDoc = await getDoc(doc(db, "users", user.uid)); 
+        const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
           console.log("User exists in the 'user' collection");
           // Redirect user to the home page for users
           // history.push('/');
           navigate("/user/maps");
+          dispatch({ type: "setuserdetails", snippet: userDoc.data() });
           return;
         }
 
@@ -71,6 +77,23 @@ const Login = () => {
           // Redirect user to the home page for companies
           // history.push('/company-home');
           navigate("/admin/index");
+          dispatch({ type: "setuserdetails", snippet: companyDoc });
+          return;
+        }
+
+
+        const compDoc = await getDoc(doc(db, "company", user.uid));
+
+        if (compDoc.exists()) {
+          const compData = compDoc.data();
+          // Redirect user to the home page for companies
+
+          // navigate("/company/companydash", { state: { user } });
+          dispatch({ type: "setuserdetails", snippet: compData });
+
+          navigate("/company/companydash");
+
+          // dispatch({ type: "setuserdetails", snippet: compDoc.data() });
           return;
         }
 
@@ -81,10 +104,11 @@ const Login = () => {
           // Redirect user to the home page for riders
           // history.push('/rider-home');
           navigate("/admin/index");
+          dispatch({ type: "setuserdetails", snippet: riderDoc.data() }); // +++ Dispatch rider details to context
           return;
         } else {
 
-          console.log('login troubleshoot 1')
+
           // If user does not exist in any collection, log an error
           setError("User not found")
         }
@@ -111,6 +135,14 @@ const Login = () => {
           text: "Invalid Email Address",
         });
         setError("Invalid Email Address");
+      }
+      if (error.message === "Firebase: Error (auth/network-request-failed).") {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Slow or no internet connection",
+        });
+        setError("Slow or no internet connection");
       }
 
       if (error.message === "Firebase: Error (auth/invalid-credential).") {

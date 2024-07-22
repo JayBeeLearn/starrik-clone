@@ -103,30 +103,30 @@ const CompReg = () => {
         let uniqueId;
         const dbRef = collection(db, "company");
         try {
-          do {
-            let unique_id = uuid();
-    
-            uniqueId = `STR${compName.slice(0,3) + unique_id.slice(0, 3)}`;
-    
-    
-    
-            const querySnapshot = await getDocs(query(dbRef, where("uniqueId", "==", uniqueId)));
-            if (querySnapshot.empty) {
-              console.log(uniqueId)
-              break;
-            }
-    
-          } while (true);
-    
-          ;
-          console.log(uniqueId)
-         
+            do {
+                let unique_id = uuid();
+
+                uniqueId = `STR${compName.slice(0, 3) + unique_id.slice(0, 3)}`;
+
+
+
+                const querySnapshot = await getDocs(query(dbRef, where("uniqueId", "==", uniqueId)));
+                if (querySnapshot.empty) {
+                    console.log(uniqueId)
+                    break;
+                }
+
+            } while (true);
+
+            ;
+            console.log(uniqueId)
+
         } catch (error) {
-          console.error("Error generating unique ID:", error);
+            console.error("Error generating unique ID:", error);
         }
-    
+
         return uniqueId;
-      };
+    };
 
     const handleSignUp = async (e) => {
         e.preventDefault();
@@ -146,8 +146,8 @@ const CompReg = () => {
             { field: compAccountNumber, label: "Company Name" },
             { field: businessRegistrationImage, label: "" },
             { field: profileImage, label: "Profile picture" },
-          
-            
+
+
 
         ];
 
@@ -174,6 +174,8 @@ const CompReg = () => {
         try {
             const { user } = await createUserWithEmailAndPassword(auth, email, password);
 
+            const uniqueId = await generateUserId()
+
             await sendEmailVerification(user);
 
             const userData = {
@@ -191,6 +193,7 @@ const CompReg = () => {
                 compAccountType,
                 businessRegistrationImage,
                 profileImage,
+                uniqueId,
                 dateCreated: serverTimestamp(),
             };
 
@@ -201,55 +204,208 @@ const CompReg = () => {
                 icon: "success",
                 title: "Registration Successful",
                 text: "A verification email has been sent. Please check your inbox.",
-              });
-        
-              navigate("/auth/login");
+            });
+
+            navigate("/auth/login");
 
         } catch (error) {
             setError(error.message);
 
             if (error.message === "Firebase: Error (auth/email-already-in-use).") {
                 Swal.fire({
-                  icon: "error",
-                  title: "Oops...",
-                  text: "Email already in use!",
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Email already in use!",
                 });
                 setError("Email already in use!");
-              }
-        
-              if (error.message === "Firebase: Error (auth/invalid-email).") {
+            }
+
+            if (error.message === "Firebase: Error (auth/invalid-email).") {
                 Swal.fire({
-                  icon: "error",
-                  title: "Oops...",
-                  text: "Invalid Email Address",
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Invalid Email Address",
                 });
                 setError("Invalid Email Address");
-              }
-            } finally {
-              setLoading(false);
             }
-        };
+        } finally {
+            setLoading(false);
+        }
+    };
 
-       
 
 
-        return (
-            <>
-                <Col lg="6" md="8">
-                    <Card className="bg-secondary shadow border-0">
-                        <CardBody className="px-lg-5 py-lg-5">
-                            <div className="text-center text-muted mb-4">
-                                <b>REGISTER AS A COMPANY</b>
-                            </div>
 
-                            <Progress value={(currentStep / 3) * 100} className="mb-4" />
+    return (
+        <>
+            <Col lg="6" md="8">
+                <Card className="bg-secondary shadow border-0">
+                    <CardBody className="px-lg-5 py-lg-5">
+                        <div className="text-center text-muted mb-4">
+                            <b>REGISTER AS A COMPANY</b>
+                        </div>
 
-                            <Form role="form">
+                        <Progress value={(currentStep / 3) * 100} className="mb-4" />
 
-                                {currentStep === 1 && (<>
-                                    {/* Company Name */}
+                        <Form role="form">
+
+                            {currentStep === 1 && (<>
+                                {/* Company Name */}
+                                <div className="text-center text-muted mb-4">
+                                    <small>COMPANY DETAILS</small>
+                                </div>
+                                <FormGroup>
+                                    <InputGroup className="input-group-alternative mb-3">
+                                        <InputGroupAddon addonType="prepend">
+                                            <InputGroupText>
+                                                <i className="ni ni-hat-3" />
+                                            </InputGroupText>
+                                        </InputGroupAddon>
+                                        <Input
+                                            placeholder="Company Name"
+                                            type="text"
+                                            value={compName}
+                                            onChange={(e) => setCompName(e.target.value)}
+                                        />
+                                    </InputGroup>
+                                </FormGroup>
+                                {/* Company phone */}
+                                <FormGroup>
+                                    <InputGroup className="input-group-alternative mb-3">
+                                        <InputGroupAddon addonType="prepend">
+                                            <InputGroupText>
+                                                <i className="ni ni-mobile-button" />
+                                            </InputGroupText>
+                                        </InputGroupAddon>
+                                        <Input
+                                            placeholder="Office Phone"
+                                            invalid
+                                            type="tel"
+                                            value={compPhone}
+                                            onChange={(e) => setCompPhone(e.target.value)}
+                                            valid
+                                        />
+                                    </InputGroup>
+                                </FormGroup>
+
+                                {/* Company Email */}
+
+                                <FormGroup>
+                                    <InputGroup className="input-group-alternative mb-3">
+                                        <InputGroupAddon addonType="prepend">
+                                            <InputGroupText>
+                                                <i className="ni ni-email-83" />
+                                            </InputGroupText>
+                                        </InputGroupAddon>
+                                        <Input
+                                            placeholder="Company Email"
+                                            type="email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                        />
+                                    </InputGroup>
+                                </FormGroup>
+
+                                {/* Head office address */}
+
+                                <FormGroup>
+                                    <InputGroup className="input-group-alternative mb-3">
+                                        <InputGroupAddon addonType='prepend' >
+                                            <InputGroupText>
+                                                <i className='ni ni-square-pin' />
+                                            </InputGroupText>
+                                        </InputGroupAddon>
+                                        <Input
+                                            placeholder="Office Address"
+                                            type="text"
+                                            value={compAddress}
+                                            onChange={(e) => setCompAddress(e.target.value)}
+                                        />
+                                    </InputGroup>
+                                </FormGroup>
+
+                                {/* Password */}
+                                <FormGroup>
+                                    <InputGroup className="input-group-alternative mb-3">
+                                        <InputGroupAddon addonType="prepend">
+                                            <InputGroupText>
+                                                <i className="ni ni-lock-circle-open" />
+                                            </InputGroupText>
+                                        </InputGroupAddon>
+                                        <Input
+                                            placeholder="Password"
+                                            type={passwordVisible ? "text" : "password"}
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                        />
+                                        <InputGroupAddon addonType="append">
+                                            <Button
+                                                onClick={togglePasswordVisibility}
+                                                type="button"
+                                                className="btn-sm"
+                                            >
+                                                {<i className={passwordVisible ? "fa fa-eye-slash" : "fa fa-eye"} />}
+
+                                            </Button>
+                                        </InputGroupAddon>
+                                    </InputGroup>
+                                </FormGroup>
+
+
+                                {/* Confirm password */}
+
+                                <FormGroup>
+                                    <InputGroup className="input-group-alternative mb-3">
+                                        <InputGroupAddon addonType="prepend">
+                                            <InputGroupText>
+                                                <i className="ni ni-lock-circle-open" />
+                                            </InputGroupText>
+                                        </InputGroupAddon>
+                                        <Input
+                                            placeholder="Confirm Password"
+                                            type={passwordConfirmVisible ? "text" : "password"}
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                        />
+                                        <InputGroupAddon addonType="append">
+                                            <Button
+                                                onClick={togglePasswordConfirmVisibility}
+                                                type="button"
+                                                className="btn-sm"
+                                            >
+                                                {<i className={passwordConfirmVisible ? "fa fa-eye-slash" : "fa fa-eye"} />}
+                                            </Button>
+                                        </InputGroupAddon>
+                                    </InputGroup>
+                                </FormGroup>
+
+                                {/* CAC Registration form */}
+
+                                <FormGroup>
+                                    <label htmlFor="fileUpload" className="form-label">
+                                        CAC Registration Image
+                                    </label>
+                                    <InputGroup className="input-group-alternative mb-3">
+
+                                        <Input
+                                            id="fileUpload"
+                                            type="file"
+                                            onChange={(e) => handleFileUpload(e, 2)}
+                                        />
+                                    </InputGroup>
+                                    {fileLoading && <p><b>Uploading...please wait</b></p>
+                                    }
+                                </FormGroup>
+
+
+                            </>)}
+
+                            {currentStep === 2 && (
+                                <>
+                                    {/* Company Admin Address  */}
+
                                     <div className="text-center text-muted mb-4">
-                                        <small>COMPANY DETAILS</small>
+                                        <small>DETAILS OF COMPANY'S ADMIN OFFICER</small>
                                     </div>
                                     <FormGroup>
                                         <InputGroup className="input-group-alternative mb-3">
@@ -259,52 +415,32 @@ const CompReg = () => {
                                                 </InputGroupText>
                                             </InputGroupAddon>
                                             <Input
-                                                placeholder="Company Name"
+                                                placeholder="First name"
                                                 type="text"
-                                                value={compName}
-                                                onChange={(e) => setCompName(e.target.value)}
+                                                value={compAdminFName}
+                                                onChange={(e) => setCompAdminFName(e.target.value)}
                                             />
                                         </InputGroup>
                                     </FormGroup>
-                                    {/* Company phone */}
+
+                                    {/* Company Admin Last name */}
                                     <FormGroup>
                                         <InputGroup className="input-group-alternative mb-3">
                                             <InputGroupAddon addonType="prepend">
                                                 <InputGroupText>
-                                                    <i className="ni ni-mobile-button" />
+                                                    <i className="ni ni-hat-3" />
                                                 </InputGroupText>
                                             </InputGroupAddon>
                                             <Input
-                                                placeholder="Office Phone"
-                                                invalid
-                                                type="tel"
-                                                value={compPhone}
-                                                onChange={(e) => setCompPhone(e.target.value)}
-                                                valid
+                                                placeholder="Last name"
+                                                type="text"
+                                                value={compAdminLName}
+                                                onChange={(e) => setCompAdminLName(e.target.value)}
                                             />
                                         </InputGroup>
                                     </FormGroup>
 
-                                    {/* Company Email */}
-
-                                    <FormGroup>
-                                        <InputGroup className="input-group-alternative mb-3">
-                                            <InputGroupAddon addonType="prepend">
-                                                <InputGroupText>
-                                                    <i className="ni ni-email-83" />
-                                                </InputGroupText>
-                                            </InputGroupAddon>
-                                            <Input
-                                                placeholder="Company Email"
-                                                type="email"
-                                                value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
-                                            />
-                                        </InputGroup>
-                                    </FormGroup>
-
-                                    {/* Head office address */}
-
+                                    {/* Office Admin Address */}
                                     <FormGroup>
                                         <InputGroup className="input-group-alternative mb-3">
                                             <InputGroupAddon addonType='prepend' >
@@ -313,282 +449,160 @@ const CompReg = () => {
                                                 </InputGroupText>
                                             </InputGroupAddon>
                                             <Input
-                                                placeholder="Office Address"
+                                                placeholder="Office address"
                                                 type="text"
-                                                value={compAddress}
-                                                onChange={(e) => setCompAddress(e.target.value)}
+                                                value={compAdminAddress}
+                                                onChange={(e) => setCompAdminAddress(e.target.value)}
                                             />
                                         </InputGroup>
                                     </FormGroup>
 
+                                    {/* Designated role in company */}
                                     <FormGroup>
                                         <InputGroup className="input-group-alternative mb-3">
-                                            <InputGroupAddon addonType="prepend">
+                                            <InputGroupAddon addonType='prepend' >
                                                 <InputGroupText>
-                                                    <i className="ni ni-lock-circle-open" />
+                                                    <i className="ni ni-hat-3" />
                                                 </InputGroupText>
                                             </InputGroupAddon>
                                             <Input
-                                                placeholder="Password"
-                                                type={passwordVisible ? "text" : "password"}
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
+                                                placeholder="Officer role"
+                                                type="text"
+                                                value={compAdminRole}
+                                                onChange={(e) => setCompAdminRole(e.target.value)}
                                             />
-                                            <InputGroupAddon addonType="append">
-                                                <Button
-                                                    onClick={togglePasswordVisibility}
-                                                    type="button"
-                                                    className="btn-sm"
-                                                >
-                                                    {<i className={passwordVisible ? "fa fa-eye-slash" : "fa fa-eye"} />}
-
-                                                </Button>
-                                            </InputGroupAddon>
                                         </InputGroup>
                                     </FormGroup>
 
-
-
-
-                                    <FormGroup>
-                                        <InputGroup className="input-group-alternative mb-3">
-                                            <InputGroupAddon addonType="prepend">
-                                                <InputGroupText>
-                                                    <i className="ni ni-lock-circle-open" />
-                                                </InputGroupText>
-                                            </InputGroupAddon>
-                                            <Input
-                                                placeholder="Confirm Password"
-                                                type={passwordConfirmVisible ? "text" : "password"}
-                                                value={confirmPassword}
-                                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                            />
-                                            <InputGroupAddon addonType="append">
-                                                <Button
-                                                    onClick={togglePasswordConfirmVisibility}
-                                                    type="button"
-                                                    className="btn-sm"
-                                                >
-                                                    {<i className={passwordConfirmVisible ? "fa fa-eye-slash" : "fa fa-eye"} />}
-                                                </Button>
-                                            </InputGroupAddon>
-                                        </InputGroup>
-                                    </FormGroup>
-
+                                    {/* Company Admin Passport */}
                                     <FormGroup>
                                         <label htmlFor="fileUpload" className="form-label">
-                                            CAC Registration Image
+                                            Company Admin's Passport
                                         </label>
                                         <InputGroup className="input-group-alternative mb-3">
 
                                             <Input
                                                 id="fileUpload"
                                                 type="file"
-                                                onChange={(e) => handleFileUpload(e, 2)}
+                                                onChange={(e) => handleFileUpload(e, 1)}
                                             />
                                         </InputGroup>
                                         {fileLoading && <p><b>Uploading...please wait</b></p>
                                         }
                                     </FormGroup>
+                                </>
+                            )}
 
+                            {currentStep === 3 && (
 
-                                </>)}
-
-                                {currentStep === 2 && (
-                                    <>
-                                        {/* Company Admin Address  */}
-
-                                        <div className="text-center text-muted mb-4">
-                                            <small>DETAILS OF COMPANY'S ADMIN OFFICER</small>
-                                        </div>
-                                        <FormGroup>
-                                            <InputGroup className="input-group-alternative mb-3">
-                                                <InputGroupAddon addonType="prepend">
-                                                    <InputGroupText>
-                                                        <i className="ni ni-hat-3" />
-                                                    </InputGroupText>
-                                                </InputGroupAddon>
-                                                <Input
-                                                    placeholder="First name"
-                                                    type="text"
-                                                    value={compAdminFName}
-                                                    onChange={(e) => setCompAdminFName(e.target.value)}
-                                                />
-                                            </InputGroup>
-                                        </FormGroup>
-
-                                        <FormGroup>
-                                            <InputGroup className="input-group-alternative mb-3">
-                                                <InputGroupAddon addonType="prepend">
-                                                    <InputGroupText>
-                                                        <i className="ni ni-hat-3" />
-                                                    </InputGroupText>
-                                                </InputGroupAddon>
-                                                <Input
-                                                    placeholder="Last name"
-                                                    type="text"
-                                                    value={compAdminLName}
-                                                    onChange={(e) => setCompAdminLName(e.target.value)}
-                                                />
-                                            </InputGroup>
-                                        </FormGroup>
-                                        {/* Office Admin Address */}
-                                        <FormGroup>
-                                            <InputGroup className="input-group-alternative mb-3">
-                                                <InputGroupAddon addonType='prepend' >
-                                                    <InputGroupText>
-                                                        <i className='ni ni-square-pin' />
-                                                    </InputGroupText>
-                                                </InputGroupAddon>
-                                                <Input
-                                                    placeholder="Office address"
-                                                    type="text"
-                                                    value={compAdminAddress}
-                                                    onChange={(e) => setCompAdminAddress(e.target.value)}
-                                                />
-                                            </InputGroup>
-                                        </FormGroup>
-                                        {/* Designation role */}
-                                        <FormGroup>
-                                            <InputGroup className="input-group-alternative mb-3">
-                                                <InputGroupAddon addonType='prepend' >
-                                                    <InputGroupText>
-                                                        <i className="ni ni-hat-3" />
-                                                    </InputGroupText>
-                                                </InputGroupAddon>
-                                                <Input
-                                                    placeholder="Officer role"
-                                                    type="text"
-                                                    value={compAdminRole}
-                                                    onChange={(e) => setCompAdminRole(e.target.value)}
-                                                />
-                                            </InputGroup>
-                                        </FormGroup>
-
-
-                                        <FormGroup>
-                                            <label htmlFor="fileUpload" className="form-label">
-                                                Company Admin's Passport
-                                            </label>
-                                            <InputGroup className="input-group-alternative mb-3">
-
-                                                <Input
-                                                    id="fileUpload"
-                                                    type="file"
-                                                    onChange={(e) => handleFileUpload(e, 1)}
-                                                />
-                                            </InputGroup>
-                                            {fileLoading && <p><b>Uploading...please wait</b></p>
-                                            }
-                                        </FormGroup>
-                                    </>
-                                )}
-
-                                {currentStep === 3 && (
-
-                                    <>
-                                        <div className="text-center text-muted mb-4">
-                                            <small>COMPANY ACCOUNT DETAILS</small>
-                                        </div>
-                                        <FormGroup>
-                                            <InputGroup className="input-group-alternative mb-3">
-                                                <InputGroupAddon addonType="prepend">
-                                                    <InputGroupText>
-                                                        <i className="ni ni-single-02" />
-                                                    </InputGroupText>
-                                                </InputGroupAddon>
-                                                <Input
-                                                    placeholder="Company Account Name"
-                                                    type="text"
-                                                    value={compAccountName}
-                                                    onChange={(e) => setCompAccountName(e.target.value)}
-                                                />
-                                            </InputGroup>
-                                        </FormGroup>
-
-                                        <FormGroup>
-                                            <InputGroup className="input-group-alternative mb-3">
-                                                <InputGroupAddon addonType="prepend">
-                                                    <InputGroupText>
-                                                        <i className="ni ni-credit-card" />
-                                                    </InputGroupText>
-                                                </InputGroupAddon>
-                                                <Input
-                                                    placeholder=" Company Account Number"
-                                                    type="text"
-                                                    value={compAccountNumber}
-                                                    onChange={(e) => setCompAccountNumber(e.target.value)}
-                                                />
-                                            </InputGroup>
-                                        </FormGroup>
-
-                                        <FormGroup>
-                                            <InputGroup className="input-group-alternative mb-3">
-                                                <InputGroupAddon addonType="prepend">
-                                                    <InputGroupText>
-                                                        <i className="ni ni-bag-17" />
-                                                    </InputGroupText>
-                                                </InputGroupAddon>
-                                                <Input
-                                                    placeholder="Company Bank Name"
-                                                    type="text"
-                                                    value={compBankName}
-                                                    onChange={(e) => setCompBankName(e.target.value)}
-                                                />
-                                            </InputGroup>
-                                        </FormGroup>
-
-                                        <FormGroup>
-                                            <InputGroup className="input-group-alternative mb-3">
-                                                <InputGroupAddon addonType="prepend">
-                                                    <InputGroupText>
-                                                        <i className="ni ni-briefcase-24" />
-                                                    </InputGroupText>
-                                                </InputGroupAddon>
-                                                <Input
-                                                    placeholder="Company Account Type"
-                                                    type="text"
-                                                    value={compAccountType}
-                                                    onChange={(e) => setCompAccountType(e.target.value)}
-                                                />
-                                            </InputGroup>
-                                        </FormGroup>
-                                    </>
-
-
-                                )}
-
-
-                                {error && (
-                                    <div className="text-center">
-                                        <small className="text-danger">{error}</small>
+                                <>
+                                    <div className="text-center text-muted mb-4">
+                                        <small>COMPANY ACCOUNT DETAILS</small>
                                     </div>
-                                )}
 
+                                    {/* Company Account Name */}
+                                    <FormGroup>
+                                        <InputGroup className="input-group-alternative mb-3">
+                                            <InputGroupAddon addonType="prepend">
+                                                <InputGroupText>
+                                                    <i className="ni ni-single-02" />
+                                                </InputGroupText>
+                                            </InputGroupAddon>
+                                            <Input
+                                                placeholder="Company Account Name"
+                                                type="text"
+                                                value={compAccountName}
+                                                onChange={(e) => setCompAccountName(e.target.value)}
+                                            />
+                                        </InputGroup>
+                                    </FormGroup>
+
+                                    {/* Compsny Account  number */}
+                                    <FormGroup>
+                                        <InputGroup className="input-group-alternative mb-3">
+                                            <InputGroupAddon addonType="prepend">
+                                                <InputGroupText>
+                                                    <i className="ni ni-credit-card" />
+                                                </InputGroupText>
+                                            </InputGroupAddon>
+                                            <Input
+                                                placeholder=" Company Account Number"
+                                                type="text"
+                                                value={compAccountNumber}
+                                                onChange={(e) => setCompAccountNumber(e.target.value)}
+                                            />
+                                        </InputGroup>
+                                    </FormGroup>
+
+                                    {/* company bank name */}
+                                    <FormGroup>
+                                        <InputGroup className="input-group-alternative mb-3">
+                                            <InputGroupAddon addonType="prepend">
+                                                <InputGroupText>
+                                                    <i className="ni ni-bag-17" />
+                                                </InputGroupText>
+                                            </InputGroupAddon>
+                                            <Input
+                                                placeholder="Company Bank Name"
+                                                type="text"
+                                                value={compBankName}
+                                                onChange={(e) => setCompBankName(e.target.value)}
+                                            />
+                                        </InputGroup>
+                                    </FormGroup>
+
+                                    {/* Company Account type */}
+                                    <FormGroup>
+                                        <InputGroup className="input-group-alternative mb-3">
+                                            <InputGroupAddon addonType="prepend">
+                                                <InputGroupText>
+                                                    <i className="ni ni-briefcase-24" />
+                                                </InputGroupText>
+                                            </InputGroupAddon>
+                                            <Input
+                                                placeholder="Company Account Type"
+                                                type="text"
+                                                value={compAccountType}
+                                                onChange={(e) => setCompAccountType(e.target.value)}
+                                            />
+                                        </InputGroup>
+                                    </FormGroup>
+                                </>
+
+
+                            )}
+
+
+                            {error && (
                                 <div className="text-center">
-                                    {currentStep !== 1 && (
-                                        <Button onClick={handlePrev} color="primary" className="mt-4">
-                                            Previous
-                                        </Button>
-                                    )}
-                                    {currentStep !== 3 ? (
-                                        <Button onClick={handleNext} color="primary" className="mt-4">
-                                            Next
-                                        </Button>
-                                    ) : (
-                                        <Button onClick={handleSignUp} color="primary" className="mt-4" disabled={loading}>
-                                            {loading ? "Signing Up..." : "Sign Up"}
-                                        </Button>
-                                    )}
+                                    <small className="text-danger">{error}</small>
                                 </div>
+                            )}
 
-                            </Form>
-                        </CardBody>
-                    </Card>
-                </Col>
+                            <div className="text-center">
+                                {currentStep !== 1 && (
+                                    <Button onClick={handlePrev} color="primary" className="mt-4">
+                                        Previous
+                                    </Button>
+                                )}
+                                {currentStep !== 3 ? (
+                                    <Button onClick={handleNext} color="primary" className="mt-4">
+                                        Next
+                                    </Button>
+                                ) : (
+                                    <Button onClick={handleSignUp} color="primary" className="mt-4" disabled={loading}>
+                                        {loading ? "Signing Up..." : "Sign Up"}
+                                    </Button>
+                                )}
+                            </div>
 
-            </>
-        )
+                        </Form>
+                    </CardBody>
+                </Card>
+            </Col>
+
+        </>
+    )
 }
 
 export default CompReg

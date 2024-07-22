@@ -48,7 +48,7 @@ const Admin = (props) => {
       <Sidebar
         {...props}
         routes={routes}
-        logo={{
+        logo={{ 
           innerLink: "/admin/index",
           imgSrc: require("../assets/img/brand/argon-react.png"),
           imgAlt: "...",
@@ -59,7 +59,8 @@ const Admin = (props) => {
           {...props}
           brandText={getBrandText(props?.location?.pathname)}
         />
-        <Routes>
+        
+        <Routes> 
           {getRoutes(routes)}
           <Route path="*" element={<Navigate to="/admin/index" replace />} />
         </Routes>

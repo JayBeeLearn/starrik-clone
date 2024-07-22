@@ -15,6 +15,9 @@ import RiderRunningOrders from "views/examples/RiderRunningOrders";
 import PasswordReset from "views/examples/Forgetpassword";
 import Icons from "views/examples/Icons.js";
 import CompReg from "views/examples/CompReg"
+import CompDash from "views/examples/CompDash"
+import ComRiderReg from "views/examples/ComRiderReg"
+
 import { icon } from "leaflet";
 
 var routes = [
@@ -113,11 +116,26 @@ var routes = [
     layout: "/auth",
   },
   {
-    path: "companyreg",
+    path: "/companyreg",
     name: "CompReg",
     icon: "ni ni-circle-08 text-pink",
     component: <CompReg />,
     layout: "/auth",
   },
+  {
+    path: "/companydash",
+    name: "Company Dashboard",
+    icon: "ni ni-circle-08 text-pink",
+    component: <CompDash />,
+    layout: "/company",
+  },
+  {
+    path: "/company-rider-reg",
+    name: "Add Rider",
+    icon: "ni ni-circle-08 text-pink",
+    component: <ComRiderReg />,
+    layout: "/company",
+  },
+  ComRiderReg
 ];
 export default routes;

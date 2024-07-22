@@ -92,7 +92,7 @@ const Index = (props) => {
           if (userDoc.exists()) {
             console.log('CKPT 8')
             // userDoc.data().id = user.uid;
-            setdetails({...userDoc.data(),id: user.uid});
+            setdetails({ ...userDoc.data(), id: user.uid });
 
             console.log('CKPT 9')
             console.log(userDoc.data());
@@ -162,7 +162,7 @@ const Index = (props) => {
     console.log('15a')
     const generateChartData = async (riderId) => {
       const orderCollectionRef = collection(db, "order");
-      
+
       console.log('CKPT 16')
       try {
         const ordersSnapshot = await getDocs(
@@ -326,7 +326,7 @@ const Index = (props) => {
   //////////////////////////////withdrawal////////////////////////////////////
   //////////////////////////////withdrawal////////////////////////////////////
   const [isOpen, setIsOpen] = useState(false);
-  const [riderData, setRiderData] = useState(null); 
+  const [riderData, setRiderData] = useState(null);
   console.log('CHPT b')
 
   const toggleModal = () => {
@@ -423,15 +423,15 @@ const Index = (props) => {
                     <h2 className="mb-0">
                       Account Bal :NGN {userdetails.RiderBal}
                     </h2>
-                          {/* Button to open the withdrawal modal */}
-      <Button color="primary" onClick={toggleModal}>Place Withdrawal</Button>
+                    {/* Button to open the withdrawal modal */}
+                    <Button color="primary" onClick={toggleModal}>Place Withdrawal</Button>
 
-{/* Render the withdrawal modal */}
-<WithdrawalModal 
-  isOpen={isOpen} 
-  toggle={toggleModal} 
-  riderData={userdetails} 
-/>
+                    {/* Render the withdrawal modal */}
+                    <WithdrawalModal
+                      isOpen={isOpen}
+                      toggle={toggleModal}
+                      riderData={userdetails}
+                    />
 
                     <h2 className="mb-0">Total orders</h2>
                   </div>
@@ -442,11 +442,11 @@ const Index = (props) => {
                 <div className="chart">
                   {chartData &&
 
-                  <Bar
-                    data={chartData}
-                    // data={chartExample2.data}
-                    options={chartExample2.options}
-                  />}
+                    <Bar
+                      data={chartData}
+                      // data={chartExample2.data}
+                      options={chartExample2.options}
+                    />}
 
                 </div>
               </CardBody>

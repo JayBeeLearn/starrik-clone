@@ -25,7 +25,7 @@ import { useContext } from "react";
 
 const AdminNavbar = (props) => {
 
-  const [{userdetails}] = useContext(GlobalContext);
+  const { state } = useContext(GlobalContext);
 
 
   return (
@@ -38,10 +38,15 @@ const AdminNavbar = (props) => {
             className="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block"
             to="/"
           >
-            {props.brandText}
+            {props.brandText}hgdsj
+
+           
 
             {/* Bring in userId here!!! */}
-            {/* #########################################################        ####################           ################################                ########################################################### */}
+            {/*  ################################################              
+                 ##################           ##################            ############################################## */}
+
+                 
           </Link>
           <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
             <FormGroup className="mb-0">
@@ -57,6 +62,7 @@ const AdminNavbar = (props) => {
               </InputGroup>
             </FormGroup>
           </Form>
+
           <Nav className="align-items-center d-none d-md-flex" navbar>
             <UncontrolledDropdown nav>
               
@@ -73,12 +79,11 @@ const AdminNavbar = (props) => {
                   <Media className="ml-2 d-none d-lg-block">
                     
                     <span className="mb-0 text-sm font-weight-bold uppercase ">
+sgdjfgsjdg
 
-
-                      {userdetails.firstName}   {userdetails.surname} 
+                      {/* {userdetails.firstName} uftwe  {userdetails.surname} jgshdfa */}
 
                     </span>
-                    
 
                     {/* add profile picture below */}
 

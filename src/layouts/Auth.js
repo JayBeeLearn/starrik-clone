@@ -55,7 +55,7 @@ const Auth = (props) => {
                   </p> */}
                 </Col>
               </Row>
-            </div>
+            </div> 
           </Container>
           <div className="separator separator-bottom separator-skew zindex-100">
             <svg

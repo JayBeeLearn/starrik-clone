@@ -28,7 +28,7 @@ const User = (props) => {
         );
       } else {
         return null;
-      }
+      } 
     });
   };
 
