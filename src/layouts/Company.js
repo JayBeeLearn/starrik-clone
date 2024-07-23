@@ -274,7 +274,7 @@ return (
 
 
 
-          <Container className="" fluid>
+          {/* <Container className="" fluid>
             <Row className="">
               <div className="col">
                 <Card className=" shadow">
@@ -307,7 +307,7 @@ return (
               </div>
             </Row>
 
-          </Container>
+          </Container> */}
 
 
         </div>

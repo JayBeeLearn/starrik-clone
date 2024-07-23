@@ -26,6 +26,8 @@ import { v4 as uuid } from "uuid"
 import Swal from "sweetalert2";
 
 const RiderReg = () => {
+
+  
   const navigate = useNavigate();
 
   // const [{ uniqueId }, dispatch] = useContext(GlobalContext);
@@ -340,6 +342,7 @@ const RiderReg = () => {
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                         <i className="ni ni-hat-3" />
+                        
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input

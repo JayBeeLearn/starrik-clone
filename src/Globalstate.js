@@ -64,6 +64,12 @@ const reducer = (state, action) => {
         userdetails: action.snippet
       };
     }
+    case "setcompriddetails": {
+      return {
+        ...state,
+        compriddetails: action.snippet
+      };
+    }
     case "setpaymentfor": {
       return {
         ...state,

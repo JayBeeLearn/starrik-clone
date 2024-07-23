@@ -17,6 +17,7 @@ import Icons from "views/examples/Icons.js";
 import CompReg from "views/examples/CompReg"
 import CompDash from "views/examples/CompDash"
 import ComRiderReg from "views/examples/ComRiderReg"
+import CompRiderDash from "views/examples/CompRiderDash"
 
 import { icon } from "leaflet";
 
@@ -136,6 +137,16 @@ var routes = [
     component: <ComRiderReg />,
     layout: "/company",
   },
-  ComRiderReg
+  {
+    path: "/company-rider-dash",
+    name: " Rider",
+    icon: "ni ni-circle-08 text-pink",
+    component: <CompRiderDash />,
+    layout: "/company",
+  },
+
+
+  
+  
 ];
 export default routes;
