@@ -8,7 +8,7 @@ import {
   Form,
   Input,
   InputGroupAddon,
-  InputGroupText,
+  InputGroupText, 
   InputGroup,
   Row,
   Col,
@@ -16,12 +16,12 @@ import {
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../../firebase";
-import { getDoc, doc } from "firebase/firestore";
+import { getDoc, getDocs, collection, doc } from "firebase/firestore";
 import Swal from "sweetalert2";
 import { GlobalContext } from "Globalstate.js";
 
 const Login = () => {
-  const { state, dispatch } = useContext(GlobalContext);
+  const [{ userdetails, loggedin, tradingpair, distance }, dispatch] = useContext(GlobalContext);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -82,12 +82,26 @@ const Login = () => {
         }
 
 
+
+
+        // Function to get document Id
+
+        // async function getDocumentIds() {
+        //   const colRef = collection(db, "company");
+        //   const snapshot = await getDoc(colRef);
+        //   const docIds = snapshot.docs.map(doc => doc.id);
+        //   console.log("Document IDs:", docIds);
+        //   return docIds;
+        // }
         const compDoc = await getDoc(doc(db, "company", user.uid));
 
+
         if (compDoc.exists()) {
+
+
           const compData = compDoc.data();
           // Redirect user to the home page for companies
-
+          console.log("Comp details exist on login 6a", compData)
           // navigate("/company/companydash", { state: { user } });
           dispatch({ type: "setuserdetails", snippet: compData });
 

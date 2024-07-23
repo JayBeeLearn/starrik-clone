@@ -14,35 +14,153 @@ import {
   Button,
 } from "reactstrap";
 import { useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "Globalstate.js";
 import { CollectionReference } from "firebase/firestore";
-import { collection, getDoc, doc } from "firebase/firestore";
-import { db } from "../../firebase";
+import { getFirestore, collection, query, where, getDoc, getDocs, setDoc, doc } from "firebase/firestore";
+import { db, auth } from "../../firebase";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+
 
 
 const CompDash = () => {
 
-  const { state } = useContext(GlobalContext);
+  const navigate = useNavigate();
+
+  const [{ userdetails, loggedin, tradingpair, distance }, dispatch] = useContext(GlobalContext);
   const [companyDetails, setCompanyDetails] = useState(null);
 
-  useEffect(() => {
-    const fetchCompanyData = async () => {
-      try {
-        if (state.userdetails && state.userdetails.uid) {
-          const companyRef = doc(db, "company", state.userdetails.uid);
-          const companyDoc = await getDoc(companyRef);
-          if (companyDoc.exists()) {
-            setCompanyDetails(companyDoc.data());
-            console.log("companyDetails: ",companyDetails)
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching company data:", error);
-      }
-    };
+  console.log("Reload Check", userdetails.uniqueId);
 
-    fetchCompanyData();
-  }, [state.userdetails]);
+  // console.log("state B:", state.userdetails.compName)
+  // console.log("state B:", state.userdetails.uid)
+
+  // async function getDocumentIds() {
+  //   const colRef = collection(db, "company");
+  //   const snapshot = await getDocs(colRef);
+  //   const docIds = snapshot.docs.map(doc => doc.id);
+  //   console.log("Document IDs:", docIds);
+  //   return docIds;
+
+
+  // }
+
+  // getDocumentIds();
+
+  // console.log("Reload Check", state.userdetails.uniqueId)
+  // console.log("Reload Check", state.userdetails.uniqueId)
+
+
+
+  // const storeCompanyDetails = async (companyData) => {
+  //   const userId = state.userdetails.uniqueId; // or another unique identifier
+  //   try {
+  //     await setDoc(doc(db, "companyDetails", userId), companyData);
+  //     console.log("Company details stored successfully");
+  //   } catch (error) {
+  //     console.error("Error storing company details:", error);
+  //   }
+  // };
+
+  // const fetchStoredCompanyDetails = async () => {
+  //   const userId = state.userdetails.uniqueId; // or another unique identifier
+  //   try {
+  //     const docRef = doc(db, "companyDetails", userId);
+  //     const docSnap = await getDoc(docRef);
+  //     if (docSnap.exists()) {
+  //       const data = docSnap.data();
+  //       setCompanyDetails(data);
+  //       console.log("Retrieved company details:", data);
+  //     } else {
+  //       console.log("No such document!");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching company details:", error);
+  //   }
+  // };
+
+
+  useEffect(() => {
+
+    // fetchStoredCompanyDetails();
+    // const colRef = collection(db, "company");
+    // const snapshot = await getDocs(colRef);
+    // const docIds = snapshot.docs.map(doc => doc.id);
+    // console.log("Document IDs:", docIds);
+
+    const fetchCompanyData = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const compData = await getDoc(doc(db, "company", user.uid));
+          if (compData.exists()) {
+            setdetails(compData.data());
+            console.log(compData.data());
+          } else {
+            console.log("User data not found in Firestore.");
+            navigate("/auth/login");
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          // setLoading(false);
+        }
+      } else {
+        navigate("/auth/login");
+      }
+    });
+    return () => fetchCompanyData();
+  }, []);
+
+
+  const setdetails = (data) => {
+    dispatch({ type: "setuserdetails", snippet: data });
+  };
+
+
+  console.log("Check F: ", userdetails)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //   if (state.userdetails) {
+  //     const db = getFirestore();
+  //     const companyRef = collection(db, "company");
+  //     const q = query(companyRef, where("uniqueId", "==", state.userdetails.uniqueId));
+  //     const querySnapshot = await getDocs(q);
+
+  //     if (!querySnapshot.empty) {
+  //       querySnapshot.forEach(doc => {
+
+  //         const data = doc.data();
+  //         setCompanyDetails(data);
+  //         storeCompanyDetails(data);
+
+  //         // setCompanyDetails(doc.data());
+  //         console.log("Document Data D:", data);
+  //       });
+  //     } else {
+  //       console.log("No documents found with the specified username.");
+  //     }
+  //   }
+  // } catch (error) {
+  //   console.error("Error fetching company data:", error);
+  // }
+  // };
+
+  // fetchCompanyData();
+  //     }, [state.userdetails]);
 
 
 
@@ -67,15 +185,9 @@ const CompDash = () => {
       <div
         className="header pt-7 pt-lg-8 d-flex align-items-center">
 
-
-
         {/* Mask */}
 
         <span className="mask pt-9 bg-gradient-default opacity-8" />
-
-
-
-
         {/* Header container */}
 
 
@@ -89,9 +201,9 @@ const CompDash = () => {
                 </CardHeader>
 
                 <CardBody>
-                  {companyDetails ? (
+                  {userdetails ? (
                     <div>
-                      <h4 className="text-white">Company Name: {companyDetails.name}</h4>
+                      <h4 className="text-white">Company Name: {userdetails.compName}</h4>
                       {/* Add more company details as needed */}
                     </div>
                   ) : (
@@ -117,5 +229,6 @@ const CompDash = () => {
 
   )
 }
+
 
 export default CompDash
