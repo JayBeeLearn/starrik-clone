@@ -25,28 +25,14 @@ import {
   InputGroupText,
   Progress,
 } from 'reactstrap';
-
-
 import { createUserWithEmailAndPassword, sendEmailVerification, signOut, getAuth, onAuthStateChanged } from "firebase/auth";
-
 import { db, auth, storage } from "../../firebase";
-
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { serverTimestamp } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import {
-
-} from "reactstrap";
 import { GlobalContext } from "Globalstate.js";
 import { v4 as uuid } from "uuid"
-
 import Swal from "sweetalert2";
-
-
-
-
-
-
 import { useState, useContext, useEffect } from "react";
 import { CollectionReference } from "firebase/firestore";
 import { getFirestore, collection, query, where, getDoc, getDocs, setDoc, doc } from "firebase/firestore";
@@ -109,7 +95,7 @@ const CompDash = () => {
 
 
 
-  const [{ userdetails, loggedin, tradingpair, distance }, dispatch] = useContext(GlobalContext);
+  const [{ userdetails, compriddetails, loggedin, tradingpair, distance }, dispatch] = useContext(GlobalContext);
   const [companyDetails, setCompanyDetails] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -314,16 +300,19 @@ const CompDash = () => {
 
       await setDoc(doc(collection(db, "companyriderslog"), user.uid), userData);
 
-
+      
 
       // added message
       Swal.fire({
         icon: "success",
         title: "Registration Successful",
-        text: "A verification email has been sent. Please check your inbox.",
+        text: "A verification email has been sent to rider's email address.",
       });
 
-      toggleModal()
+      setTimeout(() => {
+        setLoading(false);
+        setModalOpen(false); // Close the modal on sign-up
+      }, 2000);
 
     } catch (error) {
 
@@ -414,27 +403,48 @@ const CompDash = () => {
   const setridersdetails = (data) => {
     dispatch({ type: "setcompriddetails", snippet: data });
   };
-  
+
+
+  console.log("Check G: ", userdetails)
+
+
+  // /////////////////////////Logic for mapping riders based on companyID////////////
+
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      try {
+        if (userdetails) {
+          const db = getFirestore();
+          const companyRef = collection(db, "companyriderslog");
+          const q = query(companyRef, where("uniqueId", "==", userdetails.uniqueId));
+          const querySnapshot = await getDocs(q);
+
+          if (!querySnapshot.empty) {
+            const ridersList = [];
+            querySnapshot.forEach(doc => {
+              const data = doc.data();
+              ridersList.push(data);
+              console.log("Document Data:", data);
+            });
+            setridersdetails(ridersList);
+          } else {
+            console.log("No documents found with the specified uniqueId.");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching company data:", error);
+      }
+    };
+
+    fetchData();
+  }, [userdetails]);
+
+
+
   console.log("Check F: ", compriddetails)
-
-  console.log("Check F: ", userdetails)
-
-
-// /////////////////////////Logic for mapping riders based on companyID////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
 
 
@@ -519,7 +529,7 @@ const CompDash = () => {
                 </CardHeader>
 
                 <CardBody>
-                  <h3 className="text-white mb-0">My Company Riders Profilesechme</h3>
+                  <h3 className="text-white mb-0">My Company Riders Profiles</h3>
                 </CardBody>
 
               </Card>
@@ -561,7 +571,7 @@ const CompDash = () => {
                     <th scope="col">rider</th>
                     <th scope="col">rider's Id</th>
                     <th scope="col">Status</th>
-                    <th scope="col">Action</th>
+                    <th scope="col">Bal</th>
                     <th scope="col"></th>
                   </tr>
                 </thead>
@@ -570,7 +580,44 @@ const CompDash = () => {
 
 
                 <tbody className="">
-                  <tr>
+                  { compriddetails.length > 0 ? (
+                    compriddetails.map((rider, index) => (
+                      <tr>
+                      <th scope="col">{index + 1}</th>
+                      <th scope="col">{rider.firstName} {rider.surName} </th>
+                      <th scope="col">{rider.compRideruniqueId} </th>
+                      <th scope="col">active</th>
+                      <th scope="col">{rider.RiderBal}</th>
+                      <th scope="col">
+                        <Dropdown isOpen={dropdownOpen} toggle={toggle} className="position-static">
+                          <DropdownToggle
+  
+                            tag="span"
+                            data-toggle="dropdown"
+                            aria-expanded={dropdownOpen}
+                            className={`kebab-menu ${isHovered ? 'hover' : ''}`}
+                            onMouseEnter={handleMouseEnter}
+                            onMouseLeave={handleMouseLeave}
+  
+                          >
+  
+                            ...
+  
+                          </DropdownToggle>
+                          <DropdownMenu right>
+                            <DropdownItem header>Header</DropdownItem>
+                            <DropdownItem></DropdownItem>
+                            <DropdownItem>History</DropdownItem>
+                            <DropdownItem divider />
+                            <DropdownItem>Deactivate</DropdownItem>
+                          </DropdownMenu>
+                        </Dropdown>
+                      </th>
+                    </tr> 
+                    ))
+               
+                     ) : (
+                    <tr>
                     <th scope="col">1</th>
                     <th scope="col">Daniel</th>
                     <th scope="col">StrCR85 </th>
@@ -601,7 +648,10 @@ const CompDash = () => {
                         </DropdownMenu>
                       </Dropdown>
                     </th>
-                  </tr>
+                  </tr> 
+                  )
+                  }
+                  
                 </tbody>
 
               </Table>

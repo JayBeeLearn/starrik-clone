@@ -13,6 +13,8 @@ const initialState = {
   cointoinvestwith: "",
   distance: 0,
   uniqueId: "",
+  compriddetails: []
+
 };
 
 const reducer = (state, action) => {
