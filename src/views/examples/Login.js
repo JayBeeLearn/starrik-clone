@@ -8,7 +8,7 @@ import {
   Form,
   Input,
   InputGroupAddon,
-  InputGroupText, 
+  InputGroupText,
   InputGroup,
   Row,
   Col,
@@ -52,6 +52,7 @@ const Login = () => {
       const user = userCredential.user;
       // userdetails(user);
       console.log("Check User", user)
+
 
       if (user.emailVerified) {
         // Proceed to the dashboard
@@ -110,6 +111,23 @@ const Login = () => {
           // dispatch({ type: "setuserdetails", snippet: compDoc.data() });
           return;
         }
+
+        const compRider = await getDoc(doc(db, "companyriderslog", user.uid));
+        if (compRider.exists()) {
+
+          const compData = compRider.data();
+          // Redirect user to the home page for companies
+          console.log("Comp details exist on login 6a", compData)
+          // navigate("/company/companydash", { state: { user } });
+          dispatch({ type: "setuserdetails", snippet: compData });
+
+          navigate("/companyriders/index");
+          console.log("Company rider success")
+          // dispatch({ type: "setuserdetails", snippet: compDoc.data() });
+          return;
+        }
+
+
 
         // Check if the user exists in the 'rider' collection
         const riderDoc = await getDoc(doc(db, "companies", user.uid));

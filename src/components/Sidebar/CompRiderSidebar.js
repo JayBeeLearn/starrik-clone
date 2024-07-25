@@ -40,7 +40,7 @@ import {
 } from "reactstrap";
 
 
-const CompSidebar = (props) => {
+const CompRiderSidebar = (props) => {
   const navigate = useNavigate();
   const [collapseOpen, setCollapseOpen] = useState();
   // verifies if routeName is the one active (in browser input)
@@ -163,7 +163,7 @@ const CompSidebar = (props) => {
               
               <DropdownItem
                 // to=""
-                onClick={(e)=>{navigate("/company/companydash")}}
+                onClick={(e)=>{navigate("/companyriders/rider-profile")}}
               //  tag={Link}
               >
                 <i className="ni ni-single-02" />
@@ -233,7 +233,7 @@ const CompSidebar = (props) => {
           </Form>
           {/* Navigation */}
           <Nav navbar>
-            {createLinks(routes.filter((route) => route.layout === "/company"))}
+            {createLinks(routes.filter((route) => route.layout === "/companyriders"))}
           </Nav>
          
         </Collapse>
@@ -242,11 +242,11 @@ const CompSidebar = (props) => {
   );
 };
 
-CompSidebar.defaultProps = {
+CompRiderSidebar.defaultProps = {
   routes: [{}],
 };
 
-CompSidebar.propTypes = {
+CompRiderSidebar.propTypes = {
   // links that will be displayed inside the component
   routes: PropTypes.arrayOf(PropTypes.object),
   logo: PropTypes.shape({
@@ -263,4 +263,4 @@ CompSidebar.propTypes = {
   }),
 };
 
-export default CompSidebar;
+export default CompRiderSidebar;

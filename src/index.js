@@ -11,6 +11,8 @@ import AdminLayout from "layouts/Admin.js";
 import AuthLayout from "layouts/Auth.js";
 import Homerouting from "layouts/Homerouting";
 import CompLayout from "layouts/Company";
+import CompRiderLayout from "layouts/CompanyRiders";
+
 import { GlobalProvider } from "Globalstate";
 import Company from "layouts/Company";
 
@@ -25,6 +27,7 @@ root.render(
       <Route path="/user/*" element={<UserLayout />} />
       <Route path="/auth/*" element={<AuthLayout />} />
       <Route path="/company/*" element={<CompLayout />} />
+      <Route path="/companyriders/*" element={<CompRiderLayout />} />
 
       <Route path="*" element={<Navigate to="/auth/login" replace />} />
     </Routes>

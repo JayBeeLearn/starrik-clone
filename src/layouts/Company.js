@@ -3,7 +3,7 @@ import { useLocation, Route, Routes, Navigate, useNavigate } from "react-router-
 import { db, auth } from "../firebase";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 // reactstrap components
-
+ 
 import {
   Badge,
   Card,
@@ -106,77 +106,6 @@ console.log("Check F: ", userdetails)
 
 
 
-
-
-
-
-
-// const storeCompanyDetails = async (companyData) => {
-//   const userId = state.userdetails.uniqueId; // or another unique identifier
-//   try {
-//     await setDoc(doc(db, "companyDetails", userId), companyData);
-//     console.log("Company details stored successfully");
-//   } catch (error) {
-//     console.error("Error storing company details:", error);
-//   }
-// };
-
-// const fetchStoredCompanyDetails = async () => {
-//   const userId = state.userdetails.uniqueId; // or another unique identifier
-//   try {
-//     const docRef = doc(db, "companyDetails", userId);
-//     const docSnap = await getDoc(docRef);
-//     if (docSnap.exists()) {
-//       const data = docSnap.data();
-//       setCompanyDetails(data);
-//       console.log("Retrieved company details:", data);
-//     } else {
-//       console.log("No such document!");
-//     }
-//   } catch (error) {
-//     console.error("Error fetching company details:", error);
-//   }
-// };
-// // ////////////////////////////////////////////////
-
-// useEffect(() => {
-
-
-//   fetchStoredCompanyDetails();
-
-//   console.log("state A:", state)
-//   const fetchCompanyData = async () => {
-
-//     try {
-//       if (state.userdetails) {
-//         const db = getFirestore();
-//         const companyRef = doc(db, "company");
-//         const q = query(companyRef, where("uniqueId", "==", state.userdetails.uniqueId));
-//         const querySnapshot = await getDocs(q);
-//         if (!querySnapshot.empty) {
-//           querySnapshot.forEach(doc => {
-
-//             const data = doc.data();
-//             setCompanyDetails(data);
-//             storeCompanyDetails(data);
-
-//             // setCompanyDetails(doc.data());
-//             console.log("Document Data E:", data);
-//           });
-//         } else {
-//           console.log("No documents found with the specified username.");
-//         }
-//       }
-//     } catch (error) {
-//       console.error("Error fetching company data:", error);
-//     }
-//   };
-
-//   fetchCompanyData();
-// }, [state.userdetails]);
-
-
-
 React.useEffect(() => {
   document.documentElement.scrollTop = 0;
   document.scrollingElement.scrollTop = 0;
@@ -273,43 +202,6 @@ return (
           {/* Header container */}
 
 
-
-          {/* <Container className="" fluid>
-            <Row className="">
-              <div className="col">
-                <Card className=" shadow">
-                  <Table
-                    className="align-items-center  table-flush"
-                    responsive
-                  > <thead className="thead-dark">
-                      <tr>
-                        <th scope="col">S/N</th>
-                        <th scope="col">rider</th>
-                        <th scope="col">rider's Id</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Action</th>
-                        <th scope="col"></th>
-                      </tr>
-                    </thead>
-                    <thead className="">
-                      <tr>
-                        <th scope="col">1</th>
-                        <th scope="col">Daniel</th>
-                        <th scope="col">StrCR85 </th>
-                        <th scope="col">active</th>
-                        <th scope="col">today's amount</th>
-                        <th scope="col">:</th>
-                      </tr>
-                    </thead>
-
-                  </Table>
-                </Card>
-              </div>
-            </Row>
-
-          </Container> */}
-
-
         </div>
 
       </div>
@@ -326,4 +218,4 @@ return (
 )
 }
 
-export default Company
+export default Company 

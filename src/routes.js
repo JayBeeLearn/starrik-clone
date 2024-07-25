@@ -18,6 +18,13 @@ import CompReg from "views/examples/CompReg"
 import CompDash from "views/examples/CompDash"
 import ComRiderReg from "views/examples/ComRiderReg"
 import CompRiderDash from "views/examples/CompRiderDash"
+import CompanyRidersIndex from "views/CompanyRidersIndex"
+import CompanyProfile from "views/examples/CompanyProfile.js";
+import CompRiderOrders from "views/examples/CompRiderOrders";
+
+import CompanyRiderRunningOrder from "views/examples/CompRiderRunningOrders";
+
+
 
 import { icon } from "leaflet";
 
@@ -145,7 +152,35 @@ var routes = [
     layout: "/company",
   },
 
-
+  {
+    path: "/companyridersindex",
+    name: "Dashboard",
+    icon: "ni ni-tv-2 text-primary",
+    component: <CompanyRidersIndex />,
+    layout: "/companyriders",
+  },
+  
+  {
+    path: "/companyridertables",
+    name: "View Orders",
+    icon: "ni ni-bullet-list-67 text-red",
+    component: <CompRiderOrders />,
+    layout: "/companyriders",
+  },
+  {
+    path: "/running-order",
+    name: "My Active Order",
+    icon: "ni ni-single-02 text-yellow",
+    component: <CompanyRiderRunningOrder />,
+    layout: "/companyriders",
+  },
+  {
+    path: "/rider-profile",
+    name: "Rider Profile",
+    icon: "ni ni-single-02 text-yellow",
+    component: <CompanyProfile />,
+    layout: "/companyriders",
+  },
   
   
 ];

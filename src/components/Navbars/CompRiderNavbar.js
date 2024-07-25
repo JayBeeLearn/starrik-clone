@@ -23,13 +23,11 @@ import {
 import { useContext } from "react";
 
 
-const AdminNavbar = (props) => {
+const CompRiderNavbar = (props) => {
   const [{ userdetails, compriddetails, loggedin, tradingpair, distance }, dispatch] = useContext(GlobalContext);
 
 
   return (
-
-
     <>
       <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
         <Container fluid>
@@ -127,4 +125,4 @@ const AdminNavbar = (props) => {
   );
 };
 
-export default AdminNavbar;
+export default CompRiderNavbar;

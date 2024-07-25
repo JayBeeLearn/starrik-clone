@@ -11,7 +11,7 @@ import {
   DropdownMenu,
   DropdownItem,
   Button,
-  Modal,
+  Modal, 
   ModalHeader,
   ModalBody,
   ModalFooter,
@@ -600,7 +600,7 @@ const CompDash = () => {
                             onMouseLeave={handleMouseLeave}
   
                           >
-  
+
                             ...
   
                           </DropdownToggle>
@@ -658,15 +658,11 @@ const CompDash = () => {
             </Card>
           </div>
         </Row>
-
-
+ 
+{/* Company registers it's riders here */}
         <Modal isOpen={modalOpen} toggle={toggleModal}>
           <ModalHeader toggle={toggleModal}>Company Rider Registration Form</ModalHeader>
           <ModalBody>
-
-
-
-
 
             <Col lg="" md="8">
               <Card className="bg-secondary shadow border-0">

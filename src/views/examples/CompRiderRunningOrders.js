@@ -215,7 +215,7 @@ const RiderRunningOrders = () => {
                   await updateDoc(orderRef, {
                     riderLocation: { latitude, longitude }
                   }); 
-                });
+                }); 
               },
               (error) => {
                 console.error("Error fetching orders:", error);
