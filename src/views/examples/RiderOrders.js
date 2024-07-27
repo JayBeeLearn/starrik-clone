@@ -1,4 +1,4 @@
-import { useState,useContext ,useEffect} from "react";
+import { useState, useContext, useEffect } from "react";
 import { GlobalContext } from "Globalstate.js";
 import { useNavigate } from "react-router-dom";
 import {
@@ -24,7 +24,7 @@ import {
   getDocs,
   onSnapshot,
   where,
-  orderBy,doc,updateDoc,getDoc
+  orderBy, doc, updateDoc, getDoc
 } from "firebase/firestore";
 import { auth, db, storage } from "../../firebase";
 import OrderConfirmationModal from "components/OrderConfirmationModal";
@@ -49,12 +49,13 @@ const Tables = () => {
   /////////////////////////////////////////////////////
   const navigate = useNavigate();
   const [{ userdetails, loggedin, tradingpair }, dispatch] =
-  useContext(GlobalContext);
+    useContext(GlobalContext);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // console.log("fetching UserId: ", auth.currentUser.uid)
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+
       if (user) {
         try {
           setLoading(true);
@@ -75,7 +76,7 @@ const Tables = () => {
           setLoading(false);
         }
       } else {
-      
+
         // If user is not logged in, redirect to login page
         // history.push("/login");
       }
@@ -217,8 +218,8 @@ const Tables = () => {
             query(
               collection(db, "order"),
               // where("PickupState", "==", state),
-            where("PickupState", "in", [state, `${state} State`]), // Filter based on Geoapify data
-             //  where("PickupState", "in", ["Akwa Ibom", state]),
+              where("PickupState", "in", [state, `${state} State`]), // Filter based on Geoapify data
+              //  where("PickupState", "in", ["Akwa Ibom", state]),
               where("status", "==", "pending"),
               orderBy("dateCreated", "desc")
             ),
@@ -259,27 +260,27 @@ const Tables = () => {
     setDeliveryCoordinates(order.pickupCoordinates);
     toggleModal();
   };
-  
-  const handleorderTrackingdestination= (order) => {
+
+  const handleorderTrackingdestination = (order) => {
     setSelectedOrder(order);
     watchCurrentLocationAndSetCoordinates(order.pickupCoordinates, setPickupCoordinates);
     setDeliveryCoordinates(order.deliveryCoordinates);
     toggleModal();
   };
-  
+
   const watchCurrentLocationAndSetCoordinates = (initialCoordinates, setCoordinates) => {
     const locationListener = navigator.geolocation.watchPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
         console.log("Current location:", latitude, longitude);
         // Update the pickupCoordinates with the current location
-        setPickupCoordinates({lat: latitude,lng: longitude });
+        setPickupCoordinates({ lat: latitude, lng: longitude });
       },
       (error) => {
         console.error("Error getting user's location:", error);
       }
     );
-  
+
     return () => {
       // Clean up the location listener when component unmounts or when coordinates are set
       navigator.geolocation.clearWatch(locationListener);
@@ -313,7 +314,7 @@ const Tables = () => {
 
     // just added this to close modal upon clicking "Confirm" on OrderConfirmationModal component
     toggleConfirmationModal()
-  
+
     try {
       const ordersRef = collection(db, "order");
       const riderOrdersQuery = query(
@@ -323,19 +324,20 @@ const Tables = () => {
         where("status", "in", ["confirmed", "delivered"]),
       );
       const riderOrdersSnapshot = await getDocs(riderOrdersQuery);
-  
+
       if (!riderOrdersSnapshot.empty) {
         // There exists at least one order for the current user with status "confirmed"
         alert("Please deliver picked orders to proceed with other orders");
         return
       } else {
         // There are no orders for the current user with status "confirmed"
+
         const orderRef = doc(db, "order", order.id);
         await updateDoc(orderRef, {
           status: "confirmed",
           dateConfirmed: new Date(),
           riderid: currentUser.uid,
-          riderphone:userdetails.phoneNumber
+          riderphone: userdetails.phoneNumber
         });
         console.log("Order updated successfully!");
         Swal.fire({
@@ -353,12 +355,13 @@ const Tables = () => {
 
 
   ////////////////////WATCH RIDER LOCATION///////////////////
+  
   useEffect(() => {
     const locationListener = navigator.geolocation.watchPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
         console.log("Current location:", latitude, longitude);
-  
+
         // Update Firestore field with the new location data
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
           if (user) {
@@ -376,7 +379,7 @@ const Tables = () => {
                   const orderRef = doc(db, "order", orderId);
                   await updateDoc(orderRef, {
                     riderLocation: { latitude, longitude }
-                  }); 
+                  });
                 });
               },
               (error) => {
@@ -392,7 +395,7 @@ const Tables = () => {
         console.error("Error getting user's location:", error);
       }
     );
-  
+
     return () => {
       // Clean up the location listener when the component unmounts
       navigator.geolocation.clearWatch(locationListener);
@@ -412,7 +415,7 @@ const Tables = () => {
             pickupAddress={pickupCoordinates}
             deliveryAddress={deliveryCoordinates}
           /> */}
-                    <MapWithDirections
+          <MapWithDirections
             originCoordinates={pickupCoordinates}
             destinationCoordinates={deliveryCoordinates}
           />
@@ -454,7 +457,7 @@ const Tables = () => {
                             <i className="fas fa-ellipsis-v" />
                           </DropdownToggle>
                           <DropdownMenu className="dropdown-menu-arrow" right>
-                            
+
                             <DropdownItem
                               onClick={() => handleViewOrder(order)}
                             >
@@ -469,13 +472,13 @@ const Tables = () => {
                             <DropdownItem
                               onClick={() => handleorderTrackingpickup(order)}
                             >
-                            Track pickup
+                              Track pickup
                             </DropdownItem>
 
                             <DropdownItem
                               onClick={() => handleorderTrackingdestination(order)}
                             >
-                            Track Destination
+                              Track Destination
                             </DropdownItem>
                             <DropdownItem
                               onClick={() => handleConfirmationOrder(order)}

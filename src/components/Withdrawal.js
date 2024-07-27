@@ -20,9 +20,7 @@ const WithdrawalModal = ({ isOpen, toggle, riderData }) => {
   const handleWithdrawal = async () => {
     const currentBalance = riderData.RiderBal;
 
-console.log('Chkpt 1')
-
-
+    console.log('Chkpt 1')
     if (parseFloat(withdrawalAmount) > currentBalance) {
       setError("Withdrawal amount cannot exceed current balance.");
       console.log('Chkpt 2')
@@ -66,6 +64,8 @@ console.log('Chkpt 1')
       console.error("Error placing withdrawal request:", err);
     }
   };
+
+
 
   return (
     <Modal isOpen={isOpen} toggle={toggle}>

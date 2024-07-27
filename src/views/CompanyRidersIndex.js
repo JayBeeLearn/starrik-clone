@@ -9,9 +9,10 @@ import Chart from "chart.js";
 import { Line, Bar } from "react-chartjs-2";
 import Header from "components/Headers/Header.js";
 // reactstrap components
+
 import {
   Button,
-  Card,
+  Card, 
   CardHeader, 
   CardBody,
   NavItem,
@@ -24,12 +25,14 @@ import {
   Col,
 } from "reactstrap";
 // core components
+
 import {
   chartOptions,
   parseOptions,
   chartExample1,
   chartExample2,
 } from "variables/charts.js";
+
 import {
   collection,
   query,
@@ -42,6 +45,7 @@ import {
   getDoc,
   limit,
 } from "firebase/firestore";
+
 import { auth, db, storage } from "../firebase";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import WithdrawalModal from "components/Withdrawal";
@@ -51,20 +55,16 @@ const CompanyRidersIndex = (props) => {
   const navigate = useNavigate();
   const [activeNav, setActiveNav] = useState(1);
   const [chartExample1Data, setChartExample1Data] = useState("data1");
-  const [{ userdetails, loggedin, tradingpair }, dispatch] =
-    useContext(GlobalContext);
+  const [{ userdetails, loggedin, tradingpair }, dispatch] = useContext(GlobalContext);
   const [loading, setLoading] = useState(true);
 
 
   /////////////////////////////////////////////////////
-  //////////////////////AUTHENTICATION/////////////////
+     ///////////////AUTHENTICATION/////////////////
   /////////////////////////////////////////////////////
   /////////////////////////////////////////////////////
 
-  // useEffect(() => {
-  //   // Run window.location.reload() once when the component mounts
-  //   window.location.reload();
-  // }, []); 
+ 
 
   useEffect(() => {
     // console.log("fetching UserId: ", auth.currentUser.uid)
@@ -129,7 +129,7 @@ const CompanyRidersIndex = (props) => {
   const [chartData, setChartData] = useState(null);
 
   useEffect(() => {
-    console.log('15a')
+
     const generateChartData = async (riderId) => {
       const orderCollectionRef = collection(db, "order");
 

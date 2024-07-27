@@ -146,7 +146,7 @@ var routes = [
   },
   {
     path: "/company-rider-dash",
-    name: " Rider",
+    name: "Company's Summary",
     icon: "ni ni-circle-08 text-pink",
     component: <CompRiderDash />,
     layout: "/company",

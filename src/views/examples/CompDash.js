@@ -11,7 +11,7 @@ import {
   DropdownMenu,
   DropdownItem,
   Button,
-  Modal, 
+  Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
@@ -102,13 +102,31 @@ const CompDash = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const [modalOpen, setModalOpen] = useState(false);
+  // const [infoModalOpen, setInfoModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [modal, setModal] = useState(false);
 
+  // const toggle = () => setModal(!modal);
   const toggle = () => setDropdownOpen(prevState => !prevState);
+  const toggler = () => setModal(!modal);
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
+
   const toggleModal = () => setModalOpen(!modalOpen);
 
+  // const toggleInfoModal = () => {
+  //   setInfoModalOpen(!infoModalOpen);
 
+
+
+  // };
+
+  // const handleItemClick = (item) => {
+  //   setSelectedItem(item);
+  //   console.log("Item check 3", selectedItem)
+  //   toggleInfoModal();
+  //   console.log("Item check 2", infoModalOpen)
+  // };
   // State to toggle password visibility for pass
 
   const togglePasswordVisibility = () => {
@@ -300,7 +318,7 @@ const CompDash = () => {
 
       await setDoc(doc(collection(db, "companyriderslog"), user.uid), userData);
 
-      
+
 
       // added message
       Swal.fire({
@@ -444,53 +462,9 @@ const CompDash = () => {
 
 
   console.log("Check F: ", compriddetails)
- 
 
 
 
-  //   if (state.userdetails) {
-  //     const db = getFirestore();
-  //     const companyRef = collection(db, "company");
-  //     const q = query(companyRef, where("uniqueId", "==", state.userdetails.uniqueId));
-  //     const querySnapshot = await getDocs(q);
-
-  //     if (!querySnapshot.empty) {
-  //       querySnapshot.forEach(doc => {
-
-  //         const data = doc.data();
-  //         setCompanyDetails(data);
-  //         storeCompanyDetails(data);
-
-  //         // setCompanyDetails(doc.data());
-  //         console.log("Document Data D:", data);
-  //       });
-  //     } else {
-  //       console.log("No documents found with the specified username.");
-  //     }
-  //   }
-  // } catch (error) {
-  //   console.error("Error fetching company data:", error);
-  // }
-  // };
-
-  // fetchCompanyData();
-  //     }, [state.userdetails]);
-
-
-
-  // console.log("")
-
-
-
-
-  // const user = location.state?.user || userdetails;
-  // React.useEffect(() => {
-  //   if (user) {
-  //     dispatch({ type: "setuserdetails", snippet: user }); // +++ Dispatch user details to context
-  //   }
-  // }, [user, dispatch]);
-  // console.log("User" + userdetails.compName)
-  // $$$$$$$$%%%%%%%%%%%%%%$$$$$$$$$$$$$$$$$$$$$%%%%%%%%%
 
 
   return (
@@ -580,86 +554,120 @@ const CompDash = () => {
 
 
                 <tbody className="">
-                  { compriddetails.length > 0 ? (
+                  {compriddetails.length > 0 ? (
                     compriddetails.map((rider, index) => (
-                      <tr>
-                      <th scope="col">{index + 1}</th>
-                      <th scope="col">{rider.firstName} {rider.surName} </th>
-                      <th scope="col">{rider.compRideruniqueId} </th>
-                      <th scope="col">active</th>
-                      <th scope="col">{rider.RiderBal}</th>
+
+                      <>
+                        <tr>
+                          <th scope="col">{index + 1}</th>
+                          <th scope="col">{rider.firstName} {rider.surName} </th>
+                          <th scope="col">{rider.compRideruniqueId} </th>
+                          <th scope="col">active</th>
+                          <th scope="col">{rider.RiderBal}</th>
+                          <th scope="col">
+                            <Dropdown isOpen={dropdownOpen} toggle={toggle} className="position-static">
+                              <DropdownToggle
+
+                                tag="span"
+                                data-toggle="dropdown"
+                                aria-expanded={dropdownOpen}
+                                className={`kebab-menu ${isHovered ? 'hover' : ''}`}
+                                onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
+
+                              >
+
+                                ...
+
+                              </DropdownToggle>
+                              <DropdownMenu right>
+                                <DropdownItem header>Header</DropdownItem>
+                                <DropdownItem
+                                ></DropdownItem>
+                                <DropdownItem >
+                                  <Button onClick={toggler}>info</Button>
+
+                                  <Modal isOpen={modal} toggle={toggler}>
+                                    <ModalHeader toggle={toggler}>Modal title</ModalHeader>
+                                    <ModalBody>
+                                      This is a simple modal example using Reactstrap.
+                                    </ModalBody>
+                                    <ModalFooter>
+                                      <Button color="secondary" onClick={toggler}>Close</Button>
+                                    </ModalFooter>
+                                  </Modal>
+                                  
+                                </DropdownItem>
+                                <DropdownItem divider />
+                                <DropdownItem >Deactivate</DropdownItem>
+                              </DropdownMenu>
+                            </Dropdown>
+                          </th>
+                        </tr>
+                        {/*                       
+                        <Modal isOpen={infoModalOpen} toggle={toggleInfoModal} centered>
+                          <ModalHeader toggle={toggleInfoModal}>Modal title</ModalHeader>
+                          <ModalBody>
+                            You clicked on {selectedItem}
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button color="primary" onClick={toggleInfoModal}>Close</Button>
+                          </ModalFooter>
+                        </Modal>  */}
+                      </>
+
+                    ))
+
+                  ) : (
+                    <tr>
+                      <th scope="col">---</th>
+                      <th scope="col">---</th>
+                      <th scope="col">--- </th>
+                      <th scope="col">---</th>
+                      <th scope="col">---</th>
                       <th scope="col">
                         <Dropdown isOpen={dropdownOpen} toggle={toggle} className="position-static">
                           <DropdownToggle
-  
+
                             tag="span"
                             data-toggle="dropdown"
                             aria-expanded={dropdownOpen}
                             className={`kebab-menu ${isHovered ? 'hover' : ''}`}
                             onMouseEnter={handleMouseEnter}
                             onMouseLeave={handleMouseLeave}
-  
+
                           >
 
                             ...
-  
+
                           </DropdownToggle>
+
                           <DropdownMenu right>
-                            <DropdownItem header>Header</DropdownItem>
-                            <DropdownItem></DropdownItem>
-                            <DropdownItem>History</DropdownItem>
-                            <DropdownItem divider />
-                            <DropdownItem>Deactivate</DropdownItem>
+
+                            <DropdownMenu right>
+                              <DropdownItem header>Header</DropdownItem>
+
+                              <DropdownItem >Item 0</DropdownItem>
+                              <DropdownItem >info</DropdownItem>
+                              <DropdownItem divider />
+                              <DropdownItem >Deactivate</DropdownItem>
+                            </DropdownMenu>
+
                           </DropdownMenu>
                         </Dropdown>
                       </th>
-                    </tr> 
-                    ))
-               
-                     ) : (
-                    <tr>
-                    <th scope="col">1</th>
-                    <th scope="col">Daniel</th>
-                    <th scope="col">StrCR85 </th>
-                    <th scope="col">active</th>
-                    <th scope="col">today's amount</th>
-                    <th scope="col">
-                      <Dropdown isOpen={dropdownOpen} toggle={toggle} className="position-static">
-                        <DropdownToggle
-
-                          tag="span"
-                          data-toggle="dropdown"
-                          aria-expanded={dropdownOpen}
-                          className={`kebab-menu ${isHovered ? 'hover' : ''}`}
-                          onMouseEnter={handleMouseEnter}
-                          onMouseLeave={handleMouseLeave}
-
-                        >
-
-                          ...
-
-                        </DropdownToggle>
-                        <DropdownMenu right>
-                          <DropdownItem header>Header</DropdownItem>
-                          <DropdownItem></DropdownItem>
-                          <DropdownItem>History</DropdownItem>
-                          <DropdownItem divider />
-                          <DropdownItem>Deactivate</DropdownItem>
-                        </DropdownMenu>
-                      </Dropdown>
-                    </th>
-                  </tr> 
+                    </tr>
                   )
                   }
-                  
+
                 </tbody>
 
               </Table>
             </Card>
           </div>
         </Row>
- 
-{/* Company registers it's riders here */}
+
+        {/* Company registers it's riders here */}
         <Modal isOpen={modalOpen} toggle={toggleModal}>
           <ModalHeader toggle={toggleModal}>Company Rider Registration Form</ModalHeader>
           <ModalBody>
@@ -1028,7 +1036,16 @@ const CompDash = () => {
             <Button color="secondary" onClick={toggleModal}>Cancel</Button>
           </ModalFooter> */}
         </Modal>
-      </Container>
+
+
+        <div>
+          <Button color="primary" onClick={toggler}>Open Modal</Button>
+
+        </div>
+
+
+
+      </Container >
 
     </>
 
