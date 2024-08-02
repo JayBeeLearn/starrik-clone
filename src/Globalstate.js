@@ -12,7 +12,7 @@ const initialState = {
   selectedinvestment: "",
   cointoinvestwith: "",
   distance: 0,
-  uniqueId: "",
+  uniqueId: "", 
   compriddetails: []
 
 };

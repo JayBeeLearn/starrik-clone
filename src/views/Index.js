@@ -58,8 +58,7 @@ const Index = (props) => {
   const navigate = useNavigate();
   const [activeNav, setActiveNav] = useState(1);
   const [chartExample1Data, setChartExample1Data] = useState("data1");
-  const [{ userdetails, loggedin, tradingpair }, dispatch] =
-    useContext(GlobalContext);
+  const [{ userdetails, loggedin, tradingpair }, dispatch] = useContext(GlobalContext);
   const [loading, setLoading] = useState(true);
 
   console.log('CKPT 2')

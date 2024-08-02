@@ -24,6 +24,10 @@ import CompRiderOrders from "views/examples/CompRiderOrders";
 
 import CompanyRiderRunningOrder from "views/examples/CompRiderRunningOrders";
 
+import CompanyWithdrawals from "views/CompanyWithdrawals"
+
+
+
 
 
 import { icon } from "leaflet";
@@ -144,6 +148,15 @@ var routes = [
     component: <ComRiderReg />,
     layout: "/company",
   },
+  {
+    path: "/withdrawals",
+    name: "Withdrawals",
+    icon: "ni ni-circle-08 text-pink",
+    component: <CompanyWithdrawals />,
+    layout: "/company",
+  },
+
+  
   {
     path: "/company-rider-dash",
     name: "Company's Summary",
