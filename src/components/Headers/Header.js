@@ -61,7 +61,7 @@ const Header = () => {
               {confirmedOrder && (
                 <>
                   Order has been been picked and confirmed by rider: {confirmedOrder.distance.toFixed(1)} km - ₦
-                  {(confirmedOrder.distance * 180).toFixed(1)}
+                  {(confirmedOrder.deliveryprice).toFixed(1)}
                 </>
               )}
               <Button close />

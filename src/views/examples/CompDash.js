@@ -24,7 +24,7 @@ import {
 
 import { GlobalContext } from "Globalstate.js";
 import { db } from "../../firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { getFirestore ,collection, query, where, getDocs } from "firebase/firestore";
 import Swal from "sweetalert2";
 
 const CompDash = () => {
@@ -46,6 +46,7 @@ const CompDash = () => {
   const [bankName, setBankName] = useState("");
   const [accountHolderName, setAccountHolderName] = useState("");
   const [licenseNumber, setLicenseNumber] = useState("");
+  const [orders, setOrders] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -89,29 +90,76 @@ const CompDash = () => {
     }
   };
 
+
+// 
+
+
+
+
+
+
+  // Get details that match the username
+
   useEffect(() => {
     if (!userdetails || !userdetails.uniqueId) {
       console.error("userdetails is undefined or does not have a uniqueId.");
       return;
     }
 
-    const fetchData = async () => {
-      try {
-        const q = query(collection(db, "companyriderslog"), where("uniqueId", "==", userdetails.uniqueId));
-        const querySnapshot = await getDocs(q);
-        const fetchedItems = [];
-        querySnapshot.forEach((doc) => {
-          fetchedItems.push(doc.data());
-        });
-        console.log("Fetched items:", fetchedItems); // Add logging here
-        setItems(fetchedItems);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+  //   const fetchData = async () => {
+  //     try {
+  //       const q = query(collection(db, "companyriderslog"), where("uniqueId", "==", userdetails.uniqueId));
+  //       const querySnapshot = await getDocs(q);
+  //       const fetchedItems = [];
+  //       querySnapshot.forEach((doc) => {
+  //         fetchedItems.push(doc.data());
+  //       });
 
-    fetchData();
-  }, [userdetails]);
+  //       setItems(fetchedItems);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [userdetails]);
+
+  const fetchRidersAndOrders = async () => {
+    try {
+      // Fetch riders
+      const ridersQuery = query(collection(db, "companyriderslog"), where("uniqueId", "==", userdetails.uniqueId));
+      const ridersSnapshot = await getDocs(ridersQuery);
+      const fetchedRiders = [];
+      ridersSnapshot.forEach((doc) => {
+        const riderData = doc.data();
+        fetchedRiders.push(riderData);
+      });
+
+      setItems(fetchedRiders);
+
+      // Fetch orders for each rider
+      const fetchedOrders = [];
+      for (const rider of fetchedRiders) {
+        const ordersQuery = query(collection(db, "order"), where("uniqueId", "==", rider.compRideruniqueId));
+        const ordersSnapshot = await getDocs(ordersQuery);
+        ordersSnapshot.forEach((doc) => {
+          const orderData = doc.data();
+          fetchedOrders.push({ rider, orderData }); 
+          // Store the rider and order data together
+        });
+      }
+
+      setOrders(fetchedOrders);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  fetchRidersAndOrders();
+}, [userdetails]);
+
+
+
 
   return (
     <>
@@ -218,17 +266,17 @@ const CompDash = () => {
                                     <span>  {rider.firstName} {rider.surName}</span>
                                   </div>
                                 </div>
-
-
-
-
-
-
-
-
-
-
                               </div>
+                              <ul>
+                                  {orders
+                                    .filter((order) => order.rider.compRideruniqueId === rider.compRideruniqueId)
+                                    .map((order, i) => (
+                                      <li key={i}>
+                                        <strong>Order ID:</strong> {order.orderData.orderId} <br />
+                                        <strong>Order Details:</strong> {JSON.stringify(order.orderData)}
+                                      </li>
+                                    ))}
+                                </ul>
                             </ModalBody>
                             <ModalFooter>
                               <Button color="secondary" onClick={toggleModalPop}>Close</Button>
