@@ -51,6 +51,7 @@ const WithdrawalModal = ({ isOpen, toggle, riderData }) => {
       setWithdrawalAmount("");
       setError("");
       window.location.reload();
+      console.log('Chkpt 8')
     } catch (err) {
       setError("Error placing withdrawal request.");
       console.error("Error placing withdrawal request:", err);

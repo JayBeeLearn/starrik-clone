@@ -6,7 +6,7 @@ import UserProfile from "views/examples/UserProfile";
 import Maps from "views/examples/UserPlaceOrder";
 import Register from "views/examples/Register.js";
 import RiderReg from "views/examples/RiderReg";
-import RiderReg2 from "views/examples/RidReg2";
+import RiderReg2 from "views/examples/RidReg2"; 
 import UserReg from "views/examples/UserReg";
 import Login from "views/examples/Login.js";
 import Tables from "views/examples/RiderOrders";
@@ -24,7 +24,7 @@ import CompRiderOrders from "views/examples/CompRiderOrders";
 
 import CompanyRiderRunningOrder from "views/examples/CompRiderRunningOrders";
 
-import CompanyWithdrawals from "views/CompanyWithdrawals"
+import CompIndex from "./views/CompIndex"
 
 
 
@@ -142,6 +142,13 @@ var routes = [
     layout: "/company",
   },
   {
+    path: "/withdrawals",
+    name: "Withdrawals",
+    icon: "ni ni-circle-08 text-pink",
+    component: <CompIndex />,
+    layout: "/company",
+  },
+  {
     path: "/company-rider-reg",
     name: "Add Rider",
     icon: "ni ni-circle-08 text-pink",
@@ -149,22 +156,12 @@ var routes = [
     layout: "/company",
   },
   {
-    path: "/withdrawals",
-    name: "Withdrawals",
-    icon: "ni ni-circle-08 text-pink",
-    component: <CompanyWithdrawals />,
-    layout: "/company",
-  },
-
-  
-  {
     path: "/company-rider-dash",
     name: "Company's Summary",
     icon: "ni ni-circle-08 text-pink",
     component: <CompRiderDash />,
     layout: "/company",
   },
-
   {
     path: "/companyridersindex",
     name: "Dashboard",
@@ -172,7 +169,6 @@ var routes = [
     component: <CompanyRidersIndex />,
     layout: "/companyriders",
   },
-  
   {
     path: "/companyridertables",
     name: "View Orders",

@@ -195,6 +195,7 @@ const CompReg = () => {
                 profileImage,
                 uniqueId,
                 dateCreated: serverTimestamp(),
+                compBal: 0,
             };
 
             await setDoc(doc(collection(db, "company"), user.uid), userData);
