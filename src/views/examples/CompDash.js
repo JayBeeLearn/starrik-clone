@@ -199,18 +199,21 @@ const CompDash = () => {
       { field: email, label: "Email" },
       { field: password, label: "Password" },
       { field: confirmPassword, label: "Confirm Password" },
-      // Added confirm password to required fields and removed Gender
       { field: phoneNumber, label: "Phone Number" },
+      // Added confirm password to required fields and removed Gender
+
       // { field: homeAddress, label: "Home Address" },
       // { field: businessName, label: "Business Name" },
       // { field: businessAddress, label: "Business Address" },
       // { field: businessRegistrationNumber, label: "Business Registration Number" },
+
       { field: bikeRegistrationNumber, label: "Bike Registration Number" },
       { field: bikeRegistrationType, label: "Bike Registration Type" },
       { field: kinFullName, label: "Next of Kin Full Name" },
       { field: kinPhoneNumber, label: "Next of Kin Phone Number" },
       { field: kinRelationship, label: "Next of Kin Relationship" },
       { field: kinAddress, label: "Next of Kin Address" },
+
       // { field: accountName, label: "Account Name" },
       // { field: accountNumber, label: "Account Number" },
       // { field: bankName, label: "Bank Name" },
@@ -219,6 +222,8 @@ const CompDash = () => {
       //   field: businessRegistrationImage,
       //   label: "Business Registration Image",
       // },
+
+
       { field: bikeRegistrationImage, label: "Bike Registration" },
       { field: passportImage, label: "Passport Image" },
       // { field: idImage, label: "ID Image" },
@@ -247,15 +252,19 @@ const CompDash = () => {
     setLoading(true);
     
     try {
+
       // Create user account with email and password
       // Handling email verification for riders
       const { user } = await createUserWithEmailAndPassword(auth, email, password);
       await sendEmailVerification(user);
+
       // $$$$$ Sign out the user immediately after sending the verification email
       const compRideruniqueId = await generateUserId();
       console.log("uID2:" + compRideruniqueId)
+
       // dispatch({ type: 'uniqueId', payload: uniqueId })
       const uniqueId = userdetails.uniqueId
+      
       // Store user registration data in Firestore
       //  Note UniqueId here refers to CompanyID and is common amongst all riders.
       const userData = {
@@ -602,9 +611,9 @@ const CompDash = () => {
                       <th scope="col">---</th>
                       <th scope="col">---</th>
                       <th scope="col">
-                        <div className="position-static">
+                      <div className="position-static">
                             ...
-                        </div>
+                      </div>
                       </th>
                     </tr> )}
                 </tbody>
@@ -613,8 +622,6 @@ const CompDash = () => {
             </Card>
           </div>
         </Row>
- 
-        {/* Company registers it's riders here */}
 
         {/* Company registers it's riders here */}
         <Modal isOpen={modalOpen} toggle={toggleModal}>

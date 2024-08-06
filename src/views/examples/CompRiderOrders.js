@@ -335,7 +335,8 @@ const Tables = () => {
           status: "confirmed",
           dateConfirmed: new Date(),
           riderid: currentUser.uid,
-          riderphone:userdetails.phoneNumber
+          riderphone:userdetails.phoneNumber,
+          uniqueId:userdetails.uniqueId,
         });
         console.log("Order updated successfully!");
         Swal.fire({

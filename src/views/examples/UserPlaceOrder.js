@@ -115,24 +115,7 @@ const Maps = () => {
     setDestinationCoordinates({ lat: location.lat(), lng: location.lng() });
   };
 
-  // const handleOriginSelect = async (value) => {
-  //   console.log(value);
-  //   const results = await geocodeByAddress(value);
-  //   console.log(results);
-  //   const latLng = await getLatLng(results[0]);
-  //   setOriginAddress(value);
-  //   setOriginCoordinates(latLng);
-  //   console.log(latLng);
-  // };
-
-  // const handleDestinationSelect = async (value) => {
-  //   setOriginAddress(value);
-  //   const results = await geocodeByAddress(value);
-  //   console.log(results);
-  //   const latLng = await getLatLng(results[0]);
-  //   setDestinationAddress(value);
-  //   setDestinationCoordinates(latLng);
-  // };
+  
 
   const [deliveryDetails, setDeliveryDetails] = useState(""); // State to hold the delivery details
   const [receiverDetails, setReceiverDetails] = useState("");

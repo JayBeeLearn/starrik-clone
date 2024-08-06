@@ -15,7 +15,7 @@ import {
     CardBody,
 
 } from "reactstrap";
-import { doc, updateDoc, collection, addDoc } from "firebase/firestore";
+import { doc, updateDoc, collection, getDocs, where, query, addDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
 
@@ -44,7 +44,7 @@ const CompWithdrawalModal = ({ isOpen, toggle, companyData }) => {
 
         try {
             const withdrawalDocRef = await addDoc(collection(db, "withdrawals"), {
-                riderId: companyData.id,
+
                 withdrawalAmount: parseFloat(withdrawalAmount),
                 date: new Date(),
                 status: "pending",
@@ -60,15 +60,31 @@ const CompWithdrawalModal = ({ isOpen, toggle, companyData }) => {
             console.log('Chkpt 5')
             // Deduct withdrawal amount from RiderBal
             const updatedBalance = currentBalance - parseFloat(withdrawalAmount);
-            const riderDocRef = doc(db, "company", companyData.id);
-            await updateDoc(riderDocRef, { compBal: updatedBalance });
-            console.log('Chkpt 6')
-            setSuccess("Withdrawal request placed successfully.");
-            console.log('Chkpt 7')
-            setWithdrawalAmount("");
-            setError("");
-            window.location.reload();
-            console.log('Chkpt 8')
+
+            const companyQuery = query(collection(db, "company"), where("uniqueId", "==", companyData.uniqueId));
+
+            const companySnapshot = await getDocs(companyQuery)
+
+            if (!companySnapshot.empty) {
+
+                const companyDocRef = companySnapshot.docs[0].ref;
+
+                await updateDoc(companyDocRef, { compBal: updatedBalance });
+
+
+
+                // const riderDocRef = doc(db, "company", companyData.uniqueId);
+
+
+                console.log('Chkpt 6')
+                setSuccess("Withdrawal request placed successfully.");
+                console.log('Chkpt 7')
+                setWithdrawalAmount("");
+                setError("");
+                window.location.reload();
+                console.log('Chkpt 8')
+
+            }
         } catch (err) {
             setError("Error placing withdrawal request.");
             console.error("Error placing withdrawal request:", err);
@@ -79,7 +95,7 @@ const CompWithdrawalModal = ({ isOpen, toggle, companyData }) => {
 
     return (
         <>
-           
+
 
             <Modal isOpen={isOpen} toggle={toggle}>
                 <ModalHeader toggle={toggle}>Withdrawal Request</ModalHeader>

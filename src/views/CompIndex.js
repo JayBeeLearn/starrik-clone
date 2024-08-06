@@ -234,9 +234,7 @@ const CompIndex = (props) => {
             },
           ],
         };
-        console.log('CKPT 20')
         setChartData(data);
-        console.log('CKPT 21')
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
@@ -271,6 +269,8 @@ const CompIndex = (props) => {
   //////////////////////////////////////table data///////////////////////////////////
   //////////////////////////////////////table data///////////////////////////////////
   //////////////////////////////////////table data///////////////////////////////////
+
+
   const [orders, setOrders] = useState([]);
   console.log('CHPT A')
 
@@ -304,6 +304,7 @@ const CompIndex = (props) => {
       if (user) {
         try {
           const riderId = user.uid; // Replace with actual current user's ID
+          console.log("User rider ", riderId)
           fetchRiderOrders(riderId);
         } catch (error) {
           console.error("Error fetching user data:", error);
@@ -315,6 +316,63 @@ const CompIndex = (props) => {
       }
     });
   }, []);
+
+
+  // Function to calculate total riderBal for a specific company and update compBal
+  const calculateAndUpdateCompBal = async (companyId) => {
+    try {
+
+      const ordersRef = collection(db, "companyriderslog");
+
+      const q = query(ordersRef, where("uniqueId", "==", companyId));
+
+      const querySnapshot = await getDocs(q);
+      let riderBalList = [];
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        riderBalList.push(data.RiderBal);
+
+      });
+      console.log("RiderBal list:", riderBalList)
+      const totalRiderBal = riderBalList.reduce((acc, bal) => acc + bal, 0);
+
+
+
+
+      const companyQuery = query(collection(db, "company"), where("uniqueId", "==", companyId));
+
+      const companySnapshot = await getDocs(companyQuery);
+
+      if (!companySnapshot.empty) {
+        const companyDocRef = companySnapshot.docs[0].ref;
+        await updateDoc(companyDocRef, {
+          compBal: totalRiderBal
+
+        });
+
+        console.log(`Updated compBal for company ${companyId}: ${userdetails.compName} to ${totalRiderBal}`);
+
+      } else {
+        console.log("No matching company document found");
+      }
+
+
+
+    } catch (error) {
+      // Handle any errors that occur during the process
+      console.error("Error updating compBal:", error);
+    }
+  };
+  const companyId = userdetails.uniqueId
+  console.log("Comp uid")
+  // Call the function with the current companyId
+  calculateAndUpdateCompBal(companyId);
+
+
+
+
+
   //////////////////////////////////////table data///////////////////////////////////
   //////////////////////////////////////table data///////////////////////////////////
   //////////////////////////////////////table data///////////////////////////////////
@@ -352,6 +410,8 @@ const CompIndex = (props) => {
 
     setChartExample1Data("data" + index);
   };
+
+  console.log("User ", userdetails)
   return (
     <>
       <Header />
@@ -367,7 +427,8 @@ const CompIndex = (props) => {
                       Performance
                     </h6>
                     <h2 className="mb-0">
-                      Account Bal :NGN {userdetails.RiderBal}
+                      Account Bal :NGN {userdetails.compBal}
+
                     </h2>
                     {/* Button to open the withdrawal modal */}
                     <Button color="primary" onClick={toggleModal}>Place Withdrawal</Button>
@@ -376,7 +437,7 @@ const CompIndex = (props) => {
                     <CompWithdrawalModal
                       isOpen={isOpen}
                       toggle={toggleModal}
-                      riderData={userdetails}
+                      companyData={userdetails}
                     />
 
                     <h2 className="mb-0">Total orders</h2>
@@ -399,27 +460,27 @@ const CompIndex = (props) => {
             </Card>
           </Col>
         </Row>
-        
+
         {/* <Row className="mt-5"> */}
-          {/* <Col className="mb-5 mb-xl-0" xl="8"> */}
-            {/* <Card className="shadow"> */}
-              {/* <CardHeader className="border-0">
+        {/* <Col className="mb-5 mb-xl-0" xl="8"> */}
+        {/* <Card className="shadow"> */}
+        {/* <CardHeader className="border-0">
                 <Row className="align-items-center">
                   <div className="col">
                     <h3 className="mb-0">Completed Orders</h3>
                   </div>
                 </Row>
               </CardHeader> */}
-              {/* <Table className="align-items-center table-flush" responsive> */}
-                {/* <thead className="thead-light"> */}
-                  {/* <tr>
+        {/* <Table className="align-items-center table-flush" responsive> */}
+        {/* <thead className="thead-light"> */}
+        {/* <tr>
                     <th scope="col">Order ID</th>
                     <th scope="col">Delivery Fee</th>
                     <th scope="col">Distance</th>
                     <th scope="col">Date Created</th>
                   </tr> */}
-                {/* </thead> */}
-                {/* <tbody>
+        {/* </thead> */}
+        {/* <tbody>
                   {orders.map((order) => (
                     <tr key={order.id}>
                       <th scope="row">{order.id}</th>
@@ -436,7 +497,7 @@ const CompIndex = (props) => {
                 </tbody>
               </Table>
             </Card> */}
-          {/* </Col> */}
+        {/* </Col> */}
         {/* </Row> */}
 
 

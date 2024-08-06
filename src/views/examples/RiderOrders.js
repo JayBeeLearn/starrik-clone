@@ -40,7 +40,7 @@ const Tables = () => {
   const [deliveryCoordinates, setDeliveryCoordinates] = useState(null);
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
 
-
+ 
   //////////////////////////////////////////////////////
   //////////////////////AUTHENTICATION//////////////////////////////
   //////////////////////////////////////////////////////
@@ -330,6 +330,8 @@ const Tables = () => {
         return
       } else {
         // There are no orders for the current user with status "confirmed"
+
+      
 
         const orderRef = doc(db, "order", order.id);
         await updateDoc(orderRef, {

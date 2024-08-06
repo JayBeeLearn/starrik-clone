@@ -148,6 +148,7 @@ var routes = [
     component: <CompIndex />,
     layout: "/company",
   },
+
   // {
   //   path: "/company-rider-reg",
   //   name: "Add Rider",
@@ -162,6 +163,7 @@ var routes = [
   //   component: <CompRiderDash />,
   //   layout: "/company",
   // },
+  
   {
     path: "/companyridersindex",
     name: "Dashboard",
