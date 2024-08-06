@@ -294,7 +294,7 @@ const RiderRunningOrders = () => {
                           >
                             <i className="fas fa-ellipsis-v" />
                           </DropdownToggle>
-                          <DropdownMenu className="dropdown-menu-arrow" right>
+                          <DropdownMenu className="dropdown-menu-arrow position-static" right>
                             {/* <DropdownItem
                               onClick={() => handleViewOrder(order)}
                             >

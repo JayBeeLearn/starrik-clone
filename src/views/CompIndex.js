@@ -317,9 +317,10 @@ const CompIndex = (props) => {
     });
   }, []);
 
-
+  useEffect(() => {
   // Function to calculate total riderBal for a specific company and update compBal
   const calculateAndUpdateCompBal = async (companyId) => {
+
     try {
 
       const ordersRef = collection(db, "companyriderslog");
@@ -335,7 +336,7 @@ const CompIndex = (props) => {
 
       });
       console.log("RiderBal list:", riderBalList)
-      const totalRiderBal = riderBalList.reduce((acc, bal) => acc + bal, 0);
+      const newRiderBal = riderBalList.reduce((acc, bal) => acc + bal, 0);
 
 
 
@@ -344,15 +345,35 @@ const CompIndex = (props) => {
 
       const companySnapshot = await getDocs(companyQuery);
 
+
       if (!companySnapshot.empty) {
         const companyDocRef = companySnapshot.docs[0].ref;
+
+        const companyDocSnapshot = await getDoc(companyDocRef);
+
+        const CompanyDoc = companyDocSnapshot.data()
+        const totalRiderBal = newRiderBal + CompanyDoc.compBal
+
+
         await updateDoc(companyDocRef, {
           compBal: totalRiderBal
 
         });
 
-        console.log(`Updated compBal for company ${companyId}: ${userdetails.compName} to ${totalRiderBal}`);
+        for (const docSnapshot of querySnapshot.docs) {
+          const docRef = docSnapshot.ref;
+          await updateDoc(docRef, {
+            RiderBal: 0
+          });
+        }
 
+
+        // querySnapshot.forEach((doc) => {
+        //   const data = doc.data();
+        //   await updateDoc(data, {
+        //     RiderBal: 0
+        //   });
+        console.log(`Updated compBal for company ${companyId}: ${userdetails.compName} to ${totalRiderBal}`);
       } else {
         console.log("No matching company document found");
       }
@@ -364,11 +385,13 @@ const CompIndex = (props) => {
       console.error("Error updating compBal:", error);
     }
   };
-  const companyId = userdetails.uniqueId
-  console.log("Comp uid")
-  // Call the function with the current companyId
-  calculateAndUpdateCompBal(companyId);
 
+  if (userdetails && userdetails.uniqueId) {
+    const companyId = userdetails.uniqueId;
+    calculateAndUpdateCompBal(companyId);
+  }
+
+}, [userdetails]);
 
 
 
