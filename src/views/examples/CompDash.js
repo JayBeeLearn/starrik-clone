@@ -157,8 +157,67 @@ const CompDash = () => {
     }
     setFileLoading(false);
   };
+  console.log('current step is ', currentStep);
+  const handleNext = async (e) => {
+    if (currentStep == 1) {
+      e.preventDefault();
+      const requiredFields = [
+        { field: firstName, label: "First Name" },
+        { field: surName, label: "Last Name" },
+        { field: dateOfBirth, label: "Date of Birth" },
+        { field: email, label: "Email" },
+        { field: password, label: "Password" },
+        { field: confirmPassword, label: "Confirm Password" },
+        { field: phoneNumber, label: "Phone Number" },
+        { field: homeAddress, label: "Home Address" },
+      ];
+      // console.log('done');
+      
+      const emptyFields = requiredFields.filter(({ field }) => !field);
+      // console.log(emptyFields);
+      if (emptyFields.length > 0) {
+        const emptyFieldsLabels = emptyFields
+          .map(({ label }) => label)
+          .join(", ");
+        setError(`Please fill out all required fields: ${emptyFieldsLabels}`);
+        return;
+      }
 
-  const handleNext = () => {
+      if (password !== confirmPassword) {
+        setError("Passwords do not match");
+        return;
+      }
+
+      if (password.length < 8) {
+        setError("Password must be at least 8 characters long");
+        return;
+      }
+      if (password.length > 100) {
+        setError("Password must be less than 100 characters long");
+        return;
+      }
+    }
+    
+    if (currentStep == 2) {
+      console.log("hi");
+      const requiredFields = [
+        { field: bikeRegistrationNumber, label: "Bike Registration Number" },
+        { field: bikeRegistrationType, label: "Bike Registration Type" },
+        { field: bikeRegistrationImage, label: "Bike Registration" },
+        { field: passportImage, label: "Passport Image" },
+      ];
+
+      const emptyFields = requiredFields.filter(({ field }) => !field);
+      // console.log(emptyFields);
+      if (emptyFields.length > 0) {
+        const emptyFieldsLabels = emptyFields
+          .map(({ label }) => label)
+          .join(", ");
+        setError(`Please fill out all required fields: ${emptyFieldsLabels}`);
+        return;
+      }
+    }
+    setError('');
     setCurrentStep(currentStep + 1);
   };
   
@@ -193,13 +252,14 @@ const CompDash = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
     const requiredFields = [
-      { field: firstName, label: "First Name" },
-      { field: surName, label: "Last Name" },
-      { field: dateOfBirth, label: "Date of Birth" },
-      { field: email, label: "Email" },
-      { field: password, label: "Password" },
-      { field: confirmPassword, label: "Confirm Password" },
-      { field: phoneNumber, label: "Phone Number" },
+    // MOVE THIS VALIDATION TO STEP 1 AFTER CLICKING NEXT 
+      // { field: firstName, label: "First Name" },
+      // { field: surName, label: "Last Name" },
+      // { field: dateOfBirth, label: "Date of Birth" },
+      // { field: email, label: "Email" },
+      // { field: password, label: "Password" },
+      // { field: confirmPassword, label: "Confirm Password" },
+      // { field: phoneNumber, label: "Phone Number" },
       // Added confirm password to required fields and removed Gender
 
       // { field: homeAddress, label: "Home Address" },
@@ -207,8 +267,8 @@ const CompDash = () => {
       // { field: businessAddress, label: "Business Address" },
       // { field: businessRegistrationNumber, label: "Business Registration Number" },
 
-      { field: bikeRegistrationNumber, label: "Bike Registration Number" },
-      { field: bikeRegistrationType, label: "Bike Registration Type" },
+      // { field: bikeRegistrationNumber, label: "Bike Registration Number" },
+      // { field: bikeRegistrationType, label: "Bike Registration Type" },
       { field: kinFullName, label: "Next of Kin Full Name" },
       { field: kinPhoneNumber, label: "Next of Kin Phone Number" },
       { field: kinRelationship, label: "Next of Kin Relationship" },
@@ -224,8 +284,8 @@ const CompDash = () => {
       // },
 
 
-      { field: bikeRegistrationImage, label: "Bike Registration" },
-      { field: passportImage, label: "Passport Image" },
+      // { field: bikeRegistrationImage, label: "Bike Registration" },
+      // { field: passportImage, label: "Passport Image" },
       // { field: idImage, label: "ID Image" },
     ];
 
@@ -236,19 +296,19 @@ const CompDash = () => {
       return;
     }
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
+    // if (password !== confirmPassword) {
+    //   setError("Passwords do not match");
+    //   return;
+    // }
 
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters long");
-      return;
-    }
-    if (password.length > 100) {
-      setError("Password must be less than 100 characters long");
-      return;
-    }
+    // if (password.length < 8) {
+    //   setError("Password must be at least 8 characters long");
+    //   return;
+    // }
+    // if (password.length > 100) {
+    //   setError("Password must be less than 100 characters long");
+    //   return;
+    // }
     setLoading(true);
     
     try {
@@ -391,7 +451,7 @@ const CompDash = () => {
     dispatch({ type: "setcompriddetails", snippet: data });
   };
 
-  console.log("Check G: ", userdetails)
+  // console.log("Check G: ", userdetails)
   ///////////////////Logic for mapping riders based on companyID////////////
   
   useEffect(() => {
@@ -426,7 +486,7 @@ const CompDash = () => {
 
 
 
-  console.log("Check F: ", compriddetails)
+  // console.log("Check F: ", compriddetails)
 
 
 
@@ -478,8 +538,7 @@ const CompDash = () => {
 
   return (
     <>
-      <div
-        className="header pt-7 pt-lg-8 d-flex align-items-center">
+      <div className="header pt-7 pt-lg-8 d-flex align-items-center">
         {/* Mask */}
         <span className="mask pt-9 bg-gradient-default opacity-8" />
         {/* Header container */}
@@ -490,8 +549,15 @@ const CompDash = () => {
                 <CardHeader className="bg-transparent border-0">
                   {userdetails ? (
                     <div className="d-flex justify-content-between">
-                      <h4 className="text-white">Company Name: {userdetails.compName}</h4>
-                      <Button color="primary" onClick={toggleModal} className="right text-white">➕Add Rider
+                      <h4 className="text-white">
+                        Company Name: {userdetails.compName}
+                      </h4>
+                      <Button
+                        color="primary"
+                        onClick={toggleModal}
+                        className="right text-white"
+                      >
+                        ➕Add Rider
                       </Button>
                     </div>
                   ) : (
@@ -499,7 +565,9 @@ const CompDash = () => {
                   )}
                 </CardHeader>
                 <CardBody>
-                  <h3 className="text-white mb-0">My Company Riders Profiles</h3>
+                  <h3 className="text-white mb-0">
+                    My Company Riders Profiles
+                  </h3>
                 </CardBody>
               </Card>
             </div>
@@ -547,21 +615,18 @@ const CompDash = () => {
         <Row className="">
           <div className="col">
             <Card className=" shadow">
-              <Table
-                className="align-items-center  table-flush"
-                responsive
-              > <thead className="thead-dark">
+              <Table className="align-items-center  table-flush" responsive>
+                {" "}
+                <thead className="thead-dark">
                   <tr>
                     <th scope="col">S/N</th>
                     <th scope="col">rider</th>
                     <th scope="col">rider's Id</th>
                     <th scope="col">Status</th>
                     <th scope="col">Bal</th>
-                    <th scope="col"></th>
+                    <th scope="col">Action</th>
                   </tr>
                 </thead>
-
-
                 <tbody className="">
                   {compriddetails.length > 0 ? (
                     compriddetails.map((rider, index) => (
@@ -574,36 +639,46 @@ const CompDash = () => {
 
                       <>
                         <tr key={index}>
+                          {/* <div className="bg-red-500 h-[5rem] w-[5rem]"></div> */}
                           <th scope="col">{index + 1}</th>
-                          <th scope="col">{rider.firstName} {rider.surName} </th>
+                          <th scope="col">
+                            {rider.firstName} {rider.surName}{" "}
+                          </th>
                           <th scope="col">{rider.compRideruniqueId} </th>
                           <th scope="col">active</th>
                           <th scope="col">{rider.RiderBal}</th>
-                          <th scope='col'>
-                                <div className =" dots bg-[#7abfdf] " onClick={toggleModalPop}>...</div>
-                                <Modal isOpen={modalPopOpen} toggle={toggleModalPop}>
-
-
-                                <ModalHeader toggle={toggleModalPop}>Modal title</ModalHeader>
-                                <ModalBody>
-
+                          <th scope="col">
+                            <div
+                              className=" dots bg-[#7abfdf] "
+                              onClick={toggleModalPop}
+                            >
+                              deactivate ...
+                            </div>
+                            <Modal
+                              isOpen={modalPopOpen}
+                              toggle={toggleModalPop}
+                            >
+                              <ModalHeader toggle={toggleModalPop}>
+                                Modal title
+                              </ModalHeader>
+                              <ModalBody>
                                 <div>
-                               <div className="">
-                                  <div className="flex" style={{ display: 'flex', gap: '5px' }} >
-
+                                  <div className="">
+                                    <div
+                                      className="flex"
+                                      style={{ display: "flex", gap: "5px" }}
+                                    >
                                       <h3>NAME:</h3>
-                                      </div>            
-                                      </div>
-                                      </div>
-                                </ModalBody>
-                                </Modal>
+                                    </div>
+                                  </div>
+                                </div>
+                              </ModalBody>
+                            </Modal>
                           </th>
                         </tr>
                       </>
-
                     ))
-
-                   ) : (
+                  ) : (
                     <tr>
                       <th scope="col">---</th>
                       <th scope="col">---</th>
@@ -611,13 +686,11 @@ const CompDash = () => {
                       <th scope="col">---</th>
                       <th scope="col">---</th>
                       <th scope="col">
-                      <div className="position-static">
-                            ...
-                      </div>
+                        <div className="position-static">...</div>
                       </th>
-                    </tr> )}
+                    </tr>
+                  )}
                 </tbody>
-
               </Table>
             </Card>
           </div>
@@ -625,7 +698,9 @@ const CompDash = () => {
 
         {/* Company registers it's riders here */}
         <Modal isOpen={modalOpen} toggle={toggleModal}>
-          <ModalHeader toggle={toggleModal}>Company Rider Registration Form</ModalHeader>
+          <ModalHeader toggle={toggleModal}>
+            Company Rider Registration Form
+          </ModalHeader>
           <ModalBody>
             <Col lg="" md="8">
               <Card className="bg-secondary shadow border-0">
@@ -667,8 +742,9 @@ const CompDash = () => {
                             />
                           </InputGroup>
                         </FormGroup>
+                        
                         <FormGroup>
-                          <InputGroup className="input-group-alternative mb-3">
+                          <InputGroup className="input-group-alternative mb-3 bg-white">
                             <InputGroupAddon addonType="prepend">
                               <InputGroupText>
                                 <i className="ni ni-calendar-grid-58" />
@@ -680,8 +756,16 @@ const CompDash = () => {
                               value={dateOfBirth}
                               onChange={(e) => setDateOfBirth(e.target.value)}
                             />
+                            <InputGroupAddon addonType="append">
+                              <small
+                                className="btn-sm my-auto"
+                              >
+                               Date of Birth
+                              </small>
+                            </InputGroupAddon>
                           </InputGroup>
                         </FormGroup>
+
                         <FormGroup>
                           <InputGroup className="input-group-alternative mb-3">
                             <InputGroupAddon addonType="prepend">
@@ -716,7 +800,15 @@ const CompDash = () => {
                                 type="button"
                                 className="btn-sm"
                               >
-                                {<i className={passwordVisible ? "fa fa-eye-slash" : "fa fa-eye"} />}
+                                {
+                                  <i
+                                    className={
+                                      passwordVisible
+                                        ? "fa fa-eye-slash"
+                                        : "fa fa-eye"
+                                    }
+                                  />
+                                }
                               </Button>
                             </InputGroupAddon>
                           </InputGroup>
@@ -731,9 +823,13 @@ const CompDash = () => {
                             </InputGroupAddon>
                             <Input
                               placeholder="Confirm Password"
-                              type={passwordConfirmVisible ? "text" : "password"}
+                              type={
+                                passwordConfirmVisible ? "text" : "password"
+                              }
                               value={confirmPassword}
-                              onChange={(e) => setConfirmPassword(e.target.value)}
+                              onChange={(e) =>
+                                setConfirmPassword(e.target.value)
+                              }
                             />
                             <InputGroupAddon addonType="append">
                               <Button
@@ -741,7 +837,15 @@ const CompDash = () => {
                                 type="button"
                                 className="btn-sm"
                               >
-                                {<i className={passwordConfirmVisible ? "fa fa-eye-slash" : "fa fa-eye"} />}
+                                {
+                                  <i
+                                    className={
+                                      passwordConfirmVisible
+                                        ? "fa fa-eye-slash"
+                                        : "fa fa-eye"
+                                    }
+                                  />
+                                }
                               </Button>
                             </InputGroupAddon>
                           </InputGroup>
@@ -791,7 +895,9 @@ const CompDash = () => {
                               placeholder="Bike Registration Number"
                               type="text"
                               value={bikeRegistrationNumber}
-                              onChange={(e) => setBikeRegistrationNumber(e.target.value)}
+                              onChange={(e) =>
+                                setBikeRegistrationNumber(e.target.value)
+                              }
                             />
                           </InputGroup>
                         </FormGroup>
@@ -806,7 +912,9 @@ const CompDash = () => {
                               placeholder="Bike Registration Type"
                               type="text"
                               value={bikeRegistrationType}
-                              onChange={(e) => setBikeRegistrationType(e.target.value)}
+                              onChange={(e) =>
+                                setBikeRegistrationType(e.target.value)
+                              }
                             />
                           </InputGroup>
                         </FormGroup>
@@ -815,11 +923,6 @@ const CompDash = () => {
                             passport Image
                           </label>
                           <InputGroup className="input-group-alternative mb-3">
-                            {/* <InputGroupAddon addonType="prepend">
-                     <InputGroupText>
-                       <i className="ni ni-file" />
-                     </InputGroupText>
-                   </InputGroupAddon> */}
                             <Input
                               id="fileUpload"
                               placeholder="Company Account Type"
@@ -827,7 +930,11 @@ const CompDash = () => {
                               onChange={(e) => handleFileUpload(e, 3)}
                             />
                           </InputGroup>
-                          {fileLoading && <p><b>Uploading...please wait</b></p>}
+                          {fileLoading && (
+                            <p>
+                              <b>Uploading...please wait</b>
+                            </p>
+                          )}
                         </FormGroup>
                         <FormGroup>
                           <label htmlFor="fileUpload" className="form-label">
@@ -840,7 +947,11 @@ const CompDash = () => {
                               onChange={(e) => handleFileUpload(e, 2)}
                             />
                           </InputGroup>
-                          {fileLoading && <p><b>Uploading...please wait</b></p>}
+                          {fileLoading && (
+                            <p>
+                              <b>Uploading...please wait</b>
+                            </p>
+                          )}
                         </FormGroup>
                       </>
                     )}
@@ -872,7 +983,9 @@ const CompDash = () => {
                               placeholder="Next of Kin Phone Number"
                               type="text"
                               value={kinPhoneNumber}
-                              onChange={(e) => setKinPhoneNumber(e.target.value)}
+                              onChange={(e) =>
+                                setKinPhoneNumber(e.target.value)
+                              }
                             />
                           </InputGroup>
                         </FormGroup>
@@ -902,7 +1015,9 @@ const CompDash = () => {
                               placeholder="Relationship with Next of Kin"
                               type="text"
                               value={kinRelationship}
-                              onChange={(e) => setKinRelationship(e.target.value)}
+                              onChange={(e) =>
+                                setKinRelationship(e.target.value)
+                              }
                             />
                           </InputGroup>
                         </FormGroup>
@@ -930,16 +1045,29 @@ const CompDash = () => {
                     )}
                     <div className="text-center">
                       {currentStep !== 1 && (
-                        <Button onClick={handlePrev} color="primary" className="mt-4">
+                        <Button
+                          onClick={handlePrev}
+                          color="primary"
+                          className="mt-4"
+                        >
                           Previous
                         </Button>
                       )}
                       {currentStep !== 3 ? (
-                        <Button onClick={handleNext} color="primary" className="mt-4">
+                        <Button
+                          onClick={handleNext}
+                          color="primary"
+                          className="mt-4"
+                        >
                           Next
                         </Button>
                       ) : (
-                        <Button onClick={handleSignUp} color="primary" className="mt-4" disabled={loading}>
+                        <Button
+                          onClick={handleSignUp}
+                          color="primary"
+                          className="mt-4"
+                          disabled={loading}
+                        >
                           {loading ? "Signing Up..." : "Sign Up"}
                         </Button>
                       )}
@@ -955,7 +1083,6 @@ const CompDash = () => {
           </ModalFooter> */}
         </Modal>
       </Container>
-
     </>
   );
 };

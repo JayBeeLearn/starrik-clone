@@ -118,7 +118,97 @@ const RiderReg = () => {
     setFileLoading(false);
   };
 
-  const handleNext = () => {
+  const handleNext = async (e) => {
+    if (currentStep == 1) {
+      e.preventDefault();
+      const requiredFields = [
+        { field: firstName, label: "First Name" },
+        { field: surName, label: "Last Name" },
+        { field: dateOfBirth, label: "Date of Birth" },
+        { field: email, label: "Email" },
+        { field: password, label: "Password" },
+        { field: confirmPassword, label: "Confirm Password" },
+        // Added confirm password to required fields and removed Gender
+
+        { field: phoneNumber, label: "Phone Number" },
+        { field: homeAddress, label: "Home Address" },
+
+       
+        
+        // { field: idImage, label: "ID Image" },
+      ];
+
+      const emptyFields = requiredFields.filter(({ field }) => !field);
+      if (emptyFields.length > 0) {
+        const emptyFieldsLabels = emptyFields
+          .map(({ label }) => label)
+          .join(", ");
+        setError(`Please fill out all required fields: ${emptyFieldsLabels}`);
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError("Passwords do not match");
+        return;
+      }
+      if (password.length < 8) {
+        setError("Password must be at least 8 characters long");
+        return;
+      }
+      if (password.length > 100) {
+        setError("Password must be less than 100 characters long");
+        return;
+      }
+    }
+    if (currentStep == 2) {
+      e.preventDefault();
+      const requiredFields = [
+        { field: businessName, label: "Business Name" },
+        { field: businessAddress, label: "Business Address" },
+        {
+          field: businessRegistrationNumber,
+          label: "Business Registration Number",
+        },
+        { field: bikeRegistrationNumber, label: "Bike Registration Number" },
+        { field: bikeRegistrationType, label: "Bike Registration Type" },
+        {
+          field: businessRegistrationImage,
+          label: "Business Registration Image",
+        },
+        { field: bikeRegistrationImage, label: "Bike Registration" },
+        { field: passportImage, label: "Passport Image" },
+      ];
+
+      const emptyFields = requiredFields.filter(({ field }) => !field);
+      if (emptyFields.length > 0) {
+        const emptyFieldsLabels = emptyFields
+          .map(({ label }) => label)
+          .join(", ");
+        setError(`Please fill out all required fields: ${emptyFieldsLabels}`);
+        return;
+      }
+      
+    }
+
+    if (currentStep == 3) {
+      e.preventDefault();
+      const requiredFields = [
+        { field: kinFullName, label: "Next of Kin Full Name" },
+        { field: kinPhoneNumber, label: "Next of Kin Phone Number" },
+        { field: kinRelationship, label: "Next of Kin Relationship" },
+        { field: kinAddress, label: "Next of Kin Address" },
+        
+      ];
+
+      const emptyFields = requiredFields.filter(({ field }) => !field);
+      if (emptyFields.length > 0) {
+        const emptyFieldsLabels = emptyFields
+          .map(({ label }) => label)
+          .join(", ");
+        setError(`Please fill out all required fields: ${emptyFieldsLabels}`);
+        return;
+      }
+    }
+    setError('');
     setCurrentStep(currentStep + 1);
   };
 
@@ -162,37 +252,13 @@ const RiderReg = () => {
   const handleSignUp = async (e) => {
 
     e.preventDefault();
+    //if neccesary in the future, REVALIDATE all input at the point of final submission.
     const requiredFields = [
-      { field: firstName, label: "First Name" },
-      { field: surName, label: "Last Name" },
-      { field: dateOfBirth, label: "Date of Birth" },
-      { field: email, label: "Email" },
-      { field: password, label: "Password" },
-      { field: confirmPassword, label: "Confirm Password" },
-      // Added confirm password to required fields and removed Gender
-
-      { field: phoneNumber, label: "Phone Number" },
-      { field: homeAddress, label: "Home Address" },
-      { field: businessName, label: "Business Name" },
-      { field: businessAddress, label: "Business Address" },
-      { field: businessRegistrationNumber, label: "Business Registration Number" },
-      { field: bikeRegistrationNumber, label: "Bike Registration Number" },
-      { field: bikeRegistrationType, label: "Bike Registration Type" },
-      { field: kinFullName, label: "Next of Kin Full Name" },
-      { field: kinPhoneNumber, label: "Next of Kin Phone Number" },
-      { field: kinRelationship, label: "Next of Kin Relationship" },
-      { field: kinAddress, label: "Next of Kin Address" },
       { field: accountName, label: "Account Name" },
       { field: accountNumber, label: "Account Number" },
       { field: bankName, label: "Bank Name" },
       { field: accountType, label: "Account Type" },
-      {
-        field: businessRegistrationImage,
-        label: "Business Registration Image",
-      },
-      { field: bikeRegistrationImage, label: "Bike Registration" },
-      { field: passportImage, label: "Passport Image" },
-      // { field: idImage, label: "ID Image" },
+     
     ];
 
     const emptyFields = requiredFields.filter(({ field }) => !field);
@@ -201,18 +267,7 @@ const RiderReg = () => {
       setError(`Please fill out all required fields: ${emptyFieldsLabels}`);
       return;
     }
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters long");
-      return;
-    }
-    if (password.length > 100) {
-      setError("Password must be less than 100 characters long");
-      return;
-    }
+    
     setLoading(true);
     try {
       // Create user account with email and password
@@ -300,20 +355,20 @@ const RiderReg = () => {
     }
   };
 
-  const nextStep = () => {
-    setCurrentStep((prevStep) => Math.min(prevStep + 1, 4));
-  };
+  // const nextStep = () => {
+  //   setCurrentStep((prevStep) => Math.min(prevStep + 1, 4));
+  // };
 
-  const prevStep = () => {
-    setCurrentStep((prevStep) => Math.max(prevStep - 1, 1));
-  };
+  // const prevStep = () => {
+  //   setCurrentStep((prevStep) => Math.max(prevStep - 1, 1));
+  // };
 
   return (
     <Col lg="6" md="8">
       <Card className="bg-secondary shadow border-0">
         <CardBody className="px-lg-5 py-lg-5">
           <div className="text-center text-muted mb-4">
-            <small>REGISTER AS INDEPENDENT RIDER</small>
+            <small>REGISTER AS INDEPENDENT RIDER </small>
           </div>
 
           <Progress value={(currentStep / 4) * 100} className="mb-4" />
@@ -342,7 +397,6 @@ const RiderReg = () => {
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                         <i className="ni ni-hat-3" />
-                        
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input
@@ -355,7 +409,7 @@ const RiderReg = () => {
                 </FormGroup>
 
                 <FormGroup>
-                  <InputGroup className="input-group-alternative mb-3">
+                  <InputGroup className="input-group-alternative mb-3 bg-white">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                         <i className="ni ni-calendar-grid-58" />
@@ -367,6 +421,9 @@ const RiderReg = () => {
                       value={dateOfBirth}
                       onChange={(e) => setDateOfBirth(e.target.value)}
                     />
+                    <InputGroupAddon addonType="append">
+                      <small className="btn-sm my-auto">Date of Birth</small>
+                    </InputGroupAddon>
                   </InputGroup>
                 </FormGroup>
 
@@ -405,13 +462,17 @@ const RiderReg = () => {
                         type="button"
                         className="btn-sm"
                       >
-                        {<i className={passwordVisible ? "fa fa-eye-slash" : "fa fa-eye"} />}
-
+                        {
+                          <i
+                            className={
+                              passwordVisible ? "fa fa-eye-slash" : "fa fa-eye"
+                            }
+                          />
+                        }
                       </Button>
                     </InputGroupAddon>
                   </InputGroup>
                 </FormGroup>
-
 
                 {/* Added confirm password and removed gender */}
 
@@ -434,7 +495,15 @@ const RiderReg = () => {
                         type="button"
                         className="btn-sm"
                       >
-                        {<i className={passwordConfirmVisible ? "fa fa-eye-slash" : "fa fa-eye"} />}
+                        {
+                          <i
+                            className={
+                              passwordConfirmVisible
+                                ? "fa fa-eye-slash"
+                                : "fa fa-eye"
+                            }
+                          />
+                        }
                       </Button>
                     </InputGroupAddon>
                   </InputGroup>
@@ -519,7 +588,9 @@ const RiderReg = () => {
                       placeholder="Business Registration Number"
                       type="text"
                       value={businessRegistrationNumber}
-                      onChange={(e) => setBusinessRegistrationNumber(e.target.value)}
+                      onChange={(e) =>
+                        setBusinessRegistrationNumber(e.target.value)
+                      }
                     />
                   </InputGroup>
                 </FormGroup>
@@ -535,7 +606,9 @@ const RiderReg = () => {
                       placeholder="Bike Registration Number"
                       type="text"
                       value={bikeRegistrationNumber}
-                      onChange={(e) => setBikeRegistrationNumber(e.target.value)}
+                      onChange={(e) =>
+                        setBikeRegistrationNumber(e.target.value)
+                      }
                     />
                   </InputGroup>
                 </FormGroup>
@@ -556,61 +629,65 @@ const RiderReg = () => {
                   </InputGroup>
                 </FormGroup>
 
-               
-
-
                 <FormGroup>
-                 <label htmlFor="fileUpload" className="form-label">
-                   passport Image
-                 </label>
-                 <InputGroup className="input-group-alternative mb-3">
-                   {/* <InputGroupAddon addonType="prepend">
+                  <label htmlFor="fileUpload" className="form-label">
+                    passport Image
+                  </label>
+                  <InputGroup className="input-group-alternative mb-3">
+                    {/* <InputGroupAddon addonType="prepend">
                      <InputGroupText>
                        <i className="ni ni-file" />
                      </InputGroupText>
                    </InputGroupAddon> */}
-                   <Input
-                     id="fileUpload"
-                     placeholder="Company Account Type"
-                     type="file"
-                     onChange={(e) => handleFileUpload(e, 3)}
-                   />
-                 </InputGroup>
-                 {fileLoading && <p><b>Uploading...please wait</b></p>}
-               </FormGroup>
+                    <Input
+                      id="fileUpload"
+                      placeholder="Company Account Type"
+                      type="file"
+                      onChange={(e) => handleFileUpload(e, 3)}
+                    />
+                  </InputGroup>
+                  {fileLoading && (
+                    <p>
+                      <b>Uploading...please wait</b>
+                    </p>
+                  )}
+                </FormGroup>
 
-               <FormGroup>
-                 <label htmlFor="fileUpload" className="form-label">
-                   Bike registration Image
-                 </label>
-                 <InputGroup className="input-group-alternative mb-3">
-                  
-                   <Input
-                     id="fileUpload"
-                     type="file"
-                     onChange={(e) => handleFileUpload(e, 2)}
-                   />
-                 </InputGroup>
-                 {fileLoading && <p><b>Uploading...please wait</b></p>}
-               </FormGroup>
+                <FormGroup>
+                  <label htmlFor="fileUpload" className="form-label">
+                    Bike registration Image
+                  </label>
+                  <InputGroup className="input-group-alternative mb-3">
+                    <Input
+                      id="fileUpload"
+                      type="file"
+                      onChange={(e) => handleFileUpload(e, 2)}
+                    />
+                  </InputGroup>
+                  {fileLoading && (
+                    <p>
+                      <b>Uploading...please wait</b>
+                    </p>
+                  )}
+                </FormGroup>
 
-               <FormGroup>
-                 <label htmlFor="fileUpload" className="form-label">
-                   CAC Registration image
-                 </label>
-                 <InputGroup className="input-group-alternative mb-3">
-                   
-                   <Input
-                     id="fileUpload"
-                     type="file"
-                     onChange={(e) => handleFileUpload(e, 1)}
-                   />
-                 </InputGroup>
-                 {fileLoading && <p><b>Uploading...please wait</b></p>}
-               </FormGroup>
-
-
-
+                <FormGroup>
+                  <label htmlFor="fileUpload" className="form-label">
+                    CAC Registration image
+                  </label>
+                  <InputGroup className="input-group-alternative mb-3">
+                    <Input
+                      id="fileUpload"
+                      type="file"
+                      onChange={(e) => handleFileUpload(e, 1)}
+                    />
+                  </InputGroup>
+                  {fileLoading && (
+                    <p>
+                      <b>Uploading...please wait</b>
+                    </p>
+                  )}
+                </FormGroup>
 
                 {/* <FormGroup>
                   <label htmlFor="fileUpload" className="form-label">
@@ -651,9 +728,6 @@ const RiderReg = () => {
                   </InputGroup>
                   {fileLoading && <p>Uploading...</p>}
                 </FormGroup> */}
-
-
-
               </>
             )}
 
@@ -826,7 +900,12 @@ const RiderReg = () => {
                   Next
                 </Button>
               ) : (
-                <Button onClick={handleSignUp} color="primary" className="mt-4" disabled={loading}>
+                <Button
+                  onClick={handleSignUp}
+                  color="primary"
+                  className="mt-4"
+                  disabled={loading}
+                >
                   {loading ? "Signing Up..." : "Sign Up"}
                 </Button>
               )}
