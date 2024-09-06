@@ -257,16 +257,17 @@ const RiderRunningOrders = () => {
         </div>
       )}
       
-      <Container className="mt--7" fluid>
+      <Container className="mt--7" fluid style={{ height:50 + 'vh' }}>
         <Row className="mt-5">
           <div className="col">
-            <Card className="bg-default shadow">
+            <Card className="bg-default shadow" style={{ height: 50 + 'vh' }}>
               <CardHeader className="bg-transparent border-0">
                 <h3 className="text-white mb-0">My Running Orders</h3>
               </CardHeader>
               <Table
                 className="align-items-center table-dark table-flush"
                 responsive
+                style={{ height: 20 + 'vh' }}
               >
                 <thead className="thead-dark">
                   <tr>
@@ -294,7 +295,7 @@ const RiderRunningOrders = () => {
                           >
                             <i className="fas fa-ellipsis-v" />
                           </DropdownToggle>
-                          <DropdownMenu className="dropdown-menu-arrow position-static" right>
+                          <DropdownMenu className="dropdown-menu-arrow " right>
                             {/* <DropdownItem
                               onClick={() => handleViewOrder(order)}
                             >

@@ -14,6 +14,7 @@ import {
 } from "reactstrap";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../../firebase";
+import { Link } from "react-router-dom";
 
 const PasswordReset = () => {
   const [email, setEmail] = useState("");
@@ -63,10 +64,17 @@ const PasswordReset = () => {
               </FormGroup>
               <div className="text-center">
                 {resetError && (
-                  <div className="text-center text-danger mb-3">{resetError}</div>
+                  <div className="text-center text-danger mb-3">
+                    {resetError}
+                  </div>
                 )}
                 {resetSuccess && (
-                  <div className="text-center text-success mb-3">{resetSuccess}</div>
+                  <div className="text-center text-success mb-3">
+                    <p>{resetSuccess} </p>
+                    <p>
+                      <Link to={'/auth/login'} > Back to Login </Link>
+                    </p>
+                  </div>
                 )}
                 <Button
                   className="my-4"
@@ -80,16 +88,13 @@ const PasswordReset = () => {
             </Form>
           </CardBody>
         </Card>
-        <Row className="mt-3">
+        {/* <Row className="mt-3">
           <Col xs="6">
-            <a
-              className="text-light"
-              href="login"
-            >
+            <a className="text-light" href="login">
               <small>Back to login</small>
             </a>
           </Col>
-        </Row>
+        </Row> */}
       </Col>
     </>
   );

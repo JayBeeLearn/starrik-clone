@@ -1,3 +1,4 @@
+import SubscribeInput from "components/fragments/SubscribeInput";
 import React from "react";
 
 function ContactIndex() {
@@ -13,7 +14,7 @@ function ContactIndex() {
                 data-aos-delay="200"
                 data-aos-duration="300"
               >
-                <div class="about-text">
+                <div class="about-tet">
                   
                   <h2>Contact us</h2>
                   <p>
@@ -148,15 +149,7 @@ function ContactIndex() {
                   <h2>
                     Access daily updates on our delivery service offerings.
                   </h2>
-                  <form>
-                    <i class="fa-regular fa-bell"></i>
-                    <input
-                      type="text"
-                      name="email"
-                      placeholder="Enter email address"
-                    />
-                    <button class="button button-2">Subscribe</button>
-                  </form>
+                  <SubscribeInput />
                 </div>
               </div>
             </div>

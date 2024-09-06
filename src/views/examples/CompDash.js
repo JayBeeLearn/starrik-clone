@@ -39,8 +39,6 @@ import { CollectionReference } from "firebase/firestore";
 import { getFirestore, collection, query, where, getDoc, getDocs, setDoc, doc } from "firebase/firestore";
 
 
-
-
 const CompDash = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
@@ -157,7 +155,7 @@ const CompDash = () => {
     }
     setFileLoading(false);
   };
-  console.log('current step is ', currentStep);
+  // console.log('current step is ', currentStep);
   const handleNext = async (e) => {
     if (currentStep == 1) {
       e.preventDefault();
@@ -621,7 +619,7 @@ const CompDash = () => {
                   <tr>
                     <th scope="col">S/N</th>
                     <th scope="col">rider</th>
-                    <th scope="col">rider's Id</th>
+                    {/* <th scope="col">rider's Id</th> */}
                     <th scope="col">Status</th>
                     <th scope="col">Bal</th>
                     <th scope="col">Action</th>
@@ -644,7 +642,7 @@ const CompDash = () => {
                           <th scope="col">
                             {rider.firstName} {rider.surName}{" "}
                           </th>
-                          <th scope="col">{rider.compRideruniqueId} </th>
+                          {/* <th scope="col">{rider.compRideruniqueId} </th> */}
                           <th scope="col">active</th>
                           <th scope="col">{rider.RiderBal}</th>
                           <th scope="col">

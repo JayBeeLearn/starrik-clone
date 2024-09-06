@@ -6,7 +6,7 @@ function HeroSection() {
     // find and implement another animation
   return (
     <>
-      <section class="hero-section gap">
+      <section class="my-4">
         <div class="container">
           <div class="row align-items-center">
             <div

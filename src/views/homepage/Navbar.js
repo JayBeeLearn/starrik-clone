@@ -1,7 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom';
 
 function Navbar() {
+  const [navToggle, setNavToggle] = useState(false)
+  const handleNavToggle = () => {
+    
+    setNavToggle(!navToggle)
+  }
   return (
     <>
       <header>
@@ -66,17 +71,36 @@ function Navbar() {
 
             <div class="col-8 d-flex justify-content-end">
               <div class="d-flex ">
-                <Link
-                  to={"/auth/register"}
-                  className="button button-2">
+                <Link to={"/auth/register"} className="button button-2">
                   Order Now
                 </Link>
-                
-                <Link className='my-auto mx-4'>
+
+                <Link onClick={handleNavToggle} className="my-auto mx-4">
                   <i class="fa-solid fa-bars fa-xl  "></i>
-                  
-               </Link>
+                </Link>
               </div>
+            </div>
+
+            <div className={` ${navToggle ? "d-block" : "d-none"}`}>
+              <nav
+                class="slide-in-down"
+                data-aos="fade-up"
+                data-aos-delay="300"
+                data-aos-duration="400"
+              >
+                <ul class="navbar-links">
+                  <li class="navbar-dropdown">
+                    <NavLink to={"/"}>Home</NavLink>
+                  </li>
+                  <li class="navbar-dropdown">
+                    <NavLink to={"/about-us"}>About Us</NavLink>
+                  </li>
+
+                  <li class="navbar-dropdown">
+                    <NavLink to={"/contact-us"}>Contacts</NavLink>
+                  </li>
+                </ul>
+              </nav>
             </div>
           </div>
         </div>
