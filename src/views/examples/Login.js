@@ -220,6 +220,9 @@ const Login = () => {
             <div className="text-center text-muted mb-4">
               <small>Sign in with credentials</small>
             </div>
+            <div className="border-4"> 
+              <p>lorem </p>
+            </div>
             <Form role="form">
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">

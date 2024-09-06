@@ -64,15 +64,15 @@ h6{
 a{
     color: black;
 }
-.gap {
+/* .gap {
     padding: 100px 0;
-}
-.no-top{
+} */
+/* .no-top{
     padding-top: 0;
 }
 .no-bottom{
     padding-bottom: 0;
-}
+} */
 ul{
     padding: 0;
     margin: 0;
@@ -117,7 +117,7 @@ figure {
     display: block;
     text-decoration: none;
     color: #363636;
-    padding: 8px 20px;
+    padding: 0.5rem 0.8rem;
     transition: 0.4s all;
     font-size: 16px;
     position: relative;
@@ -184,12 +184,12 @@ figure {
     border-left: 0;
     border-right: 0;
 }
-header {
+/* header {
     position: absolute;
     padding: 30px 0;
     width: 100%;
     z-index: 1;
-}
+} */
 /*------------------------        navbar end      --------------------------*/
 /*------------------------        restaurant      --------------------------*/
 .restaurant h1 {
@@ -303,10 +303,10 @@ header {
     text-transform: uppercase;
     display: inline-block;
     font-size: 16px;
-    padding: 0 25px;
+    padding: 0.5rem 0.8rem;
     border-radius: 10px;
-    height: 55px;
-    line-height: 55px;
+    height: 2.7rem;
+    line-height: 1.3rem;
 }
 .button-2 {
   color: #fff;
@@ -318,7 +318,7 @@ header {
   background-position: 0%;
   -webkit-transition: background 300ms ease-in-out;
   transition: background 300ms ease-in-out;
-  line-height: 51px;
+  line-height: 1.3rem;
 }
 .button-2:hover {
   background-position: 100%;
@@ -788,31 +788,27 @@ footer p {
 .footer-description h2 {
     color: white;
     font-weight: bold;
-    width: 59%;
-    padding: 35px 0 20px;
+    /* width: 59%; */
+    /* padding: 35px 0 20px; */
 }
 .footer-description p{
     color: #cfcfcf;
-    font-size: 16px;
-    width: 80%;
+    /* font-size: 16px; */
+    /* width: 80%; */
 }
 .menu h4{
-    font-size: 24px;
+    /* font-size: 24px; */
     text-transform: uppercase;
-    color: #787878;
+    color: #c9c6c6;
     font-weight: bold;
     margin: 0;
-    padding-bottom: 25px;
+    /* padding-bottom: 25px; */
 }
 
-ul.footer-menu li{
+/* ul.footer-menu li{
     padding-top: 20px;
-}
-ul.footer-menu li a{
-    font-size: 16px;
-    color: #CFCFCF;
-    text-transform: capitalize;
-}
+} */
+
 ul.footer-menu li a i{
     padding-left: 20px;
 }
@@ -852,10 +848,7 @@ ul.footer-menu li a i{
 ul.social-media li {
     margin-right: 20px;
 }
-ul.social-media {
-    display: flex;
-    padding: 40px 0;
-}
+
 ul.social-media li a i{
     height: 40px;
     width: 40px;
@@ -875,7 +868,7 @@ ul.social-media li a i:hover {
     align-items: center;
     justify-content: space-between;
     padding-top: 25px;
-    margin-top: 101px;
+    /* margin-top: 101px; */
     border: 1px solid #787878;
     border-bottom: 0;
     border-left: 0;
@@ -911,9 +904,9 @@ ul.crumbs li.two i {
 }
 .about-text h2 {
     font-weight: bold;
-    width: 61%;
-    line-height: 130%;
-    padding-top: 40px;
+    /* width: 61%; */
+    /* line-height: 130%; */
+    /* padding-top: 40px; */
     padding-bottom: 20px;
 }
 .about-text p{
@@ -922,8 +915,8 @@ ul.crumbs li.two i {
 .about-img img {
     border-radius: 50px;
     transform: rotate(13deg);
-    width: 500px;
-    height: 500px;
+    width: 30px;
+    height: 30px;
     margin-left: 44px;
 }
 .about-img {
@@ -934,8 +927,8 @@ ul.crumbs li.two i {
     content: "";
     position: absolute;
     border: 7px white solid;
-    height: 500px;
-    width: 500px;
+    height: 30px;
+    width: 30px;
     border-radius: 50px;
     z-index: 0;
     left: 5%;
@@ -1081,9 +1074,10 @@ ul.paragraph li i {
 .our-team{
     position: relative;
     text-align: center;
+    margin-bottom: 2rem;
 }
 .our-team p {
-    padding-top: 10px;
+    /* padding-top: 10px; */
     width: 90%;
     margin: auto;
     font-size: 16px;
@@ -2771,7 +2765,7 @@ ul.food-dishes li,.error-page form  input[type="text"],
 ul.footer-menu li a,ul.social-media li a i,.address span,
 .card-text-data,.card-text-data p,.card-text-data svg,.card-text-data h3,
 .services-card-style h4 a,.services-card-style,.services-card-style i:after,
-.services-card-style i,.button-price,.address,.address h6,.logodata.owl-carousel .owl-item img{
+.services-card-style i,.button-price,.address,.address h6,.logodata.owl-carousel .-item img{
     transition: .3s ease-in-out;
 }
 
@@ -3411,4 +3405,27 @@ li.menu-item-has-children.active {
     justify-content: center;
     height: 100%;
     position: fixed;
+}
+
+
+.new-slide{
+    margin-bottom: 50px; 
+    padding-inline:20px;
+    border-bottom: 3px solid #dddddd; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); 
+    padding-bottom: 20px;
+    /* height: 300px; */
+}
+
+.new-slide-height{
+    height: 100%;
+}
+
+.new-slide-height img{
+    object-fit: contain;
+    height: 300px;
+}
+
+.active {
+    border-bottom: 2px solid blue;
 }

@@ -9,7 +9,7 @@ import AuthFooter from "components/Footers/AuthFooter.js";
 
 import routes from "routes.js";
 
-const Auth = (props) => {
+const AuthLayout = (props) => {
   const mainContent = React.useRef(null);
   const location = useLocation();
 
@@ -19,6 +19,8 @@ const Auth = (props) => {
       document.body.classList.remove("bg-default");
     };
   }, []);
+
+
   React.useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
@@ -78,7 +80,7 @@ const Auth = (props) => {
           <Row className="justify-content-center">
             <Routes>
               {getRoutes(routes)}
-              <Route path="*" element={<Navigate to="/auth/login" replace />} />
+              <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
           </Row>
         </Container>
@@ -88,4 +90,4 @@ const Auth = (props) => {
   );
 };
 
-export default Auth;
+export default AuthLayout;

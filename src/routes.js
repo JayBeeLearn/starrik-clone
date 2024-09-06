@@ -86,17 +86,17 @@ var routes = [
 
 
   {
-    path: "/login",
-    name: "Login",
-    icon: "ni ni-key-25 text-info",
-    component: <Login />,
-    layout: "/auth",
-  },
-  {
     path: "/forgetpassword",
     name: "Forgetpassword",
     icon: "ni ni-key-25 text-info",
     component: <PasswordReset />,
+    layout: "/auth",
+  },
+  {
+    path: "/login",
+    name: "Login",
+    icon: "ni ni-key-25 text-info",
+    component: <Login />,
     layout: "/auth",
   },
   {
